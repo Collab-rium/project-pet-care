@@ -6,6 +6,7 @@
   - If an image of a dog or cat is uploaded, the app's theme aligns with the predominant image mood or color palette.
 
 **Approach**:
+
 1. **Simplified Method** (Basic MVP):
    - Use color-detection libraries to identify predominant colors in the uploaded image.
    - Dynamically adjust the app's primary/secondary UI colors.

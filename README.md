@@ -3,11 +3,6 @@
 ## Core Idea
 Manage pets with profiles (name, age, breed, photo), reminders for meals, medicines, baths, and vet visits.
 
-### Main Features (MVP)
-1. Add pet profile (name, age, breed, photo).
-2. Set reminders for tasks (meals, medicines, baths, vet visits).
-3. Notifications at exact times.
-
 ---
 
 ## Minimum Requirements for MVP
