@@ -1,8 +1,6 @@
 # Project - Puppy
 
-## Pet Care Manager App
-
-### Core Idea
+## Core Idea
 Manage pets with profiles (name, age, breed, photo), reminders for meals, medicines, baths, and vet visits.
 
 ### Main Features (MVP)
@@ -10,25 +8,34 @@ Manage pets with profiles (name, age, breed, photo), reminders for meals, medici
 2. Set reminders for tasks (meals, medicines, baths, vet visits).
 3. Notifications at exact times.
 
-### Advanced Features
-- Smart reminders for missed tasks.
-- Pet health tracker (weight, vaccines, medical records).
-- AI-based breed detection from photos.
-- Nearby vet finder using maps.
-- Daily routine dashboard.
+---
 
-### Monetization Ideas
-- Ads integration.
-- Premium version with advanced features.
-- Affiliate links for pet products and services.
+## Minimum Requirements for MVP
+### Core Features:
+1. **Pet Profiles**: Add pet details (name, age, breed, photo).
+2. **Reminders**: Set and receive push notifications for meals, medicines, baths, and vet visits.
+3. **Dashboard**: View daily tasks. Highlight missed or overdue reminders.
+4. **Dynamic Themes**: Automatically adjust app theme based on pet type or uploaded image.
 
-### Development Flow
-- **Start simple:** Focus on meal reminders first, then sequentially add other features.
-- **Technologies:**
-  - Flutter (preferred) or React Native for mobile app development.
-  - Firebase for backend services (database, authentication).
+---
 
-### Step-by-Step Plan
-1. Build a basic app (add pets + reminders).
-2. Expand with pet profiles and improved UI.
-3. Add smart features, health tracking, and monetization.
+## Plan
+### Step-by-Step:
+1. **Setup**: Initialize Flutter front-end and Firebase backend (authentication, database).
+2. **Build Core Features**:
+   - Pet Profiles and Reminders.
+   - Core functionality of Dashboard with simple missed task handling.
+3. **Introduce Dynamic Themes**:
+   - Extend UI reactions to uploaded images.
+
+---
+
+## Hurdles and Questions
+1. **Open Questions**:
+   - How complex should dynamic themes be (basic vs stretch goal)?
+   - What design style should the reminders follow (cards, lists, modal alerts)?
+2. **Challenges**:
+   - Leveraging free tools for dynamic themes and reminders efficiently.
+   - Testing Firebase notification limits while on the free tier.
+
+This minimum viable product will focus on achieving these requirements while ensuring zero-cost usage! Further updates will refine components and constraints as needed.
