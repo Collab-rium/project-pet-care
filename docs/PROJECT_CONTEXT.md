@@ -1,17 +1,39 @@
-# LLM/Automation Context for Project - Puppy
+# Project Context
 
-This file outlines the context and guidelines for interacting with this repository, especially when utilizing LLMs or automation tools.
+This file serves as the foundation for understanding and iterating on the **Project Pet** application. Below is the consolidated project context distilled from existing files and configurations.
 
-## Repository Purpose
-- A mobile app project to manage pet profiles and reminders (see README for detailed features).
+## Objective
+The **Project Pet** is designed to assist pet owners in managing pet care through a Flutter-based app synced with a Firebase backend. The application aims to provide:
 
-## Guidelines for Code Contributions
-1. **Follow Agile Development:** Adhere to iterative cycles. Start with priority features like reminders.
-2. **Preferred Tech Stack:**
-   - Frontend: Flutter (preferred) or React Native.
-   - Backend: Firebase for data handling and authentication.
-3. **Testing:** Each feature must include corresponding tests.
+- **Pet Profiles**: To store and visualize pet details.
+- **Task/Reminder Management**: Notifications for key dates and daily needs.
+- **Dynamic User Interface**: Including themes based on pet specifics.
 
-## For LLMs or CI/CD Integration
-- Always use this file to ensure context awareness when making changes or generating code.
-- Respect the existing structure unless a fundamental reason exists to refactor.
+---
+
+## Structure Overview
+### Backend (Firebase):
+- **Configuration**:
+  - `firebase-config.js`: Contains Firebase API keys and app-specific settings.
+  - Services initialized for database, authentication, and storage.
+
+- **Validation**:
+  - `validate-firebase.js` checks service connectivity.
+
+### Frontend (Flutter):
+- **Entry Point**:
+  - `main.dart`: Initializes Material-based UI and routing.
+- **Components**:
+  - Navbar and themes dynamically invoked to support profiles.
+
+---
+
+## Workflow Notes:
+### File Safety:
+- Enabled the use of `trash-cli` and aliases (`rm = trash`). This ensures safe file operations by preventing permanent deletion via `rm`. Aliases available:
+  - `tl` → List contents.
+  - `tr` → Restore files.
+  - `te` → Empty the trash.
+
+---
+Changes or further insights should document their rationale directly within this file. This ensures all adjustments are traceable.
