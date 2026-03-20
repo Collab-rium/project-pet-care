@@ -20,20 +20,53 @@
 
 ### Prerequisites
 
-- [ ] Node 18+ installed
-- [ ] npm installed
-- [ ] Firebase CLI installed globally: `npm install -g firebase-tools`
-- [ ] Verify: `firebase --version` outputs v11+
+- [x] Node 18+ installed
+- [x] npm installed
+- [x] Firebase CLI installed globally: `npm install -g firebase-tools`
+- [x] Verify: `firebase --version` outputs v11+
 
 ### Initialize Firebase Emulators
 
-- [ ] Navigate to `backend/` directory
+- [x] Navigate to `backend/` directory
 - [ ] Run: `firebase init emulators`
   - Select: **Authentication**, **Firestore**, **Storage** (check these boxes)
   - Select: "Don't set up a default project"
   - Accept defaults for ports and rules files
-- [ ] Verify `firebase.json` created in `backend/`
-- [ ] **Checkpoint**: Firebase emulator config ready
+- [x] Verify `firebase.json` created in `backend/`
+- [x] **Checkpoint**: Firebase emulator config ready
+
+Done, the process went like this,
+
+```
+
+
+First, let's associate this project directory with a Firebase project.
+You can create multiple project aliases by running firebase use --add, 
+
+✔ Please select an option: Don't set up a default project
+
+=== Emulators Setup
+✔ Which Firebase emulators do you want to set up? Press Space to select emulators, then Enter to confirm your 
+choices. Authentication Emulator, Firestore Emulator, Storage Emulator
+✔ Which port do you want to use for the auth emulator? 9099
+✔ Which port do you want to use for the firestore emulator? 8080
+✔ Which port do you want to use for the storage emulator? 9199
+✔ Would you like to enable the Emulator UI? Yes
+✔ Which port do you want to use for the Emulator UI (leave empty to use any available port)? 
+✔ Would you like to download the emulators now? Yes
+i  firestore: downloading cloud-firestore-emulator-v1.20.4.jar...
+Progress: =======================================================================================> (100% of 137MB)
+i  storage: downloading cloud-storage-rules-runtime-v1.1.3.jar...
+Progress: ========================================================================================> (100% of 53MB)
+i  ui: downloading ui-v1.15.0.zip...
+
+✔  Wrote configuration info to firebase.json
+✔  Wrote project information to .firebaserc
+✔  Wrote .gitignore
+
+✔  Firebase initialization complete!
+
+```
 
 ### Create package.json
 
