@@ -35,5 +35,14 @@ The **Project Pet** is designed to assist pet owners in managing pet care throug
   - `tr` → Restore files.
   - `te` → Empty the trash.
 
+### Git Commit Policy (Generated Files)
+
+- Do not commit generated, machine-local, or cache artifacts.
+- Files covered by `.gitignore` must stay untracked (build output, caches, logs, temporary files, local IDE state, emulator runtime files).
+- Commit only source files, configuration templates, and documentation needed to reproduce builds.
+- Keep lockfiles that are part of dependency reproducibility (`pubspec.lock` is tracked for app builds in this project unless team policy changes explicitly).
+- If a new tool generates noisy files, add patterns to the root `.gitignore` before committing.
+- Before pushing, run `git status --ignored --short` and confirm no accidental generated artifacts are staged.
+
 ---
 Changes or further insights should document their rationale directly within this file. This ensures all adjustments are traceable.

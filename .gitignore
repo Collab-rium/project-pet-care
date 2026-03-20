@@ -1,0 +1,213 @@
+# Single .gitignore for entire repository
+# Sections: General, Backend, Frontend
+
+################################################################################
+# GENERAL
+################################################################################
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+*.iml
+*.ipr
+*.iws
+*.sublime-workspace
+
+# VS Code (keep workspace settings only if intentionally committed)
+.vscode/settings.json
+.vscode/launch.json
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# Logs / temp
+*.log
+logs/
+*.tmp
+.cache/
+*.bak
+*.orig
+*.rej
+*.stackdump
+
+# Global extension rules (applies anywhere in repo)
+*.class
+*.pyc
+*.pyo
+*.seed
+*.pid
+*.pid.lock
+*.tsbuildinfo
+
+# Generic build outputs
+dist/
+build/
+out/
+target/
+tmp/
+temp/
+
+################################################################################
+# BACKEND (Node + Firebase)
+################################################################################
+
+backend/node_modules/
+backend/.npm/
+backend/.pnpm-store/
+
+# Keep lockfiles tracked for reproducible installs
+# backend/package-lock.json
+# backend/yarn.lock
+
+backend/.env
+backend/.env.local
+
+backend/dist/
+backend/build/
+backend/build/Release/
+backend/*.tsbuildinfo
+
+backend/.firebase/
+backend/firebase-debug.log*
+backend/emulator-data/
+backend/.dataconnect
+
+backend/uploads/
+backend/tmp/
+backend/pids
+backend/*.pid
+backend/*.pid.lock
+
+backend/coverage/
+backend/.nyc_output/
+backend/.grunt/
+backend/.eslintcache
+
+backend/npm-debug.log*
+backend/yarn-debug.log*
+backend/yarn-error.log*
+backend/.node_repl_history
+
+################################################################################
+# FRONTEND (Flutter)
+################################################################################
+
+frontend/.dart_tool/
+frontend/.flutter-plugins
+frontend/.flutter-plugins-dependencies
+frontend/.packages
+frontend/.pub-cache/
+frontend/.pub/
+frontend/.metadata
+
+frontend/build/
+frontend/coverage/
+frontend/.coverage/
+frontend/test/.test_cache/
+frontend/.flutter_tool_state
+frontend/.packages
+frontend/.flutter-plugins
+
+# Generated docs and build internals
+frontend/**/doc/api/
+frontend/**/ios/Flutter/.last_build_id
+
+# Android generated artifacts
+frontend/android/app/debug/
+frontend/android/app/profile/
+frontend/android/app/release/
+frontend/android/local.properties
+frontend/android/.gradle/
+frontend/android/captures/
+frontend/android/.cxx/
+frontend/android/GeneratedPluginRegistrant.java
+frontend/android/key.properties
+frontend/android/**/*.keystore
+frontend/android/**/*.jks
+
+# iOS / macOS generated artifacts
+frontend/**/DerivedData/
+frontend/**/Pods/
+frontend/**/.symlinks/
+frontend/**/.generated/
+frontend/**/Flutter/ephemeral/
+frontend/**/Flutter/App.framework
+frontend/**/Flutter/Flutter.framework
+frontend/**/Flutter/Flutter.podspec
+frontend/**/Flutter/Generated.xcconfig
+frontend/**/Flutter/app.flx
+frontend/**/Flutter/app.zip
+frontend/**/Flutter/flutter_assets/
+frontend/**/Flutter/flutter_export_environment.sh
+frontend/**/Runner/GeneratedPluginRegistrant.*
+frontend/**/xcuserdata/
+frontend/**/dgph
+
+# Linux / Windows generated artifacts
+frontend/linux/flutter/ephemeral/
+frontend/windows/flutter/ephemeral/
+frontend/windows/*.suo
+frontend/windows/*.user
+frontend/windows/*.userosscache
+frontend/windows/*.sln.docstates
+frontend/windows/x64/
+frontend/windows/x86/
+frontend/windows/*.[Cc]ache
+!frontend/windows/*.[Cc]ache/
+
+# Flutter symbolication / obfuscation
+frontend/app.*.symbols
+frontend/app.*.map.json
+frontend/**/*.dSYM/
+
+# App bundles (release artifacts)
+frontend/**/*.apk
+frontend/**/*.aab
+frontend/**/*.ipa
+
+# Uncomment only if you are sure those targets are out of scope.
+frontend/web/
+frontend/windows/
+frontend/macos/
+frontend/linux/
+frontend/ios/
+frontend/android/
+
+# Flutter scaffold files that are safe to ignore for this repo setup
+frontend/analysis_options.yaml
+frontend/test/
+
+################################################################################
+# FIREBASE / CREDENTIALS
+################################################################################
+
+*-credentials.json
+*-service-account-key.json
+firebase-key.json
+backend/.firebaserc
+
+# Optional large exports
+emulator-backup/
+
+
+
+docs/temp/
+docs/*.tmp
+docs/*.bak
+docs/.obsidian/
+
+
+################################################################################
+# NEGATION RULES
+################################################################################
+
+!.gitkeep
+!.env.example
+!backend/.env.example
+!docs/mvp/.gitkeep
