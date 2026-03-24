@@ -28,49 +28,21 @@
 ### Initialize Firebase Emulators
 
 - [x] Navigate to `backend/` directory
-- [ ] Run: `firebase init emulators`
+- [x] Run: `firebase init emulators`
   - Select: **Authentication**, **Firestore**, **Storage** (check these boxes)
   - Select: "Don't set up a default project"
   - Accept defaults for ports and rules files
 - [x] Verify `firebase.json` created in `backend/`
 - [x] **Checkpoint**: Firebase emulator config ready
 
-Done, the process went like this,
-
-```
-
-
-First, let's associate this project directory with a Firebase project.
-You can create multiple project aliases by running firebase use --add, 
-
-✔ Please select an option: Don't set up a default project
-
-=== Emulators Setup
-✔ Which Firebase emulators do you want to set up? Press Space to select emulators, then Enter to confirm your 
-choices. Authentication Emulator, Firestore Emulator, Storage Emulator
-✔ Which port do you want to use for the auth emulator? 9099
-✔ Which port do you want to use for the firestore emulator? 8080
-✔ Which port do you want to use for the storage emulator? 9199
-✔ Would you like to enable the Emulator UI? Yes
-✔ Which port do you want to use for the Emulator UI (leave empty to use any available port)? 
-✔ Would you like to download the emulators now? Yes
-i  firestore: downloading cloud-firestore-emulator-v1.20.4.jar...
-Progress: =======================================================================================> (100% of 137MB)
-i  storage: downloading cloud-storage-rules-runtime-v1.1.3.jar...
-Progress: ========================================================================================> (100% of 53MB)
-i  ui: downloading ui-v1.15.0.zip...
-
-✔  Wrote configuration info to firebase.json
-✔  Wrote project information to .firebaserc
-✔  Wrote .gitignore
-
-✔  Firebase initialization complete!
-
-```
+Completed on March 24, 2026:
+- Config written to `backend/firebase.json`
+- Emulator UI enabled
+- Auth, Firestore, Storage emulators selected
 
 ### Create package.json
 
-- [ ] Create `backend/package.json`:
+- [x] Create `backend/package.json`:
   ```json
   {
     "name": "pet-care-backend",
@@ -90,19 +62,19 @@ i  ui: downloading ui-v1.15.0.zip...
     }
   }
   ```
-- [ ] Run `npm install`
-- [ ] **Checkpoint**: Dependencies installed
+- [x] Run `npm install`
+- [x] **Checkpoint**: Dependencies installed
 
 ### Environment Setup
 
-- [ ] Create `backend/.env.example`:
+- [x] Create `backend/.env.example`:
   ```
   PORT=4000
   FIRESTORE_EMULATOR_HOST=localhost:8080
   FIREBASE_AUTH_EMULATOR_HOST=localhost:9099
   ```
-- [ ] Create `backend/.env` (copy from example, use these values)
-- [ ] Add `.env` to `.gitignore`
+- [x] Create `backend/.env` (copy from example, use these values)
+- [x] Add `.env` to `.gitignore`
 
 ### API Contract Review
 
