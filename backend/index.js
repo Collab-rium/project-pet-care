@@ -5,7 +5,9 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', port });
+  const uptime = Math.floor(process.uptime());
+  const timestamp = new Date().toISOString();
+  res.json({ ok: true, uptime, timestamp });
 });
 
 app.get('/', (req, res) => res.send('pet-care-backend'));

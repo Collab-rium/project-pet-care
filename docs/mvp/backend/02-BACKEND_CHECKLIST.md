@@ -78,10 +78,10 @@ Completed on March 24, 2026:
 
 ### API Contract Review
 
-- [ ] Open `docs/mvp/01-API_CONTRACT.md`
-- [ ] Read all endpoint signatures, request/response shapes, error codes
-- [ ] Flag any unclear specifications (discuss with frontend dev)
-- [ ] **Sign off**: You understand and agree to implement all endpoints as specified
+- [x] Open `docs/mvp/01-API_CONTRACT.md`
+- [x] Read all endpoint signatures, request/response shapes, error codes
+- [x] Flag any unclear specifications (discuss with frontend dev)
+- [x] **Sign off**: You understand and agree to implement all endpoints as specified
 
 ---
 
@@ -89,12 +89,12 @@ Completed on March 24, 2026:
 
 ### Health Check Endpoint
 
-- [ ] Implement `GET /health`
+- [x] Implement `GET /health`
   - Returns: `{ ok: true, uptime: <seconds>, timestamp: <ISO-string> }`
   - No authentication required
   - Always available
-- [ ] Test locally: `curl http://localhost:4000/health`
-- [ ] **Pass Criteria**: Returns 200 with correct JSON
+- [x] Test locally: `curl http://localhost:4000/health`
+- [x] **Pass Criteria**: Returns 200 with correct JSON
 
 ### Authentication (Simplified in-memory for MVP)
 
