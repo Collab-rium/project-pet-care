@@ -7,10 +7,15 @@ app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
 const { router: authRouter, authMiddleware } = require('./auth');
-const { router: petsRouter } = require('./pets');
+const { router: petsRouter, _stores: petsStores } = require('./pets');
+const { router: remindersRouter } = require('./reminders');
+
+// Make pets store globally available for reminders validation
+global._petsStore = petsStores;
 
 app.use('/auth', authRouter);
 app.use('/pets', authMiddleware, petsRouter);
+app.use('/reminders', authMiddleware, remindersRouter);
 
 const port = process.env.PORT || 3000;
 
