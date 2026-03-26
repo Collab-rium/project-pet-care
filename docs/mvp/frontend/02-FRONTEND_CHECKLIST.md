@@ -40,6 +40,7 @@
     image_picker: ^1.0.0
     palette_generator: ^0.3.0
     shared_preferences: ^2.1.0
+    flutter_secure_storage: ^8.0.0
   ```
 - [ ] Run: `flutter pub get`
 - [ ] **Checkpoint**: Flutter project generates without errors
@@ -48,7 +49,7 @@
 
 - [ ] Open `docs/mvp/01-API_CONTRACT.md`
 - [ ] Read all endpoint URLs, request/response JSON shapes
-- [ ] Note: Auth uses `Authorization: Bearer <token>` header
+- [ ] Note: Auth uses `Authorization: Bearer <jwt>` header (JWT issued by backend)
 - [ ] Note: All responses wrapped in `{ data: ... }` or `{ error: ... }`
 - [ ] **Sign off**: You understand contract and will build UI to match
 
@@ -158,7 +159,8 @@
 - [ ] Create `frontend/lib/services/http_api_service.dart`:
   - Implement all methods from ApiService
   - Use `http.get()`, `http.post()`, `http.put()`, `http.delete()` to call backend
-  - Add `Authorization: Bearer <token>` header to all requests (except /auth/register and /auth/login)
+  - Add `Authorization: Bearer <jwt>` header to all requests (except /auth/register and /auth/login). Use secure storage to retrieve the JWT.
+  - If the backend returns 401, clear token and show login flow.
   - Parse JSON responses
   - Convert errors to exception classes
   - Example:
@@ -194,7 +196,7 @@
   - "Don't have account? Register" link
   - Error message display (if login fails)
   - Loading indicator while logging in
-  - On success: Save token to SharedPreferences, navigate to dashboard
+  - On success: Save JWT to secure storage (use `flutter_secure_storage`), navigate to dashboard
 - [ ] Create `frontend/lib/screens/register_screen.dart`:
   - Email input field
   - Password input field
@@ -205,9 +207,10 @@
   - Validate: password >= 6 chars
   - On success: Auto-login and navigate to dashboard
 - [ ] Create `frontend/lib/services/auth_service.dart`:
-  - Manage token storage (SharedPreferences)
+  - Manage token storage securely (`flutter_secure_storage`) and expose an in-memory cached token for runtime use
   - Manage current user state
-  - Methods: register(), login(), logout(), getToken()
+  - Methods: register(), login(), logout(), getToken(), isTokenExpired()
+  - Notes: Do NOT store JWTs in plain SharedPreferences. Use secure storage for tokens and clear on logout.
 - [ ] Test:
   - Run app: `flutter run`
   - Register new user → dashboard should appear

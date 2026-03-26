@@ -92,7 +92,7 @@
     "email": "owner@example.com",
     "name": "Alice"
   },
-  "token": "firebase-id-token-here"
+  "token": "jwt-string"
 }
 ```
 
@@ -116,13 +116,13 @@
     "email": "owner@example.com",
     "name": "Alice"
   },
-  "token": "firebase-id-token-here"
+  "token": "jwt-string"
 }
 ```
 
 ---
 
-**Note**: All authenticated endpoints require the header: `Authorization: Bearer <token>`
+**Note**: All authenticated endpoints require the header: `Authorization: Bearer <jwt>` (JWT issued by backend)
 
 ---
 

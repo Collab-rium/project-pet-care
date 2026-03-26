@@ -2,6 +2,15 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 
+app.use(express.json());
+const { router: authRouter, authMiddleware } = require('./auth');
+app.use('/auth', authRouter);
+
+// Minimal protected example (will be expanded in checklist)
+app.get('/pets', authMiddleware, (req, res) => {
+  return res.json({ data: [] });
+});
+
 const port = process.env.PORT || 3000;
 
 app.get('/health', (req, res) => {

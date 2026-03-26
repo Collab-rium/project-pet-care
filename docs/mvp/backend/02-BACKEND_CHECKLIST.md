@@ -72,9 +72,12 @@ Completed on March 24, 2026:
   PORT=4000
   FIRESTORE_EMULATOR_HOST=localhost:8080
   FIREBASE_AUTH_EMULATOR_HOST=localhost:9099
+  # Secret used to sign JWTs for local dev (do NOT commit real secrets)
+  JWT_SECRET=change_me_to_a_random_value
   ```
 - [x] Create `backend/.env` (copy from example, use these values)
 - [x] Add `.env` to `.gitignore`
+- [ ] Set a strong local `JWT_SECRET` in `backend/.env` and restart backend
 
 ### API Contract Review
 
@@ -100,41 +103,47 @@ Completed on March 24, 2026:
 
 **Note**: Using in-memory store for MVP. Will switch to Firebase Auth later.
 
-- [ ] Create in-memory user store (simple object or Map)
-- [ ] Implement `POST /auth/register`
+- [x] Create in-memory user store (simple object or Map)
+- [x] Implement `POST /auth/register`
   - Accept: `{ email, password, name }`
   - Return: `{ user: { id, email, name, createdAt }, token: "..." }`
   - Validate: email unique, password required
   - Error: 400 if email exists, 400 if password/email missing
-- [ ] Implement `POST /auth/login`
+- [x] Implement `POST /auth/login`
   - Accept: `{ email, password }`
   - Return: `{ user: { id, email, name, createdAt }, token: "..." }`
   - Validate: correct email/password
   - Error: 401 if invalid credentials
-- [ ] Create auth middleware for protected routes:
-  - Checks `Authorization: Bearer <token>` header
-  - Extracts userId from token
+- [x] Create auth middleware for protected routes
+  - Checks `Authorization: Bearer <jwt>` header
+  - Verifies JWT signature and extracts userId from JWT `sub`
   - Allows middleware to pass userId to route handlers
   - Error: 401 if token missing or invalid
-- [ ] Test:
+- [x] Add auth edge-case validation hardening
+  - Register: invalid email format rejected
+  - Register: empty/whitespace-only name rejected
+  - Register/Login: max length guards on email/password/name
+  - Register: password strength rule (at least one letter and one number)
+  - Auth responses use consistent error shape: `{ error, message }`
+- [x] Test:
   ```bash
   # Register
   curl -X POST http://localhost:4000/auth/register \
     -H "Content-Type: application/json" \
     -d '{"email":"test@example.com","password":"test123","name":"Tester"}'
-  
-  # Save token from response
-  TOKEN="eyJ..."
-  
+
+  # Save JWT from response
+  TOKEN="eyJ..."  # JWT string
+
   # Login
   curl -X POST http://localhost:4000/auth/login \
     -H "Content-Type: application/json" \
     -d '{"email":"test@example.com","password":"test123"}'
-  
+
   # Test protected route with token
   curl -H "Authorization: Bearer $TOKEN" http://localhost:4000/pets
   ```
-- [ ] **Pass Criteria**: Register creates user, login returns token, protected routes reject without token
+- [x] **Pass Criteria**: Register creates user, login returns token, protected routes reject without token
 
 ### Pet Endpoints
 
