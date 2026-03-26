@@ -4,12 +4,10 @@ const app = express();
 
 app.use(express.json());
 const { router: authRouter, authMiddleware } = require('./auth');
-app.use('/auth', authRouter);
+const { router: petsRouter } = require('./pets');
 
-// Minimal protected example (will be expanded in checklist)
-app.get('/pets', authMiddleware, (req, res) => {
-  return res.json({ data: [] });
-});
+app.use('/auth', authRouter);
+app.use('/pets', authMiddleware, petsRouter);
 
 const port = process.env.PORT || 3000;
 
