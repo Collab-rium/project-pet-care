@@ -8,14 +8,17 @@ app.use('/uploads', express.static('uploads'));
 
 const { router: authRouter, authMiddleware } = require('./auth');
 const { router: petsRouter, _stores: petsStores } = require('./pets');
-const { router: remindersRouter } = require('./reminders');
+const { router: remindersRouter, _stores: remindersStores } = require('./reminders');
+const { router: dashboardRouter } = require('./dashboard');
 
-// Make pets store globally available for reminders validation
+// Make stores globally available
 global._petsStore = petsStores;
+global._remindersStore = remindersStores;
 
 app.use('/auth', authRouter);
 app.use('/pets', authMiddleware, petsRouter);
 app.use('/reminders', authMiddleware, remindersRouter);
+app.use('/dashboard', authMiddleware, dashboardRouter);
 
 const port = process.env.PORT || 3000;
 
