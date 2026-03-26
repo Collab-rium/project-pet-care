@@ -142,3 +142,7 @@ function authMiddleware(req, res, next){
 }
 
 module.exports = { router, authMiddleware, _stores: { usersById, usersByEmail } };
+
+// Also export stores for external use
+module.exports.usersById = usersById;
+module.exports.usersByEmail = usersByEmail;

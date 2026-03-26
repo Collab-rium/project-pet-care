@@ -6,14 +6,18 @@ app.use(express.json());
 // Serve uploaded files
 app.use('/uploads', express.static('uploads'));
 
-const { router: authRouter, authMiddleware } = require('./auth');
+const { router: authRouter, authMiddleware, _stores: authStores } = require('./auth');
 const { router: petsRouter, _stores: petsStores } = require('./pets');
 const { router: remindersRouter, _stores: remindersStores } = require('./reminders');
 const { router: dashboardRouter } = require('./dashboard');
+const { loadSeedData } = require('./services/load-seed');
 
 // Make stores globally available
 global._petsStore = petsStores;
 global._remindersStore = remindersStores;
+
+// Load seed data on startup
+loadSeedData(authStores, petsStores, remindersStores);
 
 app.use('/auth', authRouter);
 app.use('/pets', authMiddleware, petsRouter);

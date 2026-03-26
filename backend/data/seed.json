@@ -1,0 +1,103 @@
+{
+  "users": [
+    {
+      "id": "user-1",
+      "email": "demo@example.com",
+      "password": "demo1234",
+      "name": "Demo User",
+      "createdAt": "2026-03-20T10:00:00Z"
+    },
+    {
+      "id": "user-2",
+      "email": "jane@example.com",
+      "password": "jane1234",
+      "name": "Jane Doe",
+      "createdAt": "2026-03-21T08:30:00Z"
+    }
+  ],
+  "pets": [
+    {
+      "id": "pet-1",
+      "ownerId": "user-1",
+      "name": "Buddy",
+      "type": "dog",
+      "age": 3,
+      "breed": "Golden Retriever",
+      "photoUrl": null,
+      "createdAt": "2026-03-20T10:05:00Z",
+      "updatedAt": "2026-03-20T10:05:00Z"
+    },
+    {
+      "id": "pet-2",
+      "ownerId": "user-1",
+      "name": "Whiskers",
+      "type": "cat",
+      "age": 2,
+      "breed": "Siamese",
+      "photoUrl": null,
+      "createdAt": "2026-03-21T09:00:00Z",
+      "updatedAt": "2026-03-21T09:00:00Z"
+    },
+    {
+      "id": "pet-3",
+      "ownerId": "user-2",
+      "name": "Max",
+      "type": "dog",
+      "age": 5,
+      "breed": "Labrador",
+      "photoUrl": null,
+      "createdAt": "2026-03-20T11:00:00Z",
+      "updatedAt": "2026-03-20T11:00:00Z"
+    }
+  ],
+  "reminders": [
+    {
+      "id": "rem-1",
+      "petId": "pet-1",
+      "userId": "user-1",
+      "type": "feeding",
+      "message": "Feed Buddy breakfast",
+      "scheduledTime": "2026-03-26T08:00:00Z",
+      "repeat": "daily",
+      "status": "pending",
+      "createdAt": "2026-03-20T10:10:00Z",
+      "updatedAt": "2026-03-20T10:10:00Z"
+    },
+    {
+      "id": "rem-2",
+      "petId": "pet-1",
+      "userId": "user-1",
+      "type": "exercise",
+      "message": "Walk Buddy",
+      "scheduledTime": "2026-03-26T17:00:00Z",
+      "repeat": "daily",
+      "status": "pending",
+      "createdAt": "2026-03-20T10:10:00Z",
+      "updatedAt": "2026-03-20T10:10:00Z"
+    },
+    {
+      "id": "rem-3",
+      "petId": "pet-2",
+      "userId": "user-1",
+      "type": "grooming",
+      "message": "Groom Whiskers",
+      "scheduledTime": "2026-03-30T10:00:00Z",
+      "repeat": "weekly",
+      "status": "pending",
+      "createdAt": "2026-03-20T10:10:00Z",
+      "updatedAt": "2026-03-20T10:10:00Z"
+    },
+    {
+      "id": "rem-4",
+      "petId": "pet-3",
+      "userId": "user-2",
+      "type": "medication",
+      "message": "Give Max vitamins",
+      "scheduledTime": "2026-03-26T12:00:00Z",
+      "repeat": "daily",
+      "status": "completed",
+      "createdAt": "2026-03-21T09:05:00Z",
+      "updatedAt": "2026-03-26T12:15:00Z"
+    }
+  ]
+}
