@@ -3,6 +3,9 @@ const express = require('express');
 const app = express();
 
 app.use(express.json());
+// Serve uploaded files
+app.use('/uploads', express.static('uploads'));
+
 const { router: authRouter, authMiddleware } = require('./auth');
 const { router: petsRouter } = require('./pets');
 

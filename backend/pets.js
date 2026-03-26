@@ -1,6 +1,38 @@
 const express = require('express');
 const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+
+// Configure multer for file uploads
+const uploadsDir = path.join(__dirname, 'uploads');
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    if (!fs.existsSync(uploadsDir)) {
+      fs.mkdirSync(uploadsDir, { recursive: true });
+    }
+    cb(null, uploadsDir);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const name = `pet-${uuidv4()}${ext}`;
+    cb(null, name);
+  },
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+  fileFilter: (req, file, cb) => {
+    const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (allowedMimes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed.'));
+    }
+  },
+});
 
 // In-memory stores (MVP)
 const petsById = new Map();
@@ -205,6 +237,77 @@ router.delete('/:id', (req, res) => {
   }
 
   return res.json({ message: 'Pet deleted successfully' });
+});
+
+// POST /pets/:id/photo - Upload pet photo
+router.post('/:id/photo', (req, res, next) => {
+  // Create upload middleware on the fly to catch errors
+  const uploadMiddleware = upload.single('photo');
+  uploadMiddleware(req, res, (err) => {
+    if (err) {
+      if (err instanceof multer.MulterError) {
+        if (err.code === 'LIMIT_FILE_SIZE') {
+          return sendError(res, 400, 'file_too_large', 'File size exceeds 10MB limit');
+        }
+        return sendError(res, 400, 'upload_error', err.message);
+      }
+      return sendError(res, 400, 'upload_error', err.message);
+    }
+    
+    if (!req.user || !req.user.id) {
+      if (req.file) {
+        fs.unlinkSync(req.file.path);
+      }
+      return sendError(res, 401, 'missing_user', 'User not authenticated');
+    }
+
+    if (!req.file) {
+      return sendError(res, 400, 'no_file', 'No photo file provided');
+    }
+
+    const pet = petsById.get(req.params.id);
+    if (!pet) {
+      fs.unlinkSync(req.file.path);
+      return sendError(res, 404, 'pet_not_found', 'Pet not found');
+    }
+
+    if (pet.ownerId !== req.user.id) {
+      fs.unlinkSync(req.file.path);
+      return sendError(res, 403, 'forbidden', 'You do not own this pet');
+    }
+
+    // Delete old photo if it exists
+    if (pet.photoUrl) {
+      const oldPath = path.join(__dirname, pet.photoUrl.replace('/uploads/', 'uploads/'));
+      if (fs.existsSync(oldPath)) {
+        try {
+          fs.unlinkSync(oldPath);
+        } catch (e) {
+          console.error('Failed to delete old photo:', e);
+        }
+      }
+    }
+
+    // Update pet with new photo URL
+    const photoUrl = `/uploads/${req.file.filename}`;
+    pet.photoUrl = photoUrl;
+    pet.updatedAt = new Date().toISOString();
+
+    return res.json({ data: pet });
+  });
+});
+
+// Error handling middleware for multer errors
+router.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return sendError(res, 400, 'file_too_large', 'File size exceeds 10MB limit');
+    }
+    return sendError(res, 400, 'upload_error', err.message);
+  } else if (err) {
+    return sendError(res, 400, 'upload_error', err.message);
+  }
+  next();
 });
 
 module.exports = { router, _stores: { petsById, petsByUserId } };
