@@ -77,7 +77,7 @@ Completed on March 24, 2026:
   ```
 - [x] Create `backend/.env` (copy from example, use these values)
 - [x] Add `.env` to `.gitignore`
-- [ ] Set a strong local `JWT_SECRET` in `backend/.env` and restart backend
+- [x] Set a strong local `JWT_SECRET` in `backend/.env` and restart backend
 
 ### API Contract Review
 
@@ -147,36 +147,36 @@ Completed on March 24, 2026:
 
 ### Pet Endpoints
 
-- [ ] Create in-memory pet store (simple object or Map)
-- [ ] Implement `GET /pets` (list pets)
+- [x] Create in-memory pet store (simple object or Map)
+- [x] Implement `GET /pets` (list pets)
   - Filter by userId from token (authenticated only)
   - Return: `{ data: [ { id, name, type, age, breed, photoUrl, createdAt } ] }`
   - Error: 401 if unauthenticated
-- [ ] Implement `POST /pets` (create pet)
+- [x] Implement `POST /pets` (create pet)
   - Accept: `{ name, type, age, breed }`
   - Set userId from token, generate id (UUID), set timestamps
   - Return: `{ data: { id, name, type, age, breed, photoUrl: null, createdAt } }`
   - Error: 400 if name/type missing, 401 if unauthenticated
-- [ ] Implement `GET /pets/:id` (get single pet)
+- [x] Implement `GET /pets/:id` (get single pet)
   - Validate user owns pet (compare userId in token with pet.ownerId)
   - Return: `{ data: { id, name, type, age, breed, photoUrl, createdAt } }`
   - Error: 404 if pet not found, 403 if user doesn't own pet
-- [ ] Implement `PUT /pets/:id` (update pet)
+- [x] Implement `PUT /pets/:id` (update pet)
   - Accept: partial object (e.g., `{ name: "..." }`)
   - Allow all fields to be optional
   - Return: updated pet
   - Error: 404, 403 as above
-- [ ] Implement `DELETE /pets/:id` (delete pet)
+- [x] Implement `DELETE /pets/:id` (delete pet)
   - Remove pet from store
   - Return: `{ message: "Pet deleted successfully" }`
   - Error: 404, 403 as above
-- [ ] Implement `POST /pets/:id/photo` (upload photo)
+- [x] Implement `POST /pets/:id/photo` (upload photo)
   - Accept: multipart form data with `photo` field (image file)
   - Save to `backend/uploads/` folder
   - Update pet.photoUrl to file path or URL
   - Return: updated pet with photoUrl
   - Error: 400 if no file, 404/403 as above
-- [ ] Test:
+- [x] Test:
   ```bash
   # List pets
   curl -H "Authorization: Bearer $TOKEN" http://localhost:4000/pets
@@ -197,38 +197,38 @@ Completed on March 24, 2026:
   curl -X DELETE http://localhost:4000/pets/pet-id \
     -H "Authorization: Bearer $TOKEN"
   ```
-- [ ] **Pass Criteria**: All CRUD operations work; auth checks enforced; correct error codes
+- [x] **Pass Criteria**: All CRUD operations work; auth checks enforced; correct error codes
 
 ### Reminder Endpoints
 
-- [ ] Create in-memory reminder store
-- [ ] Implement `GET /reminders` (list reminders)
+- [x] Create in-memory reminder store
+- [x] Implement `GET /reminders` (list reminders)
   - Optional filter: `?petId=...`
   - Return: `{ data: [ { id, petId, userId, type, message, scheduledTime, repeat, status, createdAt } ] }`
   - Error: 401 if unauthenticated
-- [ ] Implement `POST /reminders` (create reminder)
+- [x] Implement `POST /reminders` (create reminder)
   - Accept: `{ petId, type, message, scheduledTime, repeat }`
   - Set userId from token, generate id, set timestamps, status = "pending"
   - Validate: pet exists and user owns it
   - Return: created reminder
   - Error: 400 if required fields missing, 404 if pet not found
-- [ ] Implement `GET /reminders/:id`
+- [x] Implement `GET /reminders/:id`
   - Validate user owns reminder
   - Return: reminder
   - Error: 404, 403
-- [ ] Implement `PUT /reminders/:id` (update reminder)
+- [x] Implement `PUT /reminders/:id` (update reminder)
   - Allow all fields to be optional (for marking complete via `status: "completed"`)
   - Return: updated reminder
   - Error: 404, 403
-- [ ] Implement `DELETE /reminders/:id`
+- [x] Implement `DELETE /reminders/:id`
   - Return: `{ message: "Reminder deleted successfully" }`
   - Error: 404, 403
-- [ ] Test similar to pet endpoints
-- [ ] **Pass Criteria**: All CRUD operations work; ownership checks work
+- [x] Test similar to pet endpoints
+- [x] **Pass Criteria**: All CRUD operations work; ownership checks work
 
 ### Dashboard Endpoint
 
-- [ ] Implement `GET /dashboard/today`
+- [x] Implement `GET /dashboard/today`
   - Query reminders for today's date (based on scheduledTime)
   - Calculate for each reminder: `isOverdue = (scheduledTime < now)`
   - Return:
@@ -247,16 +247,16 @@ Completed on March 24, 2026:
     }
     ```
   - Error: 401 if unauthenticated
-- [ ] Test:
+- [x] Test:
   ```bash
   curl -H "Authorization: Bearer $TOKEN" \
     http://localhost:4000/dashboard/today
   ```
-- [ ] **Pass Criteria**: Returns correct task counts; overdue detection accurate
+- [x] **Pass Criteria**: Returns correct task counts; overdue detection accurate
 
 ### Seed Data
 
-- [ ] Create `backend/data/seed.json`:
+- [x] Create `backend/data/seed.json`:
   ```json
   {
     "users": [
@@ -295,34 +295,34 @@ Completed on March 24, 2026:
     ]
   }
   ```
-- [ ] Load seed data on server startup
-- [ ] **Pass Criteria**: Seed data populated; API returns seed data
+- [x] Load seed data on server startup
+- [x] **Pass Criteria**: Seed data populated; API returns seed data
 
 ### Unit Tests
 
-- [ ] Install jest: `npm install jest`
-- [ ] Create `backend/tests/auth.test.js` (test register, login, token validation)
-- [ ] Create `backend/tests/pets.test.js` (test all pet endpoints)
-- [ ] Create `backend/tests/reminders.test.js` (test all reminder endpoints)
-- [ ] Create `backend/tests/dashboard.test.js` (test dashboard, overdue detection)
-- [ ] Run tests: `npm test`
-- [ ] **Pass Criteria**: All tests pass; coverage >= 80%
+- [x] Install jest: `npm install jest`
+- [x] Create `backend/tests/api.test.js` (combined all tests) (test register, login, token validation)
+- [x] Included in api.test.js (test all pet endpoints)
+- [x] Included in api.test.js (test all reminder endpoints)
+- [x] Included in api.test.js (test dashboard, overdue detection)
+- [x] Run tests: `npm test`
+- [x] **Pass Criteria**: All tests pass; coverage >= 80%
 
 ### Server Startup
 
-- [ ] Create `backend/index.js`:
+- [x] Create `backend/index.js`:
   - Initialize Express app
   - Set up CORS (allow frontend origin)
   - Load seed data on startup
   - Register all route handlers
   - Start server on PORT from .env
-- [ ] Test startup: `npm start`
-- [ ] Verify: `curl http://localhost:4000/health` returns ok
+- [x] Test startup: `npm start`
+- [x] Verify: `curl http://localhost:4000/health` returns ok
 
 ### Documentation
 
-- [ ] Add inline comments to code
-- [ ] Create `backend/README.md`:
+- [x] Add inline comments to code
+- [x] Create `backend/README.md`:
   ```markdown
   # Pet Care Backend
   
@@ -344,13 +344,13 @@ Completed on March 24, 2026:
 
 ### Checkpoint 2: Backend Endpoints Ready
 
-- [ ] Server starts: `npm start` (no errors)
-- [ ] Health check responds: `curl http://localhost:4000/health` → 200
-- [ ] All endpoints implemented per `01-API_CONTRACT.md`
-- [ ] Auth token validation working on protected routes
-- [ ] Seed data loads on startup
-- [ ] Unit tests pass: `npm test`
-- [ ] Ready for frontend integration
+- [x] Server starts: `npm start` (no errors)
+- [x] Health check responds: `curl http://localhost:4000/health` → 200
+- [x] All endpoints implemented per `01-API_CONTRACT.md`
+- [x] Auth token validation working on protected routes
+- [x] Seed data loads on startup
+- [x] Unit tests pass: `npm test`
+- [x] Ready for frontend integration
 
 ---
 
