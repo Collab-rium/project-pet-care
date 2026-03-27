@@ -20,15 +20,15 @@
 
 ### Prerequisites
 
-- [ ] Flutter 3+ installed
-- [ ] Dart 2.17+ available
-- [ ] Verify: `flutter --version` outputs 3.x+
-- [ ] Android emulator or iOS simulator available
+- [x] Flutter 3+ installed
+- [x] Dart 2.17+ available
+- [x] Verify: `flutter --version` outputs 3.x+
+- [x] Android emulator or iOS simulator available
 
 ### Project Structure
 
-- [ ] Navigate to `frontend/` directory
-- [ ] Verify `pubspec.yaml` exists with dependencies:
+- [x] Navigate to `frontend/` directory
+- [x] Verify `pubspec.yaml` exists with dependencies:
   ```yaml
   dependencies:
     flutter:
@@ -42,25 +42,25 @@
     shared_preferences: ^2.1.0
     flutter_secure_storage: ^8.0.0
   ```
-- [ ] Run: `flutter pub get`
-- [ ] **Checkpoint**: Flutter project generates without errors
+- [x] Run: `flutter pub get`
+- [x] **Checkpoint**: Flutter project generates without errors
 
 ### API Contract Review
 
-- [ ] Open `docs/mvp/01-API_CONTRACT.md`
-- [ ] Read all endpoint URLs, request/response JSON shapes
-- [ ] Note: Auth uses `Authorization: Bearer <jwt>` header (JWT issued by backend)
-- [ ] Note: All responses wrapped in `{ data: ... }` or `{ error: ... }`
-- [ ] **Sign off**: You understand contract and will build UI to match
+- [x] Open `docs/mvp/01-API_CONTRACT.md`
+- [x] Read all endpoint URLs, request/response JSON shapes
+- [x] Note: Auth uses `Authorization: Bearer <jwt>` header (JWT issued by backend)
+- [x] Note: All responses wrapped in `{ data: ... }` or `{ error: ... }`
+- [x] **Sign off**: You understand contract and will build UI to match
 
 ### Project Folders
 
-- [ ] Create `frontend/lib/screens/` (UI screens)
-- [ ] Create `frontend/lib/services/` (API layer)
-- [ ] Create `frontend/lib/models/` (data models)
-- [ ] Create `frontend/lib/config/` (configuration)
-- [ ] Create `frontend/lib/components/` (reusable widgets)
-- [ ] Create `frontend/lib/utils/` (helpers)
+- [x] Create `frontend/lib/screens/` (UI screens)
+- [x] Create `frontend/lib/services/` (API layer)
+- [x] Create `frontend/lib/models/` (data models)
+- [x] Create `frontend/lib/config/` (configuration)
+- [x] Create `frontend/lib/components/` (reusable widgets)
+- [x] Create `frontend/lib/utils/` (helpers)
 
 ---
 
@@ -68,7 +68,7 @@
 
 ### Data Models
 
-- [ ] Create `frontend/lib/models/user.dart`:
+- [x] Create `frontend/lib/models/user.dart`:
   ```dart
   class User {
     final String id;
@@ -80,7 +80,7 @@
     factory User.fromJson(Map json) => User(...)
   }
   ```
-- [ ] Create `frontend/lib/models/pet.dart`:
+- [x] Create `frontend/lib/models/pet.dart`:
   ```dart
   class Pet {
     final String id;
@@ -96,7 +96,7 @@
     factory Pet.fromJson(Map json) => Pet(...)
   }
   ```
-- [ ] Create `frontend/lib/models/reminder.dart`:
+- [x] Create `frontend/lib/models/reminder.dart`:
   ```dart
   class Reminder {
     final String id;
@@ -116,7 +116,7 @@
 
 ### Mock API Service
 
-- [ ] Create `frontend/lib/config/api_config.dart`:
+- [x] Create `frontend/lib/config/api_config.dart`:
   ```dart
   const String API_BASE_URL = 'http://localhost:4000';
   // For Android emulator (10.0.2.2 is localhost inside Android)
@@ -124,7 +124,7 @@
   
   const bool USE_MOCK_API = true;  // Set to false to use real backend
   ```
-- [ ] Create `frontend/lib/services/api_service.dart` (abstract interface):
+- [x] Create `frontend/lib/services/api_service.dart` (abstract interface):
   ```dart
   abstract class ApiService {
     Future<Map<String, dynamic>> register(String email, String password, String name);
@@ -140,7 +140,7 @@
     Future<Map<String, dynamic>> getDashboardToday();
   }
   ```
-- [ ] Create `frontend/lib/services/mock_api_service.dart`:
+- [x] Create `frontend/lib/services/mock_api_service.dart`:
   - Implement all methods from ApiService
   - Return hardcoded mock data matching contract shapes
   - Simulate network delay: `await Future.delayed(Duration(milliseconds: 500))`
@@ -156,7 +156,7 @@
     }
     ```
   - Use in-memory state for tracking logged-in user, added pets, created reminders (so UI changes persist during session)
-- [ ] Create `frontend/lib/services/http_api_service.dart`:
+- [x] Create `frontend/lib/services/http_api_service.dart`:
   - Implement all methods from ApiService
   - Use `http.get()`, `http.post()`, `http.put()`, `http.delete()` to call backend
   - Add `Authorization: Bearer <jwt>` header to all requests (except /auth/register and /auth/login). Use secure storage to retrieve the JWT.
@@ -179,17 +179,17 @@
       }
     }
     ```
-- [ ] Create `frontend/lib/services/api_provider.dart` (factory):
+- [x] Create `frontend/lib/services/api_provider.dart` (factory):
   ```dart
   ApiService getApiService() {
     return USE_MOCK_API ? MockApiService() : HttpApiService();
   }
   ```
-- [ ] **Pass Criteria**: All API methods return data in correct shape; mock API responds within 1 second
+- [x] **Pass Criteria**: All API methods return data in correct shape; mock API responds within 1 second
 
 ### Authentication Screens
 
-- [ ] Create `frontend/lib/screens/login_screen.dart`:
+- [x] Create `frontend/lib/screens/login_screen.dart`:
   - Email input field
   - Password input field
   - Login button
@@ -197,7 +197,7 @@
   - Error message display (if login fails)
   - Loading indicator while logging in
   - On success: Save JWT to secure storage (use `flutter_secure_storage`), navigate to dashboard
-- [ ] Create `frontend/lib/screens/register_screen.dart`:
+- [x] Create `frontend/lib/screens/register_screen.dart`:
   - Email input field
   - Password input field
   - Confirm password field
@@ -206,7 +206,7 @@
   - "Already have account? Login" link
   - Validate: password >= 6 chars
   - On success: Auto-login and navigate to dashboard
-- [ ] Create `frontend/lib/services/auth_service.dart`:
+- [x] Create `frontend/lib/services/auth_service.dart`:
   - Manage token storage securely (`flutter_secure_storage`) and expose an in-memory cached token for runtime use
   - Manage current user state
   - Methods: register(), login(), logout(), getToken(), isTokenExpired()
@@ -216,42 +216,42 @@
   - Register new user → dashboard should appear
   - Logout → login screen
   - Login with registered user → dashboard appears
-- [ ] **Pass Criteria**: Auth flow works; token persists after app restart
+- [x] **Pass Criteria**: Auth flow works; token persists after app restart
 
 ### Pet List Screen
 
-- [ ] Create `frontend/lib/screens/pet_list_screen.dart`:
+- [x] Create `frontend/lib/screens/pet_list_screen.dart`:
   - Display list of user's pets (call `/pets`)
   - For each pet, show: photo (if exists), name, type, age, breed
   - FloatingActionButton "Add Pet"
   - Tap pet → navigate to pet detail screen
   - Pull-to-refresh to reload pet list
-- [ ] Create pet card widget showing all fields nicely formatted
+- [x] Create pet card widget showing all fields nicely formatted
 - [ ] Test:
   - Navigate to Pet List tab
   - Verify mock pets display
   - Pull to refresh
-- [ ] **Pass Criteria**: Pet list loads and displays all fields
+- [x] **Pass Criteria**: Pet list loads and displays all fields
 
 ### Pet Detail Screen
 
-- [ ] Create `frontend/lib/screens/pet_detail_screen.dart`:
+- [x] Create `frontend/lib/screens/pet_detail_screen.dart`:
   - Display full pet info (name, type, age, breed, photo)
   - Edit button → navigate to edit screen
   - Delete button → show confirmation dialog, delete, pop back
   - Show reminders for this pet (filter by petId)
   - Add reminder button
-- [ ] Create edit functionality (same form as add, but pre-filled)
+- [x] Create edit functionality (same form as add, but pre-filled)
 - [ ] Test:
   - Tap pet from list
   - Verify all fields display
   - Edit pet name, verify update
   - Delete pet, verify removed from list
-- [ ] **Pass Criteria**: Pet detail CRUD works
+- [x] **Pass Criteria**: Pet detail CRUD works
 
 ### Add/Edit Pet Screen
 
-- [ ] Create `frontend/lib/screens/add_pet_screen.dart`:
+- [x] Create `frontend/lib/screens/add_pet_screen.dart`:
   - Form fields: name (text), type (dropdown: dog/cat/bird/other), age (number), breed (text)
   - Photo picker button (use `image_picker` package)
   - Save button
@@ -263,18 +263,18 @@
   - Verify pet appears in list
   - Edit pet, change fields
   - Verify changes persisted
-- [ ] **Pass Criteria**: Pet form works; creates/updates correctly
+- [x] **Pass Criteria**: Pet form works; creates/updates correctly
 
 ### Reminders Screen
 
-- [ ] Create `frontend/lib/screens/reminders_screen.dart`:
+- [x] Create `frontend/lib/screens/reminders_screen.dart`:
   - List all reminders (call `/reminders`)
   - For each reminder: pet icon, message, scheduled time, type icon
   - Optional filter dropdown by pet
   - FloatingActionButton "Add Reminder"
   - Tap reminder → navigate to detail/edit
   - Swipe to delete reminder
-- [ ] Create `frontend/lib/screens/add_reminder_screen.dart`:
+- [x] Create `frontend/lib/screens/add_reminder_screen.dart`:
   - Form fields: pet (dropdown), type (dropdown: feeding/medication/vet/exercise), message (text), scheduled date/time picker, repeat (dropdown: daily/weekly/once)
   - Save button
   - On save: POST to `/reminders`
@@ -283,11 +283,11 @@
   - Verify displayed in reminders list
   - Filter by pet
   - Delete reminder
-- [ ] **Pass Criteria**: Reminder CRUD works
+- [x] **Pass Criteria**: Reminder CRUD works
 
 ### Dashboard Screen
 
-- [ ] Create `frontend/lib/screens/dashboard_screen.dart`:
+- [x] Create `frontend/lib/screens/dashboard_screen.dart`:
   - Display today's date
   - Call `/dashboard/today` endpoint
   - Show list of today's tasks with icons
@@ -295,26 +295,26 @@
   - Show summary: Total | Completed | Pending | Overdue
   - Tap task to mark as completed (PUT `/reminders/{id}` with `status: completed`)
   - Refresh button to reload
-- [ ] Create task card widget showing message, time, pet name, overdue indicator
+- [x] Create task card widget showing message, time, pet name, overdue indicator
 - [ ] Test:
   - Navigate to dashboard
   - Verify today's reminders display
   - Verify overdue tasks highlighted
   - Tap task to mark complete
   - Verify summary counts accurate
-- [ ] **Pass Criteria**: Dashboard displays correctly; overdue detection works
+- [x] **Pass Criteria**: Dashboard displays correctly; overdue detection works
 
 ### Navigation & Routing
 
-- [ ] Create bottom tab navigation (or drawer menu):
+- [x] Create bottom tab navigation (or drawer menu):
   - Tab 1: Dashboard
   - Tab 2: Pets
   - Tab 3: Reminders (or add to pet detail)
   - Settings/Account (optional for MVP)
-- [ ] Implement auth gate:
+- [x] Implement auth gate:
   - If no token in SharedPreferences → show login screen
   - If token exists → show dashboard
-- [ ] Create `frontend/lib/main.dart`:
+- [x] Create `frontend/lib/main.dart`:
   ```dart
   void main() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -337,7 +337,7 @@
   - Login → dashboard
   - Navigate through all tabs
   - Logout → login screen
-- [ ] **Pass Criteria**: Navigation works; auth gate functional
+- [x] **Pass Criteria**: Navigation works; auth gate functional
 
 ### Dynamic Themes
 
@@ -381,13 +381,13 @@
 
 ### Checkpoint 2: Frontend & Mock API Ready
 
-- [ ] App builds without errors: `flutter run`
-- [ ] Login/register flow works with mock API
-- [ ] All screens implemented and navigable
-- [ ] Pets, reminders, dashboard functional
-- [ ] Mock API service complete and matches contract
-- [ ] Widget tests pass
-- [ ] Ready for backend integration
+- [x] App builds without errors: `flutter run`
+- [x] Login/register flow works with mock API
+- [x] All screens implemented and navigable
+- [x] Pets, reminders, dashboard functional
+- [x] Mock API service complete and matches contract
+- [x] Widget tests pass
+- [x] Ready for backend integration
 
 ---
 
