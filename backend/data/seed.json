@@ -13,6 +13,13 @@
       "password": "jane1234",
       "name": "Jane Doe",
       "createdAt": "2026-03-21T08:30:00Z"
+    },
+    {
+      "id": "user-3",
+      "email": "john@example.com",
+      "password": "john1234",
+      "name": "John Smith",
+      "createdAt": "2026-03-22T07:00:00Z"
     }
   ],
   "pets": [
@@ -48,6 +55,61 @@
       "photoUrl": null,
       "createdAt": "2026-03-20T11:00:00Z",
       "updatedAt": "2026-03-20T11:00:00Z"
+    },
+    {
+      "id": "pet-4",
+      "ownerId": "user-2",
+      "name": "Tweety",
+      "type": "bird",
+      "age": 1,
+      "breed": "Parakeet",
+      "photoUrl": null,
+      "createdAt": "2026-03-22T12:00:00Z",
+      "updatedAt": "2026-03-22T12:00:00Z"
+    },
+    {
+      "id": "pet-5",
+      "ownerId": "user-3",
+      "name": "Fluffy",
+      "type": "cat",
+      "age": 4,
+      "breed": "Persian",
+      "photoUrl": null,
+      "createdAt": "2026-03-23T10:30:00Z",
+      "updatedAt": "2026-03-23T10:30:00Z"
+    },
+    {
+      "id": "pet-6",
+      "ownerId": "user-3",
+      "name": "Rocky",
+      "type": "dog",
+      "age": 2,
+      "breed": "German Shepherd",
+      "photoUrl": null,
+      "createdAt": "2026-03-24T14:00:00Z",
+      "updatedAt": "2026-03-24T14:00:00Z"
+    },
+    {
+      "id": "pet-7",
+      "ownerId": "user-1",
+      "name": "Nemo",
+      "type": "other",
+      "age": 1,
+      "breed": "Goldfish",
+      "photoUrl": null,
+      "createdAt": "2026-03-25T09:00:00Z",
+      "updatedAt": "2026-03-25T09:00:00Z"
+    },
+    {
+      "id": "pet-8",
+      "ownerId": "user-2",
+      "name": "Hoppy",
+      "type": "other",
+      "age": 2,
+      "breed": "Rabbit",
+      "photoUrl": null,
+      "createdAt": "2026-03-26T11:00:00Z",
+      "updatedAt": "2026-03-26T11:00:00Z"
     }
   ],
   "reminders": [
@@ -98,6 +160,102 @@
       "status": "completed",
       "createdAt": "2026-03-21T09:05:00Z",
       "updatedAt": "2026-03-26T12:15:00Z"
+    },
+    {
+      "id": "rem-5",
+      "petId": "pet-4",
+      "userId": "user-2",
+      "type": "feeding",
+      "message": "Feed Tweety",
+      "scheduledTime": "2026-03-26T09:00:00Z",
+      "repeat": "daily",
+      "status": "pending",
+      "createdAt": "2026-03-22T12:05:00Z",
+      "updatedAt": "2026-03-22T12:05:00Z"
+    },
+    {
+      "id": "rem-6",
+      "petId": "pet-5",
+      "userId": "user-3",
+      "type": "grooming",
+      "message": "Brush Fluffy",
+      "scheduledTime": "2026-03-27T15:00:00Z",
+      "repeat": "weekly",
+      "status": "pending",
+      "createdAt": "2026-03-23T10:35:00Z",
+      "updatedAt": "2026-03-23T10:35:00Z"
+    },
+    {
+      "id": "rem-7",
+      "petId": "pet-6",
+      "userId": "user-3",
+      "type": "exercise",
+      "message": "Run with Rocky",
+      "scheduledTime": "2026-03-26T07:00:00Z",
+      "repeat": "daily",
+      "status": "pending",
+      "createdAt": "2026-03-24T14:05:00Z",
+      "updatedAt": "2026-03-24T14:05:00Z"
+    },
+    {
+      "id": "rem-8",
+      "petId": "pet-1",
+      "userId": "user-1",
+      "type": "vet",
+      "message": "Buddy's checkup",
+      "scheduledTime": "2026-04-01T10:00:00Z",
+      "repeat": "once",
+      "status": "pending",
+      "createdAt": "2026-03-25T13:00:00Z",
+      "updatedAt": "2026-03-25T13:00:00Z"
+    },
+    {
+      "id": "rem-9",
+      "petId": "pet-7",
+      "userId": "user-1",
+      "type": "feeding",
+      "message": "Change Nemo water",
+      "scheduledTime": "2026-03-26T18:00:00Z",
+      "repeat": "daily",
+      "status": "pending",
+      "createdAt": "2026-03-25T09:05:00Z",
+      "updatedAt": "2026-03-25T09:05:00Z"
+    },
+    {
+      "id": "rem-10",
+      "petId": "pet-8",
+      "userId": "user-2",
+      "type": "exercise",
+      "message": "Let Hoppy hop",
+      "scheduledTime": "2026-03-26T19:00:00Z",
+      "repeat": "daily",
+      "status": "pending",
+      "createdAt": "2026-03-26T11:05:00Z",
+      "updatedAt": "2026-03-26T11:05:00Z"
+    },
+    {
+      "id": "rem-11",
+      "petId": "pet-3",
+      "userId": "user-2",
+      "type": "feeding",
+      "message": "Feed Max dinner",
+      "scheduledTime": "2026-03-26T19:00:00Z",
+      "repeat": "daily",
+      "status": "pending",
+      "createdAt": "2026-03-21T09:10:00Z",
+      "updatedAt": "2026-03-21T09:10:00Z"
+    },
+    {
+      "id": "rem-12",
+      "petId": "pet-2",
+      "userId": "user-1",
+      "type": "medication",
+      "message": "Give Whiskers allergy medicine",
+      "scheduledTime": "2026-03-26T20:00:00Z",
+      "repeat": "daily",
+      "status": "pending",
+      "createdAt": "2026-03-21T14:00:00Z",
+      "updatedAt": "2026-03-21T14:00:00Z"
     }
   ]
 }
