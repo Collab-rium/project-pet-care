@@ -110,9 +110,13 @@ describe('Phase 2: Multi-User Ownership', () => {
       .post('/auth/register')
       .send({
         email: `owner1-${Date.now()}@example.com`,
-        password: 'pass1',
+        password: 'Pass1234',
         name: 'Owner 1',
       });
+    
+    if (res1.status !== 201) {
+      throw new Error(`Failed to register user 1: ${res1.status} - ${JSON.stringify(res1.body)}`);
+    }
     user1Token = res1.body.token;
 
     // Register user 2
@@ -120,9 +124,13 @@ describe('Phase 2: Multi-User Ownership', () => {
       .post('/auth/register')
       .send({
         email: `owner2-${Date.now()}@example.com`,
-        password: 'pass2',
+        password: 'Pass5678',
         name: 'Owner 2',
       });
+    
+    if (res2.status !== 201) {
+      throw new Error(`Failed to register user 2: ${res2.status} - ${JSON.stringify(res2.body)}`);
+    }
     user2Token = res2.body.token;
 
     // User 1 creates pet
@@ -135,6 +143,10 @@ describe('Phase 2: Multi-User Ownership', () => {
         age: 2,
         breed: 'Lab',
       });
+    
+    if (petRes.status !== 201 || !petRes.body.data) {
+      throw new Error(`Failed to create pet: ${petRes.status} - ${JSON.stringify(petRes.body)}`);
+    }
     user1PetId = petRes.body.data.id;
   });
 
@@ -174,9 +186,13 @@ describe('Phase 2: Error Handling', () => {
       .post('/auth/register')
       .send({
         email: `error-${Date.now()}@example.com`,
-        password: 'errorpass',
+        password: 'ErrorPass123',
         name: 'Error Test',
       });
+    
+    if (res.status !== 201) {
+      throw new Error(`Failed to register for error test: ${res.status} - ${JSON.stringify(res.body)}`);
+    }
     token = res.body.token;
   });
 
