@@ -1,0 +1,23 @@
+c2323ea backend: update checklist to reflect completed tasks for pet and reminder endpoints
+b7bf09b backend: add documentation and verify checkpoint 2
+d24d8f6 backend: add comprehensive unit tests
+b75b0b6 backend: add seed data file and loader
+9df2c67 backend: implement dashboard aggregation endpoint
+e9fbbc1 backend: implement reminder store and CRUD endpoints
+b4b7580 backend: implement pet photo upload endpoint
+a76a457 backend: implement pet store and CRUD endpoints
+4a85134 feat(auth): add JWT auth hardening and update MVP docs
+13ea6fd eat(backend): health endpoint returns ok+uptime+timestamp; mark checklist done
+dbe7f1b chore(backend): add simple health server for local testing
+c803ee5 chore(backend): initialize Firebase emulators in backend
+5a01aa2 docs: add comprehensive guides for Firebase Emulator Suite and project setup
+04169c9 chore(frontend): add Flutter baseline dependencies for MVP
+70330b5 chore(repo): consolidate ignore rules and add generated-file commit policy
+b23f584 docs(mvp): added plan and backend and frontend implementation, testing, integration checklists, APIs etc
+50df2d7 moved legacy planning to archive
+42937aa Recreated PROJECT_CONTEXT.md with consolidated project details and trash-cli integration
+7ae746a Added initial frontend structure with main.dart, theme, and navbar components.
+f615f02 Added backend initialization files for Firebase configuration, initialization, and validation.
+73158b2 Updated PROJECT_CONTEXT.md file with refined project details.
+4665023 Moved docs into a dedicated docs folder
+582afb6 Initial commit with README and project context

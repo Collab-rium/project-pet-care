@@ -1,0 +1,14 @@
+Test Suites: 1 passed, 1 total
+Tests:       27 passed, 27 total
+Snapshots:   0 total
+Time:        0.734 s
+Ran all test suites.
+
+Full output (truncated):
+- Authentication: register, login, invalid credentials, validation
+- Pets: list, create, get, update, delete, validation
+- Reminders: list, create, filter by petId, get, update, delete
+- Dashboard: today list, overdue detection, summary counts
+- Authorization: token validation
+
+Run `cd backend && npm test` to re-run tests locally.
