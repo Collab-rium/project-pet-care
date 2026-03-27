@@ -370,79 +370,81 @@ Completed on March 24, 2026:
 
 ### Full Local Stack Startup
 
-- [ ] Terminal 1: Start emulators
+- [x] Terminal 1: Start emulators
   ```bash
   cd backend
   firebase emulators:start
   ```
-- [ ] Terminal 2: Start backend
+- [x] Terminal 2: Start backend
   ```bash
   cd backend
   npm start
   ```
-- [ ] Verify: `curl http://localhost:4000/health` → 200 ok=true
-- [ ] Verify: Emulator UI at http://localhost:4000/firestore (accessible)
+- [x] Verify: `curl http://localhost:4000/health` → 200 ok=true
+- [x] Verify: Emulator UI at http://localhost:4000/firestore (accessible)
 
 ### End-to-End Test Scenarios
 
-**Scenario A: User Registration & Login**
-- [ ] Frontend registers user via form
-- [ ] Backend creates user in memory
-- [ ] Frontend receives token
-- [ ] Frontend logs in with same credentials
-- [ ] Pass: Dashboard loads without errors
+**Scenario A: User Registration & Login** ✅
+- [x] Frontend registers user via form
+- [x] Backend creates user in memory
+- [x] Frontend receives token
+- [x] Frontend logs in with same credentials
+- [x] Pass: Dashboard loads without errors
 
-**Scenario B: Pet CRUD**
-- [ ] Frontend creates pet "Buddy"
-- [ ] Backend stores pet with ownerId from token
-- [ ] Frontend lists pets, sees Buddy
-- [ ] Frontend edits Buddy's age
-- [ ] Backend updates pet
-- [ ] Frontend lists pets again, sees updated age
-- [ ] Pass: All operations successful
+**Scenario B: Pet CRUD** ✅
+- [x] Frontend creates pet "Buddy"
+- [x] Backend stores pet with ownerId from token
+- [x] Frontend lists pets, sees Buddy
+- [x] Frontend edits Buddy's age
+- [x] Backend updates pet
+- [x] Frontend lists pets again, sees updated age
+- [x] Pass: All operations successful
 
-**Scenario C: Reminders & Dashboard**
-- [ ] Frontend creates reminder "Feed Buddy" at 8am
-- [ ] Frontend creates reminder "Bath" at 6pm (but scheduledTime = yesterday)
-- [ ] Frontend views dashboard
-- [ ] Dashboard shows both reminders
-- [ ] Bath reminder marked as isOverdue = true
-- [ ] Pass: Dashboard counts correct, overdue detection works
+**Scenario C: Reminders & Dashboard** ✅
+- [x] Frontend creates reminder "Feed Buddy" at 8am
+- [x] Frontend creates reminder "Bath" at 6pm (but scheduledTime = yesterday)
+- [x] Frontend views dashboard
+- [x] Dashboard shows both reminders
+- [x] Bath reminder marked as isOverdue = true
+- [x] Pass: Dashboard counts correct, overdue detection works
 
-**Scenario D: Photo Upload**
-- [ ] Frontend picks image from device
-- [ ] Posts to `/pets/:id/photo` as multipart form
-- [ ] Backend saves photo to uploads folder
-- [ ] Backend returns pet with photoUrl set
-- [ ] Frontend displays photo on pet card
-- [ ] Pass: Photo uploaded, displayed, and persists
+**Scenario D: Photo Upload** ✅
+- [x] Frontend picks image from device
+- [x] Posts to `/pets/:id/photo` as multipart form
+- [x] Backend saves photo to uploads folder
+- [x] Backend returns pet with photoUrl set
+- [x] Frontend displays photo on pet card
+- [x] Pass: Photo uploaded, displayed, and persists
 
-**Scenario E: Error Handling**
-- [ ] Frontend tries to create pet without name
-- [ ] Backend returns 400 error
-- [ ] Frontend displays human-readable error message
-- [ ] Pass: Error handled gracefully
-- [ ] Stop backend server
-- [ ] Frontend tries to load pets
-- [ ] Frontend displays "offline" or "network error" message
-- [ ] Pass: Network error handled
+**Scenario E: Error Handling** ✅
+- [x] Frontend tries to create pet without name
+- [x] Backend returns 400 error
+- [x] Frontend displays human-readable error message
+- [x] Pass: Error handled gracefully
+- [x] Stop backend server
+- [x] Frontend tries to load pets
+- [x] Frontend displays "offline" or "network error" message
+- [x] Pass: Network error handled
 
 ### Bug Fixes & Refinement
 
-- [ ] Review test output for failures
-- [ ] Fix any endpoint mismatches with contract
-- [ ] Fix any CORS issues
-- [ ] Optimize database queries if slow
-- [ ] Test with seed data + lots of new records (stress test)
+- [x] Review test output for failures
+- [x] Fix any endpoint mismatches with contract
+- [x] Fix any CORS issues
+- [x] Optimize database queries if slow
+- [x] Test with seed data + lots of new records (stress test)
 
 ### Checkpoint 3: Full Stack Integration Complete
 
-- [ ] Stack runs locally (emulators + backend + frontend working together)
-- [ ] All endpoints working with real frontend
-- [ ] No CORS, auth, or data mismatch errors
-- [ ] End-to-end scenarios pass
-- [ ] Performance acceptable (responses < 200ms)
-- [ ] Ready for final QA
+- [x] Stack runs locally (emulators + backend + frontend working together)
+- [x] All endpoints working with real frontend
+- [x] No CORS, auth, or data mismatch errors
+- [x] End-to-end scenarios pass
+- [x] Performance acceptable (responses < 200ms)
+- [x] Ready for final QA
+
+✅ **PHASE 3 COMPLETE** - Full stack integration verified, all E2E scenarios pass
 
 ---
 

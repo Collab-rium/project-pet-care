@@ -408,77 +408,79 @@
 
 ### Switch to Real Backend
 
-- [ ] Update `frontend/lib/config/api_config.dart`:
+- [x] Update `frontend/lib/config/api_config.dart`:
   ```dart
   const bool USE_MOCK_API = false;  // Switch to real backend
   ```
-- [ ] Verify API_BASE_URL matches backend server location
+- [x] Verify API_BASE_URL matches backend server location
   - Local dev: `http://localhost:4000`
   - Android emulator: `http://10.0.2.2:4000`
-- [ ] Run app: `flutter run`
+- [x] Run app: `flutter run`
 
 ### End-to-End Test Scenarios
 
-**Scenario A: Fresh User Journey**
-- [ ] Register new user via frontend
-- [ ] Verify user created on backend
-- [ ] Login with same credentials
-- [ ] Dashboard loads
-- [ ] Pass: Full registration flow works
+**Scenario A: Fresh User Journey** ✅
+- [x] Register new user via frontend
+- [x] Verify user created on backend
+- [x] Login with same credentials
+- [x] Dashboard loads
+- [x] Pass: Full registration flow works
 
-**Scenario B: Pet Management**
-- [ ] Add pet "Buddy"
-- [ ] Upload photo for Buddy
-- [ ] Verify photo displays on pet card
-- [ ] Edit Buddy's age
-- [ ] Verify update persisted
-- [ ] Delete Buddy
-- [ ] Verify removed from list
-- [ ] Pass: Pet CRUD end-to-end
+**Scenario B: Pet Management** ✅
+- [x] Add pet "Buddy"
+- [x] Upload photo for Buddy
+- [x] Verify photo displays on pet card
+- [x] Edit Buddy's age
+- [x] Verify update persisted
+- [x] Delete Buddy
+- [x] Verify removed from list
+- [x] Pass: Pet CRUD end-to-end
 
-**Scenario C: Reminders & Dashboard**
-- [ ] Create reminder "Feed Buddy" at 8am today
-- [ ] Create reminder "Bath" at 6pm yesterday (so it's overdue)
-- [ ] Navigate to dashboard
-- [ ] Verify both reminders displayed
-- [ ] Verify Bath is highlighted as overdue
-- [ ] Verify summary counts correct
-- [ ] Tap Bath reminder to mark complete
-- [ ] Verify status updates, summary changes
-- [ ] Pass: Reminder flow and dashboard logic correct
+**Scenario C: Reminders & Dashboard** ✅
+- [x] Create reminder "Feed Buddy" at 8am today
+- [x] Create reminder "Bath" at 6pm yesterday (so it's overdue)
+- [x] Navigate to dashboard
+- [x] Verify both reminders displayed
+- [x] Verify Bath is highlighted as overdue
+- [x] Verify summary counts correct
+- [x] Tap Bath reminder to mark complete
+- [x] Verify status updates, summary changes
+- [x] Pass: Reminder flow and dashboard logic correct
 
-**Scenario D: Error Handling**
-- [ ] Try to save pet without name
-- [ ] Verify error message displays
-- [ ] Pass: Validation errors handled
-- [ ] Stop backend server
-- [ ] Try to load pets
-- [ ] Verify network error message displays gracefully
-- [ ] Pass: Network errors handled
+**Scenario D: Error Handling** ✅
+- [x] Try to save pet without name
+- [x] Verify error message displays
+- [x] Pass: Validation errors handled
+- [x] Stop backend server
+- [x] Try to load pets
+- [x] Verify network error message displays gracefully
+- [x] Pass: Network errors handled
 
 ### Performance & Stability
 
-- [ ] Load 50+ pets and reminders
-- [ ] Verify no crashes
-- [ ] Verify scroll performance smooth
-- [ ] Monitor memory (no big leaks)
-- [ ] Test on both Android and iOS emulators
+- [x] Load 50+ pets and reminders
+- [x] Verify no crashes
+- [x] Verify scroll performance smooth
+- [x] Monitor memory (no big leaks)
+- [x] Test on both Android and iOS emulators
 
 ### Bug Fixes & Refinement
 
-- [ ] Document any issues found (API mismatches, UI glitches, performance)
-- [ ] Work with backend dev to resolve issues
-- [ ] Test fixes
-- [ ] Improve error messages if needed
+- [x] Document any issues found (API mismatches, UI glitches, performance)
+- [x] Work with backend dev to resolve issues
+- [x] Test fixes
+- [x] Improve error messages if needed
 
 ### Checkpoint 3: Full Stack Integration Complete
 
-- [ ] Real backend connected
-- [ ] All end-to-end scenarios pass
-- [ ] No crashes or major errors
-- [ ] Performance acceptable
-- [ ] Error handling works
-- [ ] Ready for final QA and polish
+- [x] Real backend connected
+- [x] All end-to-end scenarios pass
+- [x] No crashes or major errors
+- [x] Performance acceptable
+- [x] Error handling works
+- [x] Ready for final QA and polish
+
+✅ **PHASE 3 COMPLETE** - Full stack integration verified, all E2E scenarios pass, ready for deployment
 
 ---
 
