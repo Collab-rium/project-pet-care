@@ -1,17 +1,32 @@
 /// API Configuration for Pet Care App
-/// Switch USE_MOCK_API to false to use real backend
+/// Configure for development, testing, or production
 
-const String apiBaseUrl = 'http://localhost:4000';
+// Local development (your laptop)
+const String apiBaseUrlLocal = 'http://localhost:4000';
 
-// For Android emulator (10.0.2.2 is localhost inside Android)
-const String apiBaseUrlAndroid = 'http://10.0.2.2:4000';
+// Android emulator (10.0.2.2 is localhost inside Android)
+const String apiBaseUrlAndroidLocal = 'http://10.0.2.2:4000';
 
-/// Set to false to use real backend
-const bool useMockApi = true;
+// Production (Firebase Cloud Functions)
+// Set this when deploying to Firebase
+// Example: 'https://your-project-abcd1234.run.app'
+const String apiBaseUrlProduction = 'http://localhost:4000'; // Change this!
 
-/// Get the appropriate base URL based on platform
+// Use this to switch between mock and real API
+const bool useMockApi = false;
+
+// Use this to switch between local and production backend
+const bool useProductionBackend = false;
+
+/// Get the appropriate base URL
 String getApiBaseUrl() {
-  // In a real app, you'd detect platform here
-  // For now, use localhost (works in web/desktop)
-  return apiBaseUrl;
+  if (useProductionBackend) {
+    return apiBaseUrlProduction;
+  }
+  
+  // For local development, use Android emulator URL if needed
+  // Detectplatform and return appropriate URL
+  return apiBaseUrlLocal;
 }
+
+const String API_BASE_URL = apiBaseUrlLocal;

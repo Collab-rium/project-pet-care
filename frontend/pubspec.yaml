@@ -1,7 +1,7 @@
 name: project_pet_care_frontend
 description: "Frontend for Project Pet Care MVP"
 publish_to: 'none'
-version: 0.1.0+1
+version: 1.0.0+1
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -22,6 +22,10 @@ dependencies:
   intl: ^0.18.1
   # State management
   provider: ^6.1.1
+  # Firebase Core (required for all Firebase services)
+  firebase_core: ^2.24.0
+  # Firebase Messaging (for push notifications)
+  firebase_messaging: ^14.7.0
 
 dev_dependencies:
   flutter_test:
