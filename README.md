@@ -88,3 +88,6 @@ Everything explained clearly.
 
 ### Upload Checklist
 👉 Print and use: `CHECKLIST.md`
+
+### Implementation Guide (For Developers)
+👉 Code changes needed: `IMPLEMENTATION.md`
