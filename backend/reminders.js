@@ -125,6 +125,8 @@ router.post('/', (req, res) => {
     scheduledTime: String(scheduledTime),
     repeat: String(repeat).toLowerCase(),
     status: 'pending',
+    sent: false,  // Track if notification was sent
+    sentAt: null,
     createdAt: now,
     updatedAt: now,
   };
