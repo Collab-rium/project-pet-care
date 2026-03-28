@@ -69,3 +69,22 @@ Done. App is running.
 4. Extend it: Read `CLOUD.md` when ready for Phase 4
 
 That's it.
+
+---
+
+## Ready to Upload to Play Store?
+
+👉 Read `UPLOAD_GUIDE.md` - Complete step-by-step for non-technical users.
+
+Covers:
+- Firebase setup
+- Release APK build & signing
+- Backend deployment
+- Notifications
+- Store listing
+- Technical checklist
+
+Everything explained clearly.
+
+### Upload Checklist
+👉 Print and use: `CHECKLIST.md`
