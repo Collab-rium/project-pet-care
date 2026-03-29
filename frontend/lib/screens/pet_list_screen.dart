@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../models/models.dart';
-import '../services/auth_service.dart';
-import '../services/api_provider.dart';
-import 'pet_detail_screen.dart';
-import 'add_pet_screen.dart';
+import 'dart:io';
 
-/// Screen showing list of user's pets
+import '../components/atoms/app_button.dart';
+import '../components/molecules/app_search_bar.dart';
+import '../components/organisms/loading_widgets.dart';
+import '../components/organisms/empty_states.dart';
+import '../core/constants/colors.dart';
+import '../core/constants/spacing.dart';
+import '../core/constants/text_styles.dart';
+import '../core/models/models.dart';
+import '../core/repositories/repositories.dart';
+import '../core/utils/error_handler.dart';
+import 'pet_profile_screen.dart';
+
 class PetListScreen extends StatefulWidget {
   const PetListScreen({super.key});
 
@@ -15,9 +21,13 @@ class PetListScreen extends StatefulWidget {
 }
 
 class _PetListScreenState extends State<PetListScreen> {
+  final _petRepository = PetRepository();
+  final _searchController = TextEditingController();
+  
   List<Pet> _pets = [];
+  List<Pet> _filteredPets = [];
   bool _isLoading = true;
-  String? _errorMessage;
+  String _searchQuery = '';
 
   @override
   void initState() {
@@ -25,30 +35,327 @@ class _PetListScreenState extends State<PetListScreen> {
     _loadPets();
   }
 
-  Future<void> _loadPets() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
+  Future<void> _loadPets() async {
     try {
-      final authService = context.read<AuthService>();
-      final api = ApiProvider.getApiService(authService: authService);
-      final pets = await api.getPets();
+      setState(() => _isLoading = true);
+      
+      final pets = await _petRepository.getUserPets('user-1'); // TODO: Get from auth
+      
       setState(() {
         _pets = pets;
+        _filteredPets = pets;
         _isLoading = false;
       });
     } catch (e) {
-      setState(() {
-        _errorMessage = e.toString().replaceAll('Exception: ', '');
-        _isLoading = false;
-      });
+      AppErrorHandler.showErrorSnackBar(
+        context,
+        'Failed to load pets: ${e.toString()}',
+      );
+      setState(() => _isLoading = false);
     }
   }
 
-  IconData _getPetIcon(String type) {
-    switch (type.toLowerCase()) {
+  void _filterPets(String query) {
+    setState(() {
+      _searchQuery = query;
+      if (query.isEmpty) {
+        _filteredPets = _pets;
+      } else {
+        _filteredPets = _pets.where((pet) =>
+          pet.name.toLowerCase().contains(query.toLowerCase()) ||
+          pet.species.toLowerCase().contains(query.toLowerCase()) ||
+          (pet.breed?.toLowerCase().contains(query.toLowerCase()) ?? false)
+        ).toList();
+      }
+    });
+  }
+
+  Future<void> _navigateToAddPet() async {
+    final result = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const PetProfileScreen(),
+      ),
+    );
+    
+    if (result is Pet) {
+      _loadPets(); // Refresh the list
+    }
+  }
+
+  Future<void> _navigateToEditPet(Pet pet) async {
+    final result = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => PetProfileScreen(
+          pet: pet,
+          isEditing: true,
+        ),
+      ),
+    );
+    
+    if (result != null) {
+      _loadPets(); // Refresh the list
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        title: Text(
+          'My Pets',
+          style: AppTextStyles.h1,
+        ),
+        backgroundColor: AppColors.surface,
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: _loadPets,
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          // Search bar
+          Container(
+            color: AppColors.surface,
+            padding: AppSpacing.pageInsets.copyWith(top: 0),
+            child: AppSearchBar(
+              controller: _searchController,
+              placeholder: 'Search pets...',
+              onChanged: _filterPets,
+              onClear: () {
+                _searchController.clear();
+                _filterPets('');
+              },
+            ),
+          ),
+          
+          // Pet list
+          Expanded(
+            child: _isLoading
+                ? const PetListLoadingSkeleton()
+                : _filteredPets.isEmpty
+                    ? _buildEmptyState()
+                    : _buildPetList(),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _navigateToAddPet,
+        backgroundColor: AppColors.primary,
+        child: Icon(Icons.add, color: AppColors.onPrimary),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    if (_pets.isEmpty) {
+      return EmptyPetList(onAddPet: _navigateToAddPet);
+    } else {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.search_off,
+              size: 64,
+              color: AppColors.textTertiary,
+            ),
+            AppSpacing.vSpaceMd,
+            Text(
+              'No pets found',
+              style: AppTextStyles.h2,
+            ),
+            AppSpacing.vSpaceSm,
+            Text(
+              'Try a different search term',
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+            AppSpacing.vSpaceMd,
+            AppButton.outlined(
+              text: 'Clear Search',
+              onPressed: () {
+                _searchController.clear();
+                _filterPets('');
+              },
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  Widget _buildPetList() {
+    return ListView.builder(
+      padding: AppSpacing.pageInsets,
+      itemCount: _filteredPets.length,
+      itemBuilder: (context, index) {
+        final pet = _filteredPets[index];
+        return _buildPetCard(pet);
+      },
+    );
+  }
+
+  Widget _buildPetCard(Pet pet) {
+    return Container(
+      margin: EdgeInsets.only(bottom: AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: AppSpacing.borderRadiusMd,
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.shadow,
+            blurRadius: 4,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => _navigateToEditPet(pet),
+          borderRadius: AppSpacing.borderRadiusMd,
+          child: Padding(
+            padding: AppSpacing.cardInsets,
+            child: Row(
+              children: [
+                // Pet photo
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.background,
+                    border: Border.all(
+                      color: AppColors.border,
+                      width: 1,
+                    ),
+                  ),
+                  child: ClipOval(
+                    child: pet.photoUrl != null
+                        ? Image.file(
+                            File(pet.photoUrl!),
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return _buildPetAvatar(pet);
+                            },
+                          )
+                        : _buildPetAvatar(pet),
+                  ),
+                ),
+                
+                AppSpacing.hSpaceMd,
+                
+                // Pet info
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        pet.name,
+                        style: AppTextStyles.h3,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      
+                      AppSpacing.vSpaceXs,
+                      
+                      Text(
+                        _buildPetSubtitle(pet),
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      
+                      AppSpacing.vSpaceXs,
+                      
+                      Text(
+                        pet.ageText,
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: AppColors.textTertiary,
+                        ),
+                      ),
+                      
+                      if (pet.weight != null) ...[
+                        AppSpacing.vSpaceXs,
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.monitor_weight,
+                              size: 14,
+                              color: AppColors.textTertiary,
+                            ),
+                            SizedBox(width: 4),
+                            Text(
+                              '${pet.weight} kg',
+                              style: AppTextStyles.bodySmall.copyWith(
+                                color: AppColors.textTertiary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                
+                // Actions
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.edit,
+                        color: AppColors.primary,
+                        size: 20,
+                      ),
+                      onPressed: () => _navigateToEditPet(pet),
+                      padding: EdgeInsets.all(8),
+                      constraints: BoxConstraints(),
+                    ),
+                    
+                    Icon(
+                      Icons.chevron_right,
+                      color: AppColors.textTertiary,
+                      size: 20,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPetAvatar(Pet pet) {
+    return Container(
+      width: 64,
+      height: 64,
+      color: AppColors.background,
+      child: Icon(
+        _getPetIcon(pet.species),
+        size: 32,
+        color: AppColors.textTertiary,
+      ),
+    );
+  }
+
+  IconData _getPetIcon(String species) {
+    switch (species.toLowerCase()) {
       case 'dog':
         return Icons.pets;
       case 'cat':
@@ -56,251 +363,27 @@ class _PetListScreenState extends State<PetListScreen> {
       case 'bird':
         return Icons.flutter_dash;
       case 'fish':
-        return Icons.water;
-      case 'reptile':
-        return Icons.bug_report;
-      case 'small_animal':
+        return Icons.tsunami;
+      case 'rabbit':
         return Icons.cruelty_free;
       default:
         return Icons.pets;
     }
   }
 
-  Color _getPetColor(String type) {
-    switch (type.toLowerCase()) {
-      case 'dog':
-        return Colors.brown;
-      case 'cat':
-        return Colors.orange;
-      case 'bird':
-        return Colors.blue;
-      case 'fish':
-        return Colors.cyan;
-      case 'reptile':
-        return Colors.green;
-      case 'small_animal':
-        return Colors.pink;
-      default:
-        return Colors.grey;
+  String _buildPetSubtitle(Pet pet) {
+    final parts = <String>[];
+    
+    if (pet.breed != null && pet.breed!.isNotEmpty) {
+      parts.add('${pet.breed} ${pet.species}');
+    } else {
+      parts.add(pet.species);
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Pets'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _loadPets,
-          ),
-        ],
-      ),
-      body: _buildBody(),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
-          final result = await Navigator.of(context).push<bool>(
-            MaterialPageRoute(builder: (_) => const AddPetScreen()),
-          );
-          if (result == true) {
-            _loadPets();
-          }
-        },
-        icon: const Icon(Icons.add),
-        label: const Text('Add Pet'),
-      ),
-    );
-  }
-
-  Widget _buildBody() {
-    if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
+    
+    if (pet.gender != null) {
+      parts.add(pet.gender!);
     }
-
-    if (_errorMessage != null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.error_outline, size: 48, color: Colors.red[300]),
-            const SizedBox(height: 16),
-            Text(
-              _errorMessage!,
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.red[700]),
-            ),
-            const SizedBox(height: 16),
-            FilledButton.tonal(
-              onPressed: _loadPets,
-              child: const Text('Retry'),
-            ),
-          ],
-        ),
-      );
-    }
-
-    if (_pets.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.pets, size: 80, color: Colors.grey[300]),
-            const SizedBox(height: 16),
-            Text(
-              'No pets yet',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: Colors.grey[600],
-                  ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Tap the button below to add your first pet',
-              style: TextStyle(color: Colors.grey[500]),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return RefreshIndicator(
-      onRefresh: _loadPets,
-      child: ListView.builder(
-        padding: const EdgeInsets.only(bottom: 80),
-        itemCount: _pets.length,
-        itemBuilder: (context, index) {
-          final pet = _pets[index];
-          return _PetCard(
-            pet: pet,
-            icon: _getPetIcon(pet.type),
-            color: _getPetColor(pet.type),
-            onTap: () async {
-              final result = await Navigator.of(context).push<bool>(
-                MaterialPageRoute(
-                  builder: (_) => PetDetailScreen(petId: pet.id),
-                ),
-              );
-              if (result == true) {
-                _loadPets();
-              }
-            },
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _PetCard extends StatelessWidget {
-  final Pet pet;
-  final IconData icon;
-  final Color color;
-  final VoidCallback onTap;
-
-  const _PetCard({
-    required this.pet,
-    required this.icon,
-    required this.color,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              // Pet avatar
-              Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  color: color.withAlpha(30),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: pet.photoUrl != null
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.network(
-                          pet.photoUrl!,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => Icon(
-                            icon,
-                            size: 32,
-                            color: color,
-                          ),
-                        ),
-                      )
-                    : Icon(icon, size: 32, color: color),
-              ),
-              const SizedBox(width: 16),
-              // Pet info
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      pet.name,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        _InfoChip(
-                          label: pet.type.replaceAll('_', ' '),
-                          color: color,
-                        ),
-                        if (pet.breed != null) ...[
-                          const SizedBox(width: 8),
-                          Text(
-                            pet.breed!,
-                            style: TextStyle(color: Colors.grey[600]),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              // Arrow
-              Icon(Icons.chevron_right, color: Colors.grey[400]),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _InfoChip extends StatelessWidget {
-  final String label;
-  final Color color;
-
-  const _InfoChip({required this.label, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: color.withAlpha(25),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: color,
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
+    
+    return parts.join(' • ');
   }
 }
