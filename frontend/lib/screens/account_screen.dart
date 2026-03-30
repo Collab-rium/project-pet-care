@@ -21,7 +21,8 @@ class _AccountScreenState extends State<AccountScreen> {
   String _username = 'demo';
   String? _profilePhotoPath;
   bool _isDarkMode = false;
-  bool _notificationsEnabled = true;
+  bool _notificationsEnabled = false;
+  bool _isPickingPhoto = false;
 
   @override
   Widget build(BuildContext context) {
@@ -393,6 +394,11 @@ class _AccountScreenState extends State<AccountScreen> {
 
   Future<void> _pickProfilePhoto() async {
     try {
+      // Check if already picking to avoid "already_active" error
+      if (_isPickingPhoto) return;
+      
+      setState(() => _isPickingPhoto = true);
+      
       final ImagePicker picker = ImagePicker();
       final XFile? image = await picker.pickImage(
         source: ImageSource.gallery,
@@ -401,6 +407,8 @@ class _AccountScreenState extends State<AccountScreen> {
         imageQuality: 80,
       );
       
+      setState(() => _isPickingPhoto = false);
+      
       if (image != null) {
         setState(() {
           _profilePhotoPath = image.path;
@@ -408,16 +416,15 @@ class _AccountScreenState extends State<AccountScreen> {
         
         AppErrorHandler.showSuccessSnackBar(
           context,
-          'Profile photo updated locally!',
+          'Profile photo updated!',
         );
       }
     } catch (e) {
+      setState(() => _isPickingPhoto = false);
       // Handle error gracefully - this is a local-only app
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Photo selected: ${e.toString()}'),
-          backgroundColor: AppColors.info,
-        ),
+      AppErrorHandler.showInfoSnackBar(
+        context,
+        'Photo selection: ${e.toString().split(':').first}',
       );
     }
   }

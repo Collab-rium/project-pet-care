@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../screens/tasks_screen.dart';
 
 /// App routes configuration
 class AppRoutes {
@@ -15,6 +16,9 @@ class AppRoutes {
   static const String petDetail = '/pets/detail';
   static const String addPet = '/pets/add';
   static const String petProfile = '/pets/profile';
+  
+  // Tasks
+  static const String tasks = '/tasks';
   
   // Weight tracking
   static const String weightTracking = '/weight';
@@ -76,6 +80,12 @@ class RouteGenerator {
           builder: (_) => Scaffold(
             body: Center(child: Text('Dashboard Screen - To be implemented')),
           ),
+        );
+      
+      case AppRoutes.tasks:
+        final filter = args as String?;
+        return MaterialPageRoute(
+          builder: (_) => TasksScreen(filter: filter),
         );
         
       // Add more routes as screens are implemented

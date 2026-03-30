@@ -131,29 +131,44 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Row(
             children: [
               Expanded(
-                child: _SummaryCard(
-                  icon: Icons.check_circle,
-                  label: 'Completed',
-                  value: data.summary.completed.toString(),
-                  color: Colors.green,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/tasks', arguments: 'completed');
+                  },
+                  child: _SummaryCard(
+                    icon: Icons.check_circle,
+                    label: 'Completed',
+                    value: data.summary.completed.toString(),
+                    color: Colors.green,
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: _SummaryCard(
-                  icon: Icons.pending,
-                  label: 'Pending',
-                  value: data.summary.pending.toString(),
-                  color: Colors.blue,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/tasks', arguments: 'pending');
+                  },
+                  child: _SummaryCard(
+                    icon: Icons.pending,
+                    label: 'Pending',
+                    value: data.summary.pending.toString(),
+                    color: Colors.blue,
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: _SummaryCard(
-                  icon: Icons.warning,
-                  label: 'Overdue',
-                  value: data.summary.overdue.toString(),
-                  color: Colors.red,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/tasks', arguments: 'overdue');
+                  },
+                  child: _SummaryCard(
+                    icon: Icons.warning,
+                    label: 'Overdue',
+                    value: data.summary.overdue.toString(),
+                    color: Colors.red,
+                  ),
                 ),
               ),
             ],
@@ -250,9 +265,12 @@ class _SummaryCard extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               label,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 color: Colors.grey[600],
-                fontSize: 12,
+                fontSize: 11,
               ),
             ),
           ],
