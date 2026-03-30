@@ -210,8 +210,28 @@ class _LoginScreenState extends State<LoginScreen> {
                     ],
                   ),
 
+                  // Quick demo button
+                  OutlinedButton(
+                    onPressed: () {
+                      _emailController.text = 'demo@example.com';
+                      _passwordController.text = 'demo1234';
+                    },
+                    child: const Text('Fill Demo Credentials'),
+                  ),
+                  
+                  const SizedBox(height: 8),
+                  
+                  // Skip login button (for UI testing)
+                  TextButton(
+                    onPressed: () {
+                      // Skip auth and go directly to home
+                      Navigator.of(context).pushReplacementNamed('/home');
+                    },
+                    child: const Text('Skip Login (Demo Mode)'),
+                  ),
+
                   // Demo credentials hint
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 16),
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
