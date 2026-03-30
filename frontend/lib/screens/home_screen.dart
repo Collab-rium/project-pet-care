@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dashboard_screen.dart';
 import 'pet_list_screen.dart';
 import 'reminders_screen.dart';
+import 'budget_screen.dart';
+import 'account_screen.dart';
 
 /// Home screen with bottom navigation
 class HomeScreen extends StatefulWidget {
@@ -17,7 +19,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final _screens = const [
     DashboardScreen(),
     PetListScreen(),
-    RemindersScreen(),
+    BudgetScreen(),
+    AccountScreen(),
   ];
 
   @override
@@ -38,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
           NavigationDestination(
             icon: Icon(Icons.dashboard_outlined),
             selectedIcon: Icon(Icons.dashboard),
-            label: 'Dashboard',
+            label: 'Home',
           ),
           NavigationDestination(
             icon: Icon(Icons.pets_outlined),
@@ -46,9 +49,14 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Pets',
           ),
           NavigationDestination(
-            icon: Icon(Icons.notifications_outlined),
-            selectedIcon: Icon(Icons.notifications),
-            label: 'Reminders',
+            icon: Icon(Icons.account_balance_wallet_outlined),
+            selectedIcon: Icon(Icons.account_balance_wallet),
+            label: 'Budget',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.account_circle_outlined),
+            selectedIcon: Icon(Icons.account_circle),
+            label: 'Account',
           ),
         ],
       ),

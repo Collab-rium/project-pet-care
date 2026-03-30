@@ -324,7 +324,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                   ),
                   child: Text(
                     'OVER BUDGET',
-                    style: AppTextStyles.labelSmall.copyWith(
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
                       color: AppColors.textOnPrimary,
                       fontWeight: FontWeight.bold,
                     ),

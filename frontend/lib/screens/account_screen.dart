@@ -328,13 +328,15 @@ class _AccountScreenState extends State<AccountScreen> {
         AppSpacing.vSpaceMd,
         
         // Log Out
-        AppButton.outlined(
-          text: 'Log Out',
+        ElevatedButton.icon(
           onPressed: _logOut,
-          icon: Icons.logout,
-          backgroundColor: AppColors.error.withOpacity(0.1),
-          borderColor: AppColors.error,
-          textColor: AppColors.error,
+          icon: const Icon(Icons.logout),
+          label: const Text('Log Out'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.error,
+            foregroundColor: Colors.white,
+            minimumSize: const Size(double.infinity, 50),
+          ),
         ),
         
         AppSpacing.vSpaceXl,
@@ -507,7 +509,7 @@ This policy was last updated: March 2026''',
       'Are you sure you want to log out? Make sure to backup your data first.',
     );
     
-    if (confirmed) {
+    if (confirmed == true) {
       // TODO: Clear local data and navigate to login
       AppErrorHandler.showInfoSnackBar(
         context,
