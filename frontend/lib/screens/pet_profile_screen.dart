@@ -309,7 +309,7 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
                   'Are you sure you want to delete this pet? All associated data will be lost.',
                 );
                 
-                if (confirmed) {
+                if (confirmed == true) {
                   try {
                     await _petRepository.deletePet(widget.pet!.id);
                     if (mounted) {
@@ -343,7 +343,7 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
 
               AppFormField(
                 label: 'Pet Name',
-                required: true,
+                isRequired: true,
                 child: AppInput(
                   controller: _nameController,
                   placeholder: 'Enter your pet\'s name',
@@ -353,7 +353,7 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
 
               AppFormField(
                 label: 'Species',
-                required: true,
+                isRequired: true,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -362,7 +362,7 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
                       items: _commonSpecies,
                       onChanged: (value) {
                         setState(() {
-                          _selectedSpecies = value;
+                          _selectedSpecies = value ?? _selectedSpecies;
                           _showCustomSpecies = value == 'Other';
                         });
                       },
@@ -395,7 +395,7 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
                   items: _genderOptions,
                   onChanged: (value) {
                     setState(() {
-                      _selectedGender = value;
+                      _selectedGender = value ?? _selectedGender;
                     });
                   },
                 ),
@@ -423,7 +423,7 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
                               : 'Select birth date',
                           style: AppTextStyles.bodyMedium.copyWith(
                             color: _birthDate != null 
-                                ? AppColors.text
+                                ? AppColors.textPrimary
                                 : AppColors.textSecondary,
                           ),
                         ),

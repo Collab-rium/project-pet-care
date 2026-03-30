@@ -309,7 +309,7 @@ class _PhotoGalleryScreenState extends State<PhotoGalleryScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: _showPhotoOptions,
         backgroundColor: AppColors.primary,
-        child: Icon(Icons.add_a_photo, color: AppColors.onPrimary),
+        child: Icon(Icons.add_a_photo, color: AppColors.textOnPrimary),
       ),
     );
   }

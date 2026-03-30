@@ -73,6 +73,12 @@ class ImageCompressionUtil {
     }
   }
 
+  /// Backwards-compatible helper: compress image from a file path
+  static Future<File> compressImageFromPath(String path) async {
+    final file = File(path);
+    return await compressImage(file);
+  }
+
   /// Create a thumbnail from an image
   /// Returns a 200x200 thumbnail file
   static Future<File> createThumbnail(

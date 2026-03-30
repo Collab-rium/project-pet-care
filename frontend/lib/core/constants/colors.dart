@@ -9,8 +9,15 @@ class AppColors {
   static const Color primaryLight = Color(0xFFFFB380); // Light orange
   static const Color primaryDark = Color(0xFFE67832); // Dark orange
 
-  static const Color secondary = Color(0xFFFFB380); // Light orange/peach
-  static const Color accent = Color(0xFFFD6B6B); // Red/pink
+  static const Color secondary = Color(0xFF00D4D4); // Cyan/Teal for health vitality
+  static const Color secondaryLight = Color(0xFF4DFFFF);
+  static const Color secondaryDark = Color(0xFF00A0A0);
+  
+  // Accent Colors - for variety and categories
+  static const Color accent1 = Color(0xFF9C27B0); // Purple
+  static const Color accent2 = Color(0xFFE91E63); // Pink
+  static const Color accent3 = Color(0xFF2196F3); // Blue
+  static const Color accent = accent2; // Default accent (backward compatibility)
 
   // Background Colors
   static const Color background = Color(0xFFFFF9F5); // Warm white

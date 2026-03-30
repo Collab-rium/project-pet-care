@@ -273,7 +273,7 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
                 Text(
                   title,
                   style: AppTextStyles.h4.copyWith(
-                    color: enabled ? AppColors.text : AppColors.textTertiary,
+                    color: enabled ? AppColors.textPrimary : AppColors.textTertiary,
                   ),
                 ),
                 AppSpacing.vSpaceXs,

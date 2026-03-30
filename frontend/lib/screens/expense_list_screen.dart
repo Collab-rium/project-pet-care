@@ -194,7 +194,7 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
                     ),
                     child: Icon(
                       Icons.receipt_long,
-                      color: AppColors.onPrimary,
+                      color: AppColors.textOnPrimary,
                       size: 24,
                     ),
                   ),
@@ -206,14 +206,14 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
                         Text(
                           'Total Spent',
                           style: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.onPrimary.withOpacity(0.9),
+                            color: AppColors.textOnPrimary.withOpacity(0.9),
                           ),
                         ),
                         AppSpacing.vSpaceXs,
                         Text(
                           '\$${_totalAmount.toStringAsFixed(2)}',
                           style: AppTextStyles.h1.copyWith(
-                            color: AppColors.onPrimary,
+                            color: AppColors.textOnPrimary,
                           ),
                         ),
                       ],
@@ -222,7 +222,7 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
                   Text(
                     '${_filteredExpenses.length} expense${_filteredExpenses.length != 1 ? 's' : ''}',
                     style: AppTextStyles.bodySmall.copyWith(
-                      color: AppColors.onPrimary.withOpacity(0.9),
+                      color: AppColors.textOnPrimary.withOpacity(0.9),
                     ),
                   ),
                 ],
@@ -306,7 +306,7 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: _navigateToAddExpense,
         backgroundColor: AppColors.primary,
-        child: Icon(Icons.add, color: AppColors.onPrimary),
+        child: Icon(Icons.add, color: AppColors.textOnPrimary),
       ),
     );
   }

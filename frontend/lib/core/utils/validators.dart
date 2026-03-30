@@ -188,3 +188,21 @@ class Validators {
 }
 
 typedef FormFieldValidator<T> = String? Function(T? value);
+
+// Backwards-compatible alias expected by older code
+class AppValidators {
+  static String? email(String? value) => Validators.email(value);
+  static String? required(String? value, {String? fieldName}) => Validators.required(value, fieldName: fieldName);
+  static String? minLength(String? value, int min, {String? fieldName}) => Validators.minLength(value, min, fieldName: fieldName);
+  static String? maxLength(String? value, int max, {String? fieldName}) => Validators.maxLength(value, max, fieldName: fieldName);
+  static String? password(String? value) => Validators.password(value);
+  static String? strongPassword(String? value) => Validators.strongPassword(value);
+  static String? confirmPassword(String? value, String? password) => Validators.confirmPassword(value, password);
+  static String? phone(String? value) => Validators.phone(value);
+  static String? number(String? value, {String? fieldName}) => Validators.number(value, fieldName: fieldName);
+  static String? positiveNumber(String? value, {String? fieldName}) => Validators.positiveNumber(value, fieldName: fieldName);
+  static String? numberRange(String? value, double min, double max, {String? fieldName}) => Validators.numberRange(value, min, max, fieldName: fieldName);
+  static String? url(String? value) => Validators.url(value);
+  static FormFieldValidator<String> combine(List<FormFieldValidator<String>> validators) => Validators.combine(validators);
+}
+

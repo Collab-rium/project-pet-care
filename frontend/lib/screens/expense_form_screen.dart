@@ -228,7 +228,7 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
 
               AppFormField(
                 label: 'Amount',
-                required: true,
+                isRequired: true,
                 child: AppInput(
                   controller: _amountController,
                   placeholder: 'Enter amount',
@@ -240,7 +240,7 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
 
               AppFormField(
                 label: 'Category',
-                required: true,
+                isRequired: true,
                 child: AppDropdown(
                   value: _selectedCategory,
                   items: _expenseCategories,
@@ -252,7 +252,7 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
 
               AppFormField(
                 label: 'Date',
-                required: true,
+                isRequired: true,
                 child: GestureDetector(
                   onTap: _selectDate,
                   child: Container(

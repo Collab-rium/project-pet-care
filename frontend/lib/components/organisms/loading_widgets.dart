@@ -67,7 +67,7 @@ class _LoadingSkeletonState extends State<LoadingSkeleton>
                 _animation.value,
                 1.0,
               ],
-              transform: GradientTransform(_animation.value),
+              transform: SlidingGradientTransform(_animation.value),
             ),
           ),
         );
@@ -76,10 +76,10 @@ class _LoadingSkeletonState extends State<LoadingSkeleton>
   }
 }
 
-class GradientTransform extends GradientTransform {
+class SlidingGradientTransform extends GradientTransform {
   final double offset;
   
-  const GradientTransform(this.offset);
+  const SlidingGradientTransform(this.offset);
 
   @override
   Matrix4? transform(Rect bounds, {TextDirection? textDirection}) {

@@ -39,15 +39,6 @@ ThemeData lightTheme() {
       ),
     ),
     
-    // Card
-    cardTheme: CardTheme(
-      color: AppColors.surface,
-      elevation: AppSpacing.elevationSm,
-      shape: RoundedRectangleBorder(
-        borderRadius: AppSpacing.borderRadiusMd,
-      ),
-    ),
-    
     // Text theme
     textTheme: TextTheme(
       displayLarge: GoogleFonts.poppins(

@@ -117,7 +117,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     ),
                     child: Icon(
                       Icons.camera_alt,
-                      color: AppColors.onPrimary,
+                      color: AppColors.textOnPrimary,
                       size: 16,
                     ),
                   ),
@@ -550,7 +550,7 @@ class AccountFloatingButton extends StatelessWidget {
           ),
           child: Icon(
             Icons.account_circle,
-            color: AppColors.onPrimary,
+            color: AppColors.textOnPrimary,
             size: 32,
           ),
         ),

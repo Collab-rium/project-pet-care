@@ -326,7 +326,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                               : null,
                           color: reminder.isCompleted 
                               ? AppColors.textTertiary 
-                              : AppColors.text,
+                              : AppColors.textPrimary,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,

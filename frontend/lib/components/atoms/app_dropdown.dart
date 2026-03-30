@@ -8,7 +8,8 @@ class AppDropdown<T> extends StatelessWidget {
   final String? label;
   final String? hint;
   final T? value;
-  final List<DropdownMenuItem<T>> items;
+  // Accept either a list of DropdownMenuItem<T> or a list of raw values (T)
+  final List<Object> items;
   final ValueChanged<T?>? onChanged;
   final String? errorText;
   final IconData? prefixIcon;
@@ -64,7 +65,11 @@ class AppDropdown<T> extends StatelessWidget {
                         ),
                       )
                     : null,
-                items: items,
+                // Normalize items to DropdownMenuItem<T>
+                items: items.map<DropdownMenuItem<T>>((e) {
+                  if (e is DropdownMenuItem<T>) return e;
+                  return DropdownMenuItem<T>(value: e as T, child: Text(e.toString()));
+                }).toList(),
                 onChanged: enabled ? onChanged : null,
                 isExpanded: true,
                 icon: Icon(

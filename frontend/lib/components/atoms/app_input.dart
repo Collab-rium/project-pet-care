@@ -9,6 +9,7 @@ import '../../core/constants/text_styles.dart';
 class AppInput extends StatefulWidget {
   final String? label;
   final String? hint;
+  final String? placeholder;
   final String? initialValue;
   final TextEditingController? controller;
   final TextInputType keyboardType;
@@ -32,6 +33,7 @@ class AppInput extends StatefulWidget {
     super.key,
     this.label,
     this.hint,
+    this.placeholder,
     this.initialValue,
     this.controller,
     this.keyboardType = TextInputType.text,
@@ -123,13 +125,14 @@ class AppInput extends StatefulWidget {
     FormFieldValidator<String>? validator,
     bool enabled = true,
   }) {
-    return _PasswordInput(
+    return AppInput(
       label: label ?? 'Password',
       hint: hint ?? 'Enter password',
       initialValue: initialValue,
       controller: controller,
-      errorText: errorText,
-      helperText: helperText,
+      obscureText: true,
+      prefixIcon: Icons.lock_outlined,
+      suffixIcon: Icons.visibility_outlined,
       onChanged: onChanged,
       validator: validator,
       enabled: enabled,

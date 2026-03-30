@@ -214,3 +214,14 @@ class ErrorScreen extends StatelessWidget {
     );
   }
 }
+
+// Backwards-compatible adapter used by older screens
+class AppErrorHandler {
+  static void showErrorSnackBar(BuildContext context, String message) => ErrorHandler.showError(context, message);
+  static void showSuccessSnackBar(BuildContext context, String message) => ErrorHandler.showSuccess(context, message);
+  static void showInfoSnackBar(BuildContext context, String message) => ErrorHandler.showInfo(context, message);
+  // Backwards-compatible positional API used across the codebase
+  static Future<bool?> showConfirmDialog(BuildContext context, String title, String message) {
+    return ErrorHandler.showErrorDialog(context, title: title, message: message, showRetry: false);
+  }
+}

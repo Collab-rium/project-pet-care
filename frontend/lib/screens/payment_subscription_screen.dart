@@ -390,7 +390,7 @@ class _PaymentSubscriptionScreenState extends State<PaymentSubscriptionScreen> {
             child: Text(
               feature,
               style: AppTextStyles.bodySmall.copyWith(
-                color: isPositive ? AppColors.text : AppColors.textSecondary,
+                color: isPositive ? AppColors.textPrimary : AppColors.textSecondary,
               ),
             ),
           ),

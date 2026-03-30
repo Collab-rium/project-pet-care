@@ -309,7 +309,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
               Text(
                 'This Month\'s Budget',
                 style: AppTextStyles.h4.copyWith(
-                  color: AppColors.onPrimary,
+                  color: AppColors.textOnPrimary,
                 ),
               ),
               if (isOverBudget)
@@ -325,7 +325,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                   child: Text(
                     'OVER BUDGET',
                     style: AppTextStyles.labelSmall.copyWith(
-                      color: AppColors.onPrimary,
+                      color: AppColors.textOnPrimary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -345,14 +345,14 @@ class _BudgetScreenState extends State<BudgetScreen> {
                     Text(
                       'Spent',
                       style: AppTextStyles.bodySmall.copyWith(
-                        color: AppColors.onPrimary.withOpacity(0.8),
+                        color: AppColors.textOnPrimary.withOpacity(0.8),
                       ),
                     ),
                     AppSpacing.vSpaceXs,
                     Text(
                       '\$${currentSpent.toStringAsFixed(2)}',
                       style: AppTextStyles.h2.copyWith(
-                        color: AppColors.onPrimary,
+                        color: AppColors.textOnPrimary,
                       ),
                     ),
                   ],
@@ -366,14 +366,14 @@ class _BudgetScreenState extends State<BudgetScreen> {
                     Text(
                       isOverBudget ? 'Over by' : 'Remaining',
                       style: AppTextStyles.bodySmall.copyWith(
-                        color: AppColors.onPrimary.withOpacity(0.8),
+                        color: AppColors.textOnPrimary.withOpacity(0.8),
                       ),
                     ),
                     AppSpacing.vSpaceXs,
                     Text(
                       '\$${isOverBudget ? (currentSpent - budget.monthlyLimit).toStringAsFixed(2) : remaining.toStringAsFixed(2)}',
                       style: AppTextStyles.h2.copyWith(
-                        color: AppColors.onPrimary,
+                        color: AppColors.textOnPrimary,
                       ),
                     ),
                   ],
@@ -387,14 +387,14 @@ class _BudgetScreenState extends State<BudgetScreen> {
                     Text(
                       'Budget',
                       style: AppTextStyles.bodySmall.copyWith(
-                        color: AppColors.onPrimary.withOpacity(0.8),
+                        color: AppColors.textOnPrimary.withOpacity(0.8),
                       ),
                     ),
                     AppSpacing.vSpaceXs,
                     Text(
                       '\$${budget.monthlyLimit.toStringAsFixed(2)}',
                       style: AppTextStyles.h2.copyWith(
-                        color: AppColors.onPrimary,
+                        color: AppColors.textOnPrimary,
                       ),
                     ),
                   ],
@@ -415,14 +415,14 @@ class _BudgetScreenState extends State<BudgetScreen> {
                   Text(
                     '${percentageUsed.toStringAsFixed(1)}% used',
                     style: AppTextStyles.bodySmall.copyWith(
-                      color: AppColors.onPrimary.withOpacity(0.8),
+                      color: AppColors.textOnPrimary.withOpacity(0.8),
                     ),
                   ),
                   if (isOverBudget)
                     Text(
                       '${(percentageUsed - 100).toStringAsFixed(1)}% over',
                       style: AppTextStyles.bodySmall.copyWith(
-                        color: AppColors.onPrimary.withOpacity(0.8),
+                        color: AppColors.textOnPrimary.withOpacity(0.8),
                       ),
                     ),
                 ],
