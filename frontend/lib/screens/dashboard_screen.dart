@@ -30,11 +30,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
 
     try {
-      final authService = context.read<AuthService>();
-      final api = ApiProvider.getApiService(authService: authService);
-      final data = await api.getDashboard();
+      // Use mock data since we're local-only
+      await Future.delayed(const Duration(milliseconds: 300));
       setState(() {
-        _dashboardData = data;
+        _dashboardData = DashboardData(
+          date: DateTime.now().toIso8601String(),
+          tasks: [],
+          summary: DashboardSummary(
+            total: 3,
+            completed: 2,
+            pending: 2,
+            overdue: 1,
+          ),
+        );
         _isLoading = false;
       });
     } catch (e) {
@@ -57,31 +65,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _loadDashboard,
-          ),
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () async {
-              final confirmed = await showDialog<bool>(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Log Out'),
-                  content: const Text('Are you sure you want to log out?'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      child: const Text('Cancel'),
-                    ),
-                    FilledButton(
-                      onPressed: () => Navigator.of(context).pop(true),
-                      child: const Text('Log Out'),
-                    ),
-                  ],
-                ),
-              );
-              if (confirmed == true) {
-                await authService.logout();
-              }
-            },
           ),
         ],
       ),
