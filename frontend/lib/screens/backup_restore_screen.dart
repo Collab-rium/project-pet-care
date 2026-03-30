@@ -19,19 +19,20 @@ class BackupRestoreScreen extends StatefulWidget {
   State<BackupRestoreScreen> createState() => _BackupRestoreScreenState();
 }
 
-class _BackupRestoreScreenState extends State<BackupRestoreScreen> with SingleTickerProviderStateMixin {
+class _BackupRestoreScreenState extends State<BackupRestoreScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  
+
   // Export settings
   bool _includeImages = true;
   bool _includeSettings = true;
   final _exportPasswordController = TextEditingController();
-  
+
   // Import settings
   String? _selectedFilePath;
   final _importPasswordController = TextEditingController();
   bool _confirmOverwrite = false;
-  
+
   bool _isProcessing = false;
 
   @override
@@ -139,7 +140,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> with SingleTi
           label: 'Password Protection (Optional)',
           child: AppInput.password(
             controller: _exportPasswordController,
-            placeholder: 'Enter password to encrypt backup',
+            hint: 'Enter password to encrypt backup',
           ),
         ),
 
@@ -174,9 +175,12 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> with SingleTi
               _buildSummaryItem('Reminders', '8 reminders'),
               _buildSummaryItem('Expenses', '15 expense records'),
               _buildSummaryItem('Weight Records', '12 weight entries'),
-              _buildSummaryItem('Photos', _includeImages ? '23 photos' : 'Not included'),
-              _buildSummaryItem('Settings', _includeSettings ? 'Included' : 'Not included'),
-              _buildSummaryItem('Estimated Size', _includeImages ? '~45 MB' : '~2 MB'),
+              _buildSummaryItem(
+                  'Photos', _includeImages ? '23 photos' : 'Not included'),
+              _buildSummaryItem(
+                  'Settings', _includeSettings ? 'Included' : 'Not included'),
+              _buildSummaryItem(
+                  'Estimated Size', _includeImages ? '~45 MB' : '~2 MB'),
             ],
           ),
         ),
@@ -308,7 +312,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> with SingleTi
           label: 'Password (if encrypted)',
           child: AppInput.password(
             controller: _importPasswordController,
-            placeholder: 'Enter backup file password',
+            hint: 'Enter backup file password',
           ),
         ),
 
@@ -362,7 +366,6 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> with SingleTi
               ],
             ),
           ),
-
           AppSpacing.vSpaceLg,
         ],
 
@@ -380,13 +383,15 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> with SingleTi
                 scale: 0.8,
                 child: Checkbox(
                   value: _confirmOverwrite,
-                  onChanged: (value) => setState(() => _confirmOverwrite = value ?? false),
+                  onChanged: (value) =>
+                      setState(() => _confirmOverwrite = value ?? false),
                   activeColor: AppColors.primary,
                 ),
               ),
               Expanded(
                 child: GestureDetector(
-                  onTap: () => setState(() => _confirmOverwrite = !_confirmOverwrite),
+                  onTap: () =>
+                      setState(() => _confirmOverwrite = !_confirmOverwrite),
                   child: Text(
                     'I understand this will replace all my current data and cannot be undone.',
                     style: AppTextStyles.bodySmall,
@@ -402,9 +407,10 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> with SingleTi
         // Import button
         AppButton.primary(
           text: 'Import Data',
-          onPressed: (_isProcessing || _selectedFilePath == null || !_confirmOverwrite) 
-              ? null 
-              : _importData,
+          onPressed:
+              (_isProcessing || _selectedFilePath == null || !_confirmOverwrite)
+                  ? null
+                  : _importData,
           isLoading: _isProcessing,
           icon: Icons.file_upload,
         ),

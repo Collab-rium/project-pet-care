@@ -43,14 +43,14 @@ class _AccountScreenState extends State<AccountScreen> {
         children: [
           // Profile section
           _buildProfileSection(),
-          
+
           AppSpacing.vSpaceLg,
-          
+
           // Settings sections
           _buildSettingsSection(),
-          
+
           AppSpacing.vSpaceLg,
-          
+
           // Account actions
           _buildAccountActions(),
         ],
@@ -102,7 +102,7 @@ class _AccountScreenState extends State<AccountScreen> {
                         : _buildAvatarPlaceholder(),
                   ),
                 ),
-                
+
                 // Edit overlay
                 Positioned(
                   right: 0,
@@ -111,7 +111,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     width: 32,
                     height: 32,
                     decoration: BoxDecoration(
-                      color: AppColors.primary,
+                      color: Theme.of(context).colorScheme.primary,
                       shape: BoxShape.circle,
                       border: Border.all(
                         color: AppColors.surface,
@@ -120,7 +120,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     ),
                     child: Icon(
                       Icons.camera_alt,
-                      color: AppColors.textOnPrimary,
+                      color: Theme.of(context).colorScheme.onPrimary,
                       size: 16,
                     ),
                   ),
@@ -128,26 +128,26 @@ class _AccountScreenState extends State<AccountScreen> {
               ],
             ),
           ),
-          
+
           AppSpacing.vSpaceMd,
-          
+
           // Username
           Text(
             _username,
             style: AppTextStyles.h2,
           ),
-          
+
           AppSpacing.vSpaceXs,
-          
+
           Text(
             'Local User Account',
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.textSecondary,
             ),
           ),
-          
+
           AppSpacing.vSpaceMd,
-          
+
           AppButton.outlined(
             text: 'Edit Profile',
             onPressed: _editProfile,
@@ -195,9 +195,10 @@ class _AccountScreenState extends State<AccountScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text('Notifications Enabled',
-                                   style: TextStyle(fontWeight: FontWeight.bold)),
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
                               Text('Test: You\'ll receive reminders!',
-                                   style: TextStyle(fontSize: 12)),
+                                  style: TextStyle(fontSize: 12)),
                             ],
                           ),
                         ),
@@ -214,11 +215,11 @@ class _AccountScreenState extends State<AccountScreen> {
                 );
               }
             },
-            activeColor: AppColors.primary,
+            activeColor: Theme.of(context).colorScheme.primary,
           ),
           onTap: () => _showNotificationSettings(),
         ),
-        
+
         // Payments & Subscription
         _buildSettingsTile(
           icon: Icons.payment,
@@ -227,22 +228,24 @@ class _AccountScreenState extends State<AccountScreen> {
           trailing: Icon(Icons.chevron_right, color: AppColors.textTertiary),
           onTap: () => _showPaymentSettings(),
         ),
-        
+
         // Theme
         Consumer<ThemeManager>(
           builder: (context, themeManager, child) {
             return _buildSettingsTile(
               icon: Icons.palette,
               title: 'Appearance',
-              subtitle: '${themeManager.currentTheme.name} - ${themeManager.isDarkMode ? "Dark" : "Light"}',
-              trailing: const Icon(Icons.chevron_right, color: AppColors.textTertiary),
+              subtitle:
+                  '${themeManager.currentTheme.name} - ${themeManager.isDarkMode ? "Dark" : "Light"}',
+              trailing: const Icon(Icons.chevron_right,
+                  color: AppColors.textTertiary),
               onTap: () {
                 Navigator.pushNamed(context, '/settings/theme');
               },
             );
           },
         ),
-        
+
         // Wallpaper
         _buildSettingsTile(
           icon: Icons.wallpaper,
@@ -251,7 +254,7 @@ class _AccountScreenState extends State<AccountScreen> {
           trailing: Icon(Icons.chevron_right, color: AppColors.textTertiary),
           onTap: () => _showWallpaperSettings(),
         ),
-        
+
         // Privacy & Policy
         _buildSettingsTile(
           icon: Icons.privacy_tip,
@@ -260,7 +263,7 @@ class _AccountScreenState extends State<AccountScreen> {
           trailing: Icon(Icons.chevron_right, color: AppColors.textTertiary),
           onTap: () => _showPrivacyPolicy(),
         ),
-        
+
         // Backup & Restore
         _buildSettingsTile(
           icon: Icons.backup,
@@ -300,18 +303,17 @@ class _AccountScreenState extends State<AccountScreen> {
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.1),
+                    color:
+                        Theme.of(context).colorScheme.primary.withOpacity(0.1),
                     borderRadius: AppSpacing.borderRadiusSm,
                   ),
                   child: Icon(
                     icon,
-                    color: AppColors.primary,
+                    color: Theme.of(context).colorScheme.primary,
                     size: 24,
                   ),
                 ),
-                
                 AppSpacing.hSpaceMd,
-                
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -330,9 +332,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     ],
                   ),
                 ),
-                
                 AppSpacing.hSpaceSm,
-                
                 trailing,
               ],
             ),
@@ -351,23 +351,23 @@ class _AccountScreenState extends State<AccountScreen> {
           onPressed: _switchAccount,
           icon: Icons.switch_account,
         ),
-        
+
         AppSpacing.vSpaceMd,
-        
+
         // Log Out
         ElevatedButton.icon(
           onPressed: _logOut,
           icon: const Icon(Icons.logout),
           label: const Text('Log Out'),
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.error,
-            foregroundColor: Colors.white,
+            backgroundColor: Theme.of(context).colorScheme.error,
+            foregroundColor: Theme.of(context).colorScheme.onError,
             minimumSize: const Size(double.infinity, 50),
           ),
         ),
-        
+
         AppSpacing.vSpaceXl,
-        
+
         // App info
         Column(
           children: [
@@ -394,9 +394,9 @@ class _AccountScreenState extends State<AccountScreen> {
     try {
       // Check if already picking to avoid "already_active" error
       if (_isPickingPhoto) return;
-      
+
       setState(() => _isPickingPhoto = true);
-      
+
       final ImagePicker picker = ImagePicker();
       final XFile? image = await picker.pickImage(
         source: ImageSource.gallery,
@@ -404,14 +404,14 @@ class _AccountScreenState extends State<AccountScreen> {
         maxHeight: 512,
         imageQuality: 80,
       );
-      
+
       setState(() => _isPickingPhoto = false);
-      
+
       if (image != null) {
         setState(() {
           _profilePhotoPath = image.path;
         });
-        
+
         AppErrorHandler.showSuccessSnackBar(
           context,
           'Profile photo updated!',
@@ -435,28 +435,11 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 
   void _showNotificationSettings() {
-    AppErrorHandler.showInfoSnackBar(
-      context,
-      'Detailed notification settings coming soon',
-    );
+    Navigator.pushNamed(context, '/settings/notifications');
   }
 
   void _showPaymentSettings() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Payments & Subscription'),
-        content: Text(
-          'This is a local-only app. No payment or subscription features are currently available.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('OK'),
-          ),
-        ],
-      ),
-    );
+    Navigator.pushNamed(context, '/payment');
   }
 
   void _showThemeSettings() {
@@ -467,10 +450,7 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 
   void _showWallpaperSettings() {
-    AppErrorHandler.showInfoSnackBar(
-      context,
-      'Wallpaper settings coming soon',
-    );
+    Navigator.pushNamed(context, '/settings/wallpaper');
   }
 
   void _showPrivacyPolicy() {
@@ -510,10 +490,7 @@ This policy was last updated: March 2026''',
   }
 
   void _showBackupRestore() {
-    AppErrorHandler.showInfoSnackBar(
-      context,
-      'Backup & restore functionality coming soon',
-    );
+    Navigator.pushNamed(context, '/settings/backup');
   }
 
   void _switchAccount() {
@@ -540,13 +517,26 @@ This policy was last updated: March 2026''',
       'Log Out',
       'Are you sure you want to log out? Make sure to backup your data first.',
     );
-    
+
     if (confirmed == true) {
-      // TODO: Clear local data and navigate to login
-      AppErrorHandler.showInfoSnackBar(
-        context,
-        'Logout functionality coming soon',
-      );
+      try {
+        final authService = context.read<AuthService>();
+        await authService.logout();
+
+        if (mounted) {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            '/login',
+            (route) => false,
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          AppErrorHandler.showErrorSnackBar(
+            context,
+            'Logout failed: ${e.toString()}',
+          );
+        }
+      }
     }
   }
 }
