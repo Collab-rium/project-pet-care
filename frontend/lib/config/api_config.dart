@@ -13,7 +13,7 @@ const String apiBaseUrlAndroidLocal = 'http://10.0.2.2:4000';
 const String apiBaseUrlProduction = 'http://localhost:4000'; // Change this!
 
 // Use this to switch between mock and real API
-const bool useMockApi = false;
+const bool useMockApi = true;
 
 // Use this to switch between local and production backend
 const bool useProductionBackend = false;
@@ -23,7 +23,7 @@ String getApiBaseUrl() {
   if (useProductionBackend) {
     return apiBaseUrlProduction;
   }
-  
+
   // For local development, use Android emulator URL if needed
   // Detectplatform and return appropriate URL
   return apiBaseUrlLocal;

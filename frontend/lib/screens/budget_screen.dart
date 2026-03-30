@@ -111,6 +111,69 @@ class _BudgetScreenState extends State<BudgetScreen> {
     }
   }
 
+  Future<void> _showBudgetDialog() async {
+    final TextEditingController budgetController = TextEditingController();
+
+    // Pre-fill with current budget if exists
+    if (_currentBudget != null) {
+      budgetController.text = _currentBudget!.monthlyLimit.toString();
+    }
+
+    final result = await showDialog<double>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(_currentBudget != null ? 'Update Budget' : 'Set Budget'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: budgetController,
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              decoration: InputDecoration(
+                labelText: 'Monthly Budget Amount',
+                prefixText: '\$ ',
+                border: OutlineInputBorder(),
+                hintText: 'Enter amount',
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () {
+              final amount = double.tryParse(budgetController.text);
+              if (amount != null && amount > 0) {
+                Navigator.pop(context, amount);
+              } else {
+                AppErrorHandler.showErrorSnackBar(
+                  context,
+                  'Please enter a valid amount',
+                );
+              }
+            },
+            child: Text(_currentBudget != null ? 'Update' : 'Set'),
+          ),
+        ],
+      ),
+    );
+
+    if (result != null) {
+      // In a real app, you would save this to the database
+      // For now, just show a success message
+      AppErrorHandler.showSuccessSnackBar(
+        context,
+        _currentBudget != null
+            ? 'Budget updated to \$${result.toStringAsFixed(2)}'
+            : 'Budget set to \$${result.toStringAsFixed(2)}',
+      );
+      _loadData(); // Refresh data
+    }
+  }
+
   Budget? get _currentBudget {
     final now = DateTime.now();
     final currentMonth = now.month.toString().padLeft(2, '0');
@@ -143,16 +206,6 @@ class _BudgetScreenState extends State<BudgetScreen> {
           : _pets.isEmpty
               ? _buildEmptyPetsState()
               : _buildContent(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final result = await Navigator.pushNamed(context, '/expenses/add');
-          if (result != null) {
-            _loadData(); // Refresh data after adding expense
-          }
-        },
-        backgroundColor: AppColors.primary,
-        child: const Icon(Icons.add, color: Colors.white),
-      ),
     );
   }
 
@@ -280,12 +333,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
             AppSpacing.vSpaceMd,
             AppButton.primary(
               text: 'Set Budget',
-              onPressed: () {
-                AppErrorHandler.showInfoSnackBar(
-                  context,
-                  'Budget creation coming soon',
-                );
-              },
+              onPressed: () => _showBudgetDialog(),
             ),
           ],
         ),
@@ -359,22 +407,15 @@ class _BudgetScreenState extends State<BudgetScreen> {
                   children: [
                     Text(
                       'Spent',
-                      style: TextStyle(
+                      style: AppTextStyles.bodySmall.copyWith(
                         color: AppColors.textOnPrimary.withOpacity(0.8),
-                        fontSize: 12,
                       ),
                     ),
-                    SizedBox(height: 4),
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        '\$${currentSpent.toStringAsFixed(1)}',
-                        style: TextStyle(
-                          color: AppColors.textOnPrimary,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    AppSpacing.vSpaceXs,
+                    Text(
+                      '\$${currentSpent.toStringAsFixed(2)}',
+                      style: AppTextStyles.h2.copyWith(
+                        color: AppColors.textOnPrimary,
                       ),
                     ),
                   ],
@@ -386,22 +427,15 @@ class _BudgetScreenState extends State<BudgetScreen> {
                   children: [
                     Text(
                       isOverBudget ? 'Over by' : 'Remaining',
-                      style: TextStyle(
+                      style: AppTextStyles.bodySmall.copyWith(
                         color: AppColors.textOnPrimary.withOpacity(0.8),
-                        fontSize: 12,
                       ),
                     ),
-                    SizedBox(height: 4),
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        '\$${isOverBudget ? (currentSpent - budget.monthlyLimit).toStringAsFixed(1) : remaining.toStringAsFixed(1)}',
-                        style: TextStyle(
-                          color: AppColors.textOnPrimary,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    AppSpacing.vSpaceXs,
+                    Text(
+                      '\$${isOverBudget ? (currentSpent - budget.monthlyLimit).toStringAsFixed(2) : remaining.toStringAsFixed(2)}',
+                      style: AppTextStyles.h2.copyWith(
+                        color: AppColors.textOnPrimary,
                       ),
                     ),
                   ],
@@ -413,22 +447,15 @@ class _BudgetScreenState extends State<BudgetScreen> {
                   children: [
                     Text(
                       'Budget',
-                      style: TextStyle(
+                      style: AppTextStyles.bodySmall.copyWith(
                         color: AppColors.textOnPrimary.withOpacity(0.8),
-                        fontSize: 12,
                       ),
                     ),
-                    SizedBox(height: 4),
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        '\$${budget.monthlyLimit.toStringAsFixed(1)}',
-                        style: TextStyle(
-                          color: AppColors.textOnPrimary,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    AppSpacing.vSpaceXs,
+                    Text(
+                      '\$${budget.monthlyLimit.toStringAsFixed(2)}',
+                      style: AppTextStyles.h2.copyWith(
+                        color: AppColors.textOnPrimary,
                       ),
                     ),
                   ],
@@ -550,21 +577,13 @@ class _BudgetScreenState extends State<BudgetScreen> {
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
-                      reservedSize: 30,
                       getTitlesWidget: (value, meta) {
                         if (value.toInt() < sortedEntries.length) {
                           final entry = sortedEntries[value.toInt()];
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 8),
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Text(
-                                entry.key.split('/')[0],
-                                style: AppTextStyles.bodySmall.copyWith(
-                                  color: AppColors.textTertiary,
-                                  fontSize: 10,
-                                ),
-                              ),
+                          return Text(
+                            entry.key.split('/')[0],
+                            style: AppTextStyles.bodySmall.copyWith(
+                              color: AppColors.textTertiary,
                             ),
                           );
                         }
@@ -575,17 +594,11 @@ class _BudgetScreenState extends State<BudgetScreen> {
                   leftTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
-                      reservedSize: 40,
                       getTitlesWidget: (value, meta) {
-                        if (value == 0) return const Text('');
-                        return FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(
-                            '\$${value.toInt()}',
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: AppColors.textTertiary,
-                              fontSize: 10,
-                            ),
+                        return Text(
+                          '\$${value.toInt()}',
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: AppColors.textTertiary,
                           ),
                         );
                       },

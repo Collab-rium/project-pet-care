@@ -338,20 +338,17 @@ class _TaskItem extends StatelessWidget {
     return Card(
       color: AppColors.surface,
       margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Row(
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        leading: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            // Checkbox
             Checkbox(
               value: isCompleted,
               onChanged: (_) => onToggle(),
               activeColor: AppColors.primary,
             ),
-
-            const SizedBox(width: 8),
-
-            // Icon
+            const SizedBox(width: 4),
             Container(
               width: 40,
               height: 40,
@@ -361,88 +358,83 @@ class _TaskItem extends StatelessWidget {
               ),
               child: Icon(_getTaskIcon(), color: color, size: 20),
             ),
-
-            const SizedBox(width: 12),
-
-            // Info
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    task.title,
-                    style: AppTextStyles.bodyLarge.copyWith(
-                      fontWeight: FontWeight.w600,
-                      decoration:
-                          isCompleted ? TextDecoration.lineThrough : null,
-                    ),
-                  ),
-                  if (task.petName?.isNotEmpty ?? false)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 4),
-                      child: Text(
-                        'Pet: ${task.petName}',
-                        style: AppTextStyles.bodySmall.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Icon(Icons.access_time, size: 14, color: color),
-                      const SizedBox(width: 4),
-                      Text(
-                        DateFormat('MMM d, h:mm a')
-                            .format(DateTime.parse(task.scheduledTime)),
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: color,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      if (task.isOverdue)
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 6,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.error.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: Text(
-                              'OVERDUE',
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: AppColors.error,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ],
+          ],
+        ),
+        title: Text(
+          task.title,
+          style: AppTextStyles.bodyLarge.copyWith(
+            fontWeight: FontWeight.w600,
+            decoration: isCompleted ? TextDecoration.lineThrough : null,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (task.petName?.isNotEmpty ?? false)
+              Text(
+                'Pet: ${task.petName}',
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                Icon(Icons.access_time, size: 14, color: color),
+                const SizedBox(width: 4),
+                Text(
+                  DateFormat('MMM d, h:mm a')
+                      .format(DateTime.parse(task.scheduledTime)),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: color,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                if (task.isOverdue)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.error.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        'OVERDUE',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: AppColors.error,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
-
-            // Edit button
+          ],
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
             IconButton(
               icon: const Icon(Icons.edit_outlined),
               color: AppColors.textTertiary,
               onPressed: onEdit,
+              iconSize: 20,
             ),
-
-            // Delete button
             IconButton(
               icon: const Icon(Icons.delete_outline),
               color: AppColors.textTertiary,
               onPressed: onDelete,
+              iconSize: 20,
             ),
           ],
         ),

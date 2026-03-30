@@ -14,10 +14,11 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   final _formKey = GlobalKey<FormState>();
   final _amountController = TextEditingController();
   final _notesController = TextEditingController();
-  
+  final _descriptionController = TextEditingController();
+
   String _selectedCategory = 'Food & Treats';
   DateTime _selectedDate = DateTime.now();
-  
+
   final List<String> _categories = [
     'Food & Treats',
     'Medical',
@@ -28,14 +29,15 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     'Insurance',
     'Other',
   ];
-  
+
   @override
   void dispose() {
     _amountController.dispose();
     _notesController.dispose();
+    _descriptionController.dispose();
     super.dispose();
   }
-  
+
   Future<void> _selectDate() async {
     final picked = await showDatePicker(
       context: context,
@@ -47,7 +49,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
       setState(() => _selectedDate = picked);
     }
   }
-  
+
   void _saveExpense() {
     if (_formKey.currentState!.validate()) {
       // TODO: Save to local storage
@@ -56,8 +58,10 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
         'category': _selectedCategory,
         'date': _selectedDate.toIso8601String(),
         'notes': _notesController.text,
+        'description':
+            _selectedCategory == 'Other' ? _descriptionController.text : '',
       };
-      
+
       Navigator.pop(context, expense);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -67,7 +71,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
       );
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,9 +104,9 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                 return null;
               },
             ),
-            
+
             SizedBox(height: AppSpacing.md),
-            
+
             // Category dropdown
             DropdownButtonFormField<String>(
               value: _selectedCategory,
@@ -122,9 +126,32 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                 setState(() => _selectedCategory = value!);
               },
             ),
-            
+
             SizedBox(height: AppSpacing.md),
-            
+
+            // Description field (only for "Other" category)
+            if (_selectedCategory == 'Other') ...[
+              TextFormField(
+                controller: _descriptionController,
+                maxLines: 2,
+                decoration: InputDecoration(
+                  labelText: 'Description *',
+                  hintText: 'Please describe this expense',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                  ),
+                ),
+                validator: (value) {
+                  if (_selectedCategory == 'Other' &&
+                      (value == null || value.isEmpty)) {
+                    return 'Please provide a description for "Other" category';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: AppSpacing.md),
+            ],
+
             // Date picker
             InkWell(
               onTap: _selectDate,
@@ -144,9 +171,9 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                 ),
               ),
             ),
-            
+
             SizedBox(height: AppSpacing.md),
-            
+
             // Notes field
             TextFormField(
               controller: _notesController,
@@ -158,9 +185,9 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                 ),
               ),
             ),
-            
+
             SizedBox(height: AppSpacing.lg),
-            
+
             // Save button
             ElevatedButton(
               onPressed: _saveExpense,
@@ -177,7 +204,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
       ),
     );
   }
-  
+
   String _formatDate(DateTime date) {
     return '${date.month}/${date.day}/${date.year}';
   }

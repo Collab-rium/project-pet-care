@@ -23,7 +23,7 @@ class PetListScreen extends StatefulWidget {
 class _PetListScreenState extends State<PetListScreen> {
   final _petRepository = PetRepository();
   final _searchController = TextEditingController();
-  
+
   List<Pet> _pets = [];
   List<Pet> _filteredPets = [];
   bool _isLoading = true;
@@ -44,9 +44,10 @@ class _PetListScreenState extends State<PetListScreen> {
   Future<void> _loadPets() async {
     try {
       setState(() => _isLoading = true);
-      
-      final pets = await _petRepository.getUserPets('user-1'); // TODO: Get from auth
-      
+
+      final pets =
+          await _petRepository.getUserPets('user-1'); // TODO: Get from auth
+
       setState(() {
         _pets = pets;
         _filteredPets = pets;
@@ -67,11 +68,13 @@ class _PetListScreenState extends State<PetListScreen> {
       if (query.isEmpty) {
         _filteredPets = _pets;
       } else {
-        _filteredPets = _pets.where((pet) =>
-          pet.name.toLowerCase().contains(query.toLowerCase()) ||
-          pet.species.toLowerCase().contains(query.toLowerCase()) ||
-          (pet.breed?.toLowerCase().contains(query.toLowerCase()) ?? false)
-        ).toList();
+        _filteredPets = _pets
+            .where((pet) =>
+                pet.name.toLowerCase().contains(query.toLowerCase()) ||
+                pet.species.toLowerCase().contains(query.toLowerCase()) ||
+                (pet.breed?.toLowerCase().contains(query.toLowerCase()) ??
+                    false))
+            .toList();
       }
     });
   }
@@ -82,7 +85,7 @@ class _PetListScreenState extends State<PetListScreen> {
         builder: (context) => const PetProfileScreen(),
       ),
     );
-    
+
     if (result is Pet) {
       _loadPets(); // Refresh the list
     }
@@ -97,9 +100,45 @@ class _PetListScreenState extends State<PetListScreen> {
         ),
       ),
     );
-    
+
     if (result != null) {
       _loadPets(); // Refresh the list
+    }
+  }
+
+  Future<void> _deletePet(Pet pet) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Pet'),
+        content: Text('Are you sure you want to delete ${pet.name}?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      try {
+        await _petRepository.deletePet(pet.id);
+        _loadPets(); // Refresh the list
+        AppErrorHandler.showSuccessSnackBar(
+          context,
+          '${pet.name} deleted successfully',
+        );
+      } catch (e) {
+        AppErrorHandler.showErrorSnackBar(
+          context,
+          'Failed to delete pet: ${e.toString()}',
+        );
+      }
     }
   }
 
@@ -137,7 +176,7 @@ class _PetListScreenState extends State<PetListScreen> {
               },
             ),
           ),
-          
+
           // Pet list
           Expanded(
             child: _isLoading
@@ -253,9 +292,9 @@ class _PetListScreenState extends State<PetListScreen> {
                         : _buildPetAvatar(pet),
                   ),
                 ),
-                
+
                 AppSpacing.hSpaceMd,
-                
+
                 // Pet info
                 Expanded(
                   child: Column(
@@ -267,9 +306,7 @@ class _PetListScreenState extends State<PetListScreen> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      
                       AppSpacing.vSpaceXs,
-                      
                       Text(
                         _buildPetSubtitle(pet),
                         style: AppTextStyles.bodyMedium.copyWith(
@@ -278,16 +315,13 @@ class _PetListScreenState extends State<PetListScreen> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      
                       AppSpacing.vSpaceXs,
-                      
                       Text(
                         pet.ageText,
                         style: AppTextStyles.bodySmall.copyWith(
                           color: AppColors.textTertiary,
                         ),
                       ),
-                      
                       if (pet.weight != null) ...[
                         AppSpacing.vSpaceXs,
                         Row(
@@ -310,7 +344,7 @@ class _PetListScreenState extends State<PetListScreen> {
                     ],
                   ),
                 ),
-                
+
                 // Actions
                 Row(
                   mainAxisSize: MainAxisSize.min,
@@ -325,7 +359,16 @@ class _PetListScreenState extends State<PetListScreen> {
                       padding: EdgeInsets.all(8),
                       constraints: BoxConstraints(),
                     ),
-                    
+                    IconButton(
+                      icon: Icon(
+                        Icons.delete_outline,
+                        color: AppColors.error,
+                        size: 20,
+                      ),
+                      onPressed: () => _deletePet(pet),
+                      padding: EdgeInsets.all(8),
+                      constraints: BoxConstraints(),
+                    ),
                     Icon(
                       Icons.chevron_right,
                       color: AppColors.textTertiary,
@@ -373,17 +416,17 @@ class _PetListScreenState extends State<PetListScreen> {
 
   String _buildPetSubtitle(Pet pet) {
     final parts = <String>[];
-    
+
     if (pet.breed != null && pet.breed!.isNotEmpty) {
       parts.add('${pet.breed} ${pet.species}');
     } else {
       parts.add(pet.species);
     }
-    
+
     if (pet.gender != null) {
       parts.add(pet.gender!);
     }
-    
+
     return parts.join(' • ');
   }
 }
