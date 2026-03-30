@@ -4,8 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'services/auth_service.dart';
 import 'services/notification_service.dart';
 import 'screens/auth_gate.dart';
-import 'core/theme/light_theme.dart';
-import 'core/theme/dark_theme.dart';
+import 'core/theme/theme_manager.dart';
 import 'core/utils/routes.dart';
 
 void main() async {
@@ -27,48 +26,49 @@ void main() async {
     print('⚠️ Notification service initialization warning: $e');
   }
 
-  // Create and initialize auth service
+  // Create and initialize services
   final authService = AuthService();
   await authService.initialize();
+  
+  final themeManager = ThemeManager();
+  await themeManager.initialize();
 
-  runApp(MyApp(authService: authService));
+  runApp(MyApp(
+    authService: authService,
+    themeManager: themeManager,
+  ));
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   final AuthService authService;
+  final ThemeManager themeManager;
 
-  const MyApp({super.key, required this.authService});
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  // Theme mode state (light by default, dark mode button will toggle this)
-  ThemeMode _themeMode = ThemeMode.light;
-
-  void _toggleTheme() {
-    setState(() {
-      _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
-    });
-  }
+  const MyApp({
+    super.key,
+    required this.authService,
+    required this.themeManager,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<AuthService>.value(
-      value: widget.authService,
-      child: MaterialApp(
-        title: 'Pet Care',
-        debugShowCheckedModeBanner: false,
-        // Use our custom themes
-        theme: lightTheme(),
-        darkTheme: darkTheme(),
-        themeMode: _themeMode,
-        // Use our routing system
-        onGenerateRoute: RouteGenerator.generateRoute,
-        initialRoute: AppRoutes.login,
-        // Keep auth gate as home for now
-        home: const AuthGate(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<AuthService>.value(value: authService),
+        ChangeNotifierProvider<ThemeManager>.value(value: themeManager),
+      ],
+      child: Consumer<ThemeManager>(
+        builder: (context, themeManager, child) {
+          return MaterialApp(
+            title: 'Pet Care',
+            debugShowCheckedModeBanner: false,
+            theme: themeManager.getLightTheme(),
+            darkTheme: themeManager.getDarkTheme(),
+            themeMode: themeManager.themeMode,
+            onGenerateRoute: RouteGenerator.generateRoute,
+            initialRoute: AppRoutes.login,
+            home: const AuthGate(),
+          );
+        },
       ),
     );
   }

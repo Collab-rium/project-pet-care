@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../screens/tasks_screen.dart';
+import '../../screens/theme_selector_screen.dart';
 
 /// App routes configuration
 class AppRoutes {
@@ -86,6 +87,11 @@ class RouteGenerator {
         final filter = args as String?;
         return MaterialPageRoute(
           builder: (_) => TasksScreen(filter: filter),
+        );
+      
+      case AppRoutes.themeSelector:
+        return MaterialPageRoute(
+          builder: (_) => const ThemeSelectorScreen(),
         );
         
       // Add more routes as screens are implemented

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
@@ -9,6 +10,8 @@ import '../core/constants/spacing.dart';
 import '../core/constants/text_styles.dart';
 import '../core/utils/error_handler.dart';
 import '../core/utils/image_compression.dart';
+import '../core/theme/theme_manager.dart';
+import '../services/auth_service.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -20,7 +23,6 @@ class AccountScreen extends StatefulWidget {
 class _AccountScreenState extends State<AccountScreen> {
   String _username = 'demo';
   String? _profilePhotoPath;
-  bool _isDarkMode = false;
   bool _notificationsEnabled = false;
   bool _isPickingPhoto = false;
 
@@ -227,22 +229,18 @@ class _AccountScreenState extends State<AccountScreen> {
         ),
         
         // Theme
-        _buildSettingsTile(
-          icon: Icons.palette,
-          title: 'Appearance',
-          subtitle: _isDarkMode ? 'Dark mode' : 'Light mode',
-          trailing: Switch(
-            value: _isDarkMode,
-            onChanged: (value) {
-              setState(() => _isDarkMode = value);
-              AppErrorHandler.showInfoSnackBar(
-                context,
-                'Theme switching coming soon',
-              );
-            },
-            activeColor: AppColors.primary,
-          ),
-          onTap: () => _showThemeSettings(),
+        Consumer<ThemeManager>(
+          builder: (context, themeManager, child) {
+            return _buildSettingsTile(
+              icon: Icons.palette,
+              title: 'Appearance',
+              subtitle: '${themeManager.currentTheme.name} - ${themeManager.isDarkMode ? "Dark" : "Light"}',
+              trailing: const Icon(Icons.chevron_right, color: AppColors.textTertiary),
+              onTap: () {
+                Navigator.pushNamed(context, '/settings/theme');
+              },
+            );
+          },
         ),
         
         // Wallpaper
