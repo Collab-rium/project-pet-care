@@ -9,7 +9,7 @@ import '../models/models.dart';
 /// Screen to manage all tasks with add/remove functionality
 class TasksScreen extends StatefulWidget {
   final String? filter; // 'completed', 'pending', 'overdue', or null for all
-  
+
   const TasksScreen({super.key, this.filter});
 
   @override
@@ -28,10 +28,10 @@ class _TasksScreenState extends State<TasksScreen> {
 
   Future<void> _loadTasks() async {
     setState(() => _isLoading = true);
-    
+
     // Mock tasks - in real app would load from local storage
     await Future.delayed(const Duration(milliseconds: 300));
-    
+
     final now = DateTime.now();
     _tasks = [
       Task(
@@ -68,18 +68,20 @@ class _TasksScreenState extends State<TasksScreen> {
         repeat: 'weekly',
       ),
     ];
-    
+
     setState(() => _isLoading = false);
   }
 
   List<Task> get _filteredTasks {
     if (widget.filter == null) return _tasks;
-    
+
     switch (widget.filter) {
       case 'completed':
         return _tasks.where((t) => t.status == 'completed').toList();
       case 'pending':
-        return _tasks.where((t) => t.status == 'pending' && !t.isOverdue).toList();
+        return _tasks
+            .where((t) => t.status == 'pending' && !t.isOverdue)
+            .toList();
       case 'overdue':
         return _tasks.where((t) => t.isOverdue).toList();
       default:
@@ -106,11 +108,11 @@ class _TasksScreenState extends State<TasksScreen> {
       context: context,
       builder: (context) => _AddTaskDialog(),
     );
-    
+
     if (result != null) {
       final now = DateTime.now();
       final schedTime = result['scheduledTime'] as DateTime;
-      
+
       final newTask = Task(
         id: 'task-${DateTime.now().millisecondsSinceEpoch}',
         petId: result['petId'] ?? 'pet-1',
@@ -122,11 +124,11 @@ class _TasksScreenState extends State<TasksScreen> {
         isOverdue: schedTime.isBefore(now),
         repeat: 'none',
       );
-      
+
       setState(() {
         _tasks.add(newTask);
       });
-      
+
       AppErrorHandler.showSuccessSnackBar(
         context,
         'Task added successfully!',
@@ -161,6 +163,40 @@ class _TasksScreenState extends State<TasksScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _editTask(Task task) async {
+    final result = await showDialog<Map<String, dynamic>>(
+      context: context,
+      builder: (context) => _EditTaskDialog(task: task),
+    );
+
+    if (result != null) {
+      final now = DateTime.now();
+      final schedTime = result['scheduledTime'] as DateTime;
+
+      setState(() {
+        final index = _tasks.indexWhere((t) => t.id == task.id);
+        if (index != -1) {
+          _tasks[index] = Task(
+            id: task.id,
+            petId: result['petId'] ?? task.petId,
+            petName: result['petName'] ?? task.petName,
+            type: result['type'],
+            message: result['title'],
+            scheduledTime: schedTime.toIso8601String(),
+            status: task.status,
+            isOverdue: schedTime.isBefore(now) && task.status != 'completed',
+            repeat: task.repeat,
+          );
+        }
+      });
+
+      AppErrorHandler.showSuccessSnackBar(
+        context,
+        'Task updated successfully!',
+      );
+    }
   }
 
   void _toggleTaskStatus(Task task) {
@@ -210,6 +246,7 @@ class _TasksScreenState extends State<TasksScreen> {
                       task: task,
                       onToggle: () => _toggleTaskStatus(task),
                       onDelete: () => _deleteTask(task),
+                      onEdit: () => _editTask(task),
                     );
                   },
                 ),
@@ -259,11 +296,13 @@ class _TaskItem extends StatelessWidget {
   final Task task;
   final VoidCallback onToggle;
   final VoidCallback onDelete;
+  final VoidCallback onEdit;
 
   const _TaskItem({
     required this.task,
     required this.onToggle,
     required this.onDelete,
+    required this.onEdit,
   });
 
   IconData _getTaskIcon() {
@@ -309,9 +348,9 @@ class _TaskItem extends StatelessWidget {
               onChanged: (_) => onToggle(),
               activeColor: AppColors.primary,
             ),
-            
+
             const SizedBox(width: 8),
-            
+
             // Icon
             Container(
               width: 40,
@@ -322,9 +361,9 @@ class _TaskItem extends StatelessWidget {
               ),
               child: Icon(_getTaskIcon(), color: color, size: 20),
             ),
-            
+
             const SizedBox(width: 12),
-            
+
             // Info
             Expanded(
               child: Column(
@@ -334,9 +373,8 @@ class _TaskItem extends StatelessWidget {
                     task.title,
                     style: AppTextStyles.bodyLarge.copyWith(
                       fontWeight: FontWeight.w600,
-                      decoration: isCompleted
-                          ? TextDecoration.lineThrough
-                          : null,
+                      decoration:
+                          isCompleted ? TextDecoration.lineThrough : null,
                     ),
                   ),
                   if (task.petName?.isNotEmpty ?? false)
@@ -357,7 +395,8 @@ class _TaskItem extends StatelessWidget {
                       Icon(Icons.access_time, size: 14, color: color),
                       const SizedBox(width: 4),
                       Text(
-                        DateFormat('MMM d, h:mm a').format(DateTime.parse(task.scheduledTime)),
+                        DateFormat('MMM d, h:mm a')
+                            .format(DateTime.parse(task.scheduledTime)),
                         style: TextStyle(
                           fontSize: 12,
                           color: color,
@@ -391,7 +430,14 @@ class _TaskItem extends StatelessWidget {
                 ],
               ),
             ),
-            
+
+            // Edit button
+            IconButton(
+              icon: const Icon(Icons.edit_outlined),
+              color: AppColors.textTertiary,
+              onPressed: onEdit,
+            ),
+
             // Delete button
             IconButton(
               icon: const Icon(Icons.delete_outline),
@@ -414,10 +460,10 @@ class _AddTaskDialogState extends State<_AddTaskDialog> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
-  
+
   String _selectedType = 'feeding';
   DateTime _scheduledTime = DateTime.now().add(const Duration(hours: 1));
-  
+
   final List<Map<String, dynamic>> _taskTypes = [
     {'value': 'feeding', 'label': 'Feeding', 'icon': Icons.restaurant},
     {'value': 'medication', 'label': 'Medication', 'icon': Icons.medication},
@@ -460,9 +506,9 @@ class _AddTaskDialogState extends State<_AddTaskDialog> {
                   setState(() => _selectedType = value!);
                 },
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // Title
               TextFormField(
                 controller: _titleController,
@@ -477,9 +523,9 @@ class _AddTaskDialogState extends State<_AddTaskDialog> {
                   return null;
                 },
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // Description
               TextFormField(
                 controller: _descriptionController,
@@ -489,9 +535,9 @@ class _AddTaskDialogState extends State<_AddTaskDialog> {
                 ),
                 maxLines: 2,
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // Date & Time
               ListTile(
                 contentPadding: EdgeInsets.zero,
@@ -506,13 +552,13 @@ class _AddTaskDialogState extends State<_AddTaskDialog> {
                     firstDate: DateTime.now(),
                     lastDate: DateTime.now().add(const Duration(days: 365)),
                   );
-                  
+
                   if (date != null) {
                     final time = await showTimePicker(
                       context: context,
                       initialTime: TimeOfDay.fromDateTime(_scheduledTime),
                     );
-                    
+
                     if (time != null) {
                       setState(() {
                         _scheduledTime = DateTime(
@@ -552,7 +598,177 @@ class _AddTaskDialogState extends State<_AddTaskDialog> {
       ],
     );
   }
-  
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
+}
+
+class _EditTaskDialog extends StatefulWidget {
+  final Task task;
+
+  const _EditTaskDialog({required this.task});
+
+  @override
+  _EditTaskDialogState createState() => _EditTaskDialogState();
+}
+
+class _EditTaskDialogState extends State<_EditTaskDialog> {
+  final _formKey = GlobalKey<FormState>();
+  late TextEditingController _titleController;
+  late TextEditingController _descriptionController;
+
+  late String _selectedType;
+  late DateTime _scheduledTime;
+
+  final List<Map<String, dynamic>> _taskTypes = [
+    {'value': 'feeding', 'label': 'Feeding', 'icon': Icons.restaurant},
+    {'value': 'medication', 'label': 'Medication', 'icon': Icons.medication},
+    {'value': 'grooming', 'label': 'Grooming', 'icon': Icons.content_cut},
+    {'value': 'exercise', 'label': 'Exercise', 'icon': Icons.directions_run},
+    {'value': 'vet_visit', 'label': 'Vet Visit', 'icon': Icons.local_hospital},
+    {'value': 'vaccination', 'label': 'Vaccination', 'icon': Icons.vaccines},
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController(text: widget.task.message);
+    _descriptionController = TextEditingController();
+    _selectedType = widget.task.type;
+    _scheduledTime = DateTime.parse(widget.task.scheduledTime);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Edit Task'),
+      content: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Task type
+              DropdownButtonFormField<String>(
+                value: _selectedType,
+                decoration: const InputDecoration(
+                  labelText: 'Task Type',
+                  border: OutlineInputBorder(),
+                ),
+                items: _taskTypes.map<DropdownMenuItem<String>>((type) {
+                  return DropdownMenuItem<String>(
+                    value: type['value'] as String,
+                    child: Row(
+                      children: [
+                        Icon(type['icon'] as IconData, size: 20),
+                        const SizedBox(width: 8),
+                        Text(type['label'] as String),
+                      ],
+                    ),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() => _selectedType = value!);
+                },
+              ),
+
+              const SizedBox(height: 16),
+
+              // Title
+              TextFormField(
+                controller: _titleController,
+                decoration: const InputDecoration(
+                  labelText: 'Title',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a title';
+                  }
+                  return null;
+                },
+              ),
+
+              const SizedBox(height: 16),
+
+              // Description
+              TextFormField(
+                controller: _descriptionController,
+                decoration: const InputDecoration(
+                  labelText: 'Description (optional)',
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 2,
+              ),
+
+              const SizedBox(height: 16),
+
+              // Date & Time
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(Icons.calendar_today),
+                title: Text(
+                  DateFormat('MMM d, yyyy h:mm a').format(_scheduledTime),
+                ),
+                onTap: () async {
+                  final date = await showDatePicker(
+                    context: context,
+                    initialDate: _scheduledTime,
+                    firstDate:
+                        DateTime.now().subtract(const Duration(days: 365)),
+                    lastDate: DateTime.now().add(const Duration(days: 365)),
+                  );
+
+                  if (date != null) {
+                    final time = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay.fromDateTime(_scheduledTime),
+                    );
+
+                    if (time != null) {
+                      setState(() {
+                        _scheduledTime = DateTime(
+                          date.year,
+                          date.month,
+                          date.day,
+                          time.hour,
+                          time.minute,
+                        );
+                      });
+                    }
+                  }
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              Navigator.pop(context, {
+                'type': _selectedType,
+                'title': _titleController.text,
+                'description': _descriptionController.text,
+                'scheduledTime': _scheduledTime,
+              });
+            }
+          },
+          child: const Text('Save'),
+        ),
+      ],
+    );
+  }
+
   @override
   void dispose() {
     _titleController.dispose();

@@ -22,12 +22,12 @@ class _BudgetScreenState extends State<BudgetScreen> {
   final _petRepository = PetRepository();
   final _budgetRepository = BudgetRepository();
   final _expenseRepository = ExpenseRepository();
-  
+
   List<Pet> _pets = [];
   List<Budget> _budgets = [];
   Map<String, double> _monthlyExpenses = {};
   Map<String, Map<String, double>> _categoryBreakdown = {};
-  
+
   Pet? _selectedPet;
   bool _isLoading = true;
 
@@ -40,20 +40,20 @@ class _BudgetScreenState extends State<BudgetScreen> {
   Future<void> _loadData() async {
     try {
       setState(() => _isLoading = true);
-      
+
       final pets = await _petRepository.getUserPets('user-1');
-      
+
       setState(() {
         _pets = pets;
         if (pets.isNotEmpty && _selectedPet == null) {
           _selectedPet = pets.first;
         }
       });
-      
+
       if (_selectedPet != null) {
         await _loadPetBudgetData();
       }
-      
+
       setState(() => _isLoading = false);
     } catch (e) {
       AppErrorHandler.showErrorSnackBar(
@@ -69,33 +69,35 @@ class _BudgetScreenState extends State<BudgetScreen> {
 
     try {
       final budgets = await _budgetRepository.getPetBudgets(_selectedPet!.id);
-      final currentBudget = await _budgetRepository.getCurrentBudget(_selectedPet!.id);
-      
+      final currentBudget =
+          await _budgetRepository.getCurrentBudget(_selectedPet!.id);
+
       // Load monthly expenses for the last 6 months
       final now = DateTime.now();
       final monthlyExpenses = <String, double>{};
       final categoryBreakdown = <String, Map<String, double>>{};
-      
+
       for (int i = 0; i < 6; i++) {
         final monthDate = DateTime(now.year, now.month - i);
-        final monthKey = '${monthDate.month.toString().padLeft(2, '0')}/${monthDate.year}';
-        
+        final monthKey =
+            '${monthDate.month.toString().padLeft(2, '0')}/${monthDate.year}';
+
         final monthlyTotal = await _expenseRepository.getPetMonthlyExpenses(
           _selectedPet!.id,
           monthDate.year,
           monthDate.month,
         );
-        
+
         final categoryTotals = await _expenseRepository.getCategoryTotals(
           _selectedPet!.id,
           monthDate.year,
           monthDate.month,
         );
-        
+
         monthlyExpenses[monthKey] = monthlyTotal;
         categoryBreakdown[monthKey] = categoryTotals;
       }
-      
+
       setState(() {
         _budgets = budgets;
         _monthlyExpenses = monthlyExpenses;
@@ -112,10 +114,10 @@ class _BudgetScreenState extends State<BudgetScreen> {
   Budget? get _currentBudget {
     final now = DateTime.now();
     final currentMonth = now.month.toString().padLeft(2, '0');
-    
-    return _budgets.where((b) => 
-      b.month == currentMonth && b.year == now.year
-    ).firstOrNull;
+
+    return _budgets
+        .where((b) => b.month == currentMonth && b.year == now.year)
+        .firstOrNull;
   }
 
   @override
@@ -136,11 +138,21 @@ class _BudgetScreenState extends State<BudgetScreen> {
           ),
         ],
       ),
-      body: _isLoading 
+      body: _isLoading
           ? const ChartLoadingSkeleton()
           : _pets.isEmpty
               ? _buildEmptyPetsState()
               : _buildContent(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final result = await Navigator.pushNamed(context, '/expenses/add');
+          if (result != null) {
+            _loadData(); // Refresh data after adding expense
+          }
+        },
+        backgroundColor: AppColors.primary,
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
     );
   }
 
@@ -208,19 +220,19 @@ class _BudgetScreenState extends State<BudgetScreen> {
             children: [
               // Current budget overview
               _buildCurrentBudgetCard(),
-              
+
               AppSpacing.vSpaceLg,
-              
+
               // Monthly spending chart
               _buildSpendingChart(),
-              
+
               AppSpacing.vSpaceLg,
-              
+
               // Category breakdown
               _buildCategoryBreakdown(),
-              
+
               AppSpacing.vSpaceLg,
-              
+
               // Budget history
               _buildBudgetHistory(),
             ],
@@ -233,9 +245,10 @@ class _BudgetScreenState extends State<BudgetScreen> {
   Widget _buildCurrentBudgetCard() {
     final budget = _currentBudget;
     final now = DateTime.now();
-    final currentMonthKey = '${now.month.toString().padLeft(2, '0')}/${now.year}';
+    final currentMonthKey =
+        '${now.month.toString().padLeft(2, '0')}/${now.year}';
     final currentSpent = _monthlyExpenses[currentMonthKey] ?? 0.0;
-    
+
     if (budget == null) {
       return Container(
         padding: AppSpacing.cardInsets,
@@ -279,15 +292,17 @@ class _BudgetScreenState extends State<BudgetScreen> {
       );
     }
 
-    final percentageUsed = (currentSpent / budget.monthlyLimit * 100).clamp(0, 100);
-    final remaining = (budget.monthlyLimit - currentSpent).clamp(0, double.infinity);
+    final percentageUsed =
+        (currentSpent / budget.monthlyLimit * 100).clamp(0, 100);
+    final remaining =
+        (budget.monthlyLimit - currentSpent).clamp(0, double.infinity);
     final isOverBudget = currentSpent > budget.monthlyLimit;
 
     return Container(
       padding: AppSpacing.cardInsets,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: isOverBudget 
+          colors: isOverBudget
               ? [AppColors.error, AppColors.error.withOpacity(0.8)]
               : [AppColors.primary, AppColors.primary.withOpacity(0.8)],
         ),
@@ -325,16 +340,16 @@ class _BudgetScreenState extends State<BudgetScreen> {
                   child: Text(
                     'OVER BUDGET',
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: AppColors.textOnPrimary,
-                      fontWeight: FontWeight.bold,
-                    ),
+                          color: AppColors.textOnPrimary,
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                 ),
             ],
           ),
-          
+
           AppSpacing.vSpaceLg,
-          
+
           // Budget amounts
           Row(
             children: [
@@ -365,7 +380,6 @@ class _BudgetScreenState extends State<BudgetScreen> {
                   ],
                 ),
               ),
-              
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -393,7 +407,6 @@ class _BudgetScreenState extends State<BudgetScreen> {
                   ],
                 ),
               ),
-              
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -423,9 +436,9 @@ class _BudgetScreenState extends State<BudgetScreen> {
               ),
             ],
           ),
-          
+
           AppSpacing.vSpaceLg,
-          
+
           // Progress bar
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -537,13 +550,21 @@ class _BudgetScreenState extends State<BudgetScreen> {
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
+                      reservedSize: 30,
                       getTitlesWidget: (value, meta) {
                         if (value.toInt() < sortedEntries.length) {
                           final entry = sortedEntries[value.toInt()];
-                          return Text(
-                            entry.key.split('/')[0],
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: AppColors.textTertiary,
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                entry.key.split('/')[0],
+                                style: AppTextStyles.bodySmall.copyWith(
+                                  color: AppColors.textTertiary,
+                                  fontSize: 10,
+                                ),
+                              ),
                             ),
                           );
                         }
@@ -554,18 +575,26 @@ class _BudgetScreenState extends State<BudgetScreen> {
                   leftTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
+                      reservedSize: 40,
                       getTitlesWidget: (value, meta) {
-                        return Text(
-                          '\$${value.toInt()}',
-                          style: AppTextStyles.bodySmall.copyWith(
-                            color: AppColors.textTertiary,
+                        if (value == 0) return const Text('');
+                        return FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            '\$${value.toInt()}',
+                            style: AppTextStyles.bodySmall.copyWith(
+                              color: AppColors.textTertiary,
+                              fontSize: 10,
+                            ),
                           ),
                         );
                       },
                     ),
                   ),
-                  topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  topTitles:
+                      AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  rightTitles:
+                      AxisTitles(sideTitles: SideTitles(showTitles: false)),
                 ),
                 borderData: FlBorderData(show: false),
                 lineBarsData: [
@@ -591,9 +620,10 @@ class _BudgetScreenState extends State<BudgetScreen> {
 
   Widget _buildCategoryBreakdown() {
     final now = DateTime.now();
-    final currentMonthKey = '${now.month.toString().padLeft(2, '0')}/${now.year}';
+    final currentMonthKey =
+        '${now.month.toString().padLeft(2, '0')}/${now.year}';
     final currentCategories = _categoryBreakdown[currentMonthKey] ?? {};
-    
+
     if (currentCategories.isEmpty) {
       return Container(
         padding: AppSpacing.cardInsets,
@@ -647,27 +677,28 @@ class _BudgetScreenState extends State<BudgetScreen> {
             style: AppTextStyles.h3,
           ),
           AppSpacing.vSpaceMd,
-          
-          ...sortedCategories.map((entry) => Padding(
-            padding: EdgeInsets.only(bottom: AppSpacing.sm),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    entry.key,
-                    style: AppTextStyles.bodyMedium,
-                  ),
-                ),
-                Text(
-                  '\$${entry.value.toStringAsFixed(2)}',
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.primary,
-                  ),
-                ),
-              ],
-            ),
-          )).toList(),
+          ...sortedCategories
+              .map((entry) => Padding(
+                    padding: EdgeInsets.only(bottom: AppSpacing.sm),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            entry.key,
+                            style: AppTextStyles.bodyMedium,
+                          ),
+                        ),
+                        Text(
+                          '\$${entry.value.toStringAsFixed(2)}',
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ))
+              .toList(),
         ],
       ),
     );
@@ -724,12 +755,12 @@ class _BudgetScreenState extends State<BudgetScreen> {
             style: AppTextStyles.h3,
           ),
           AppSpacing.vSpaceMd,
-          
           ..._budgets.take(5).map((budget) {
             final monthKey = '${budget.month}/${budget.year}';
             final spent = _monthlyExpenses[monthKey] ?? 0.0;
-            final percentage = (spent / budget.monthlyLimit * 100).clamp(0, 100);
-            
+            final percentage =
+                (spent / budget.monthlyLimit * 100).clamp(0, 100);
+
             return Container(
               margin: EdgeInsets.only(bottom: AppSpacing.sm),
               padding: AppSpacing.cardInsets,
@@ -760,7 +791,9 @@ class _BudgetScreenState extends State<BudgetScreen> {
                     value: percentage / 100,
                     backgroundColor: AppColors.border,
                     valueColor: AlwaysStoppedAnimation<Color>(
-                      spent > budget.monthlyLimit ? AppColors.error : AppColors.primary,
+                      spent > budget.monthlyLimit
+                          ? AppColors.error
+                          : AppColors.primary,
                     ),
                   ),
                 ],

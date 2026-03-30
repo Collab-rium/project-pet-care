@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../components/atoms/app_button.dart';
 import '../core/constants/colors.dart';
 import '../core/constants/spacing.dart';
 import '../core/constants/text_styles.dart';
+import '../core/theme/theme_manager.dart';
 import '../core/utils/error_handler.dart';
 
 class ThemeSelectorScreen extends StatefulWidget {
@@ -14,28 +15,10 @@ class ThemeSelectorScreen extends StatefulWidget {
 }
 
 class _ThemeSelectorScreenState extends State<ThemeSelectorScreen> {
-  String _selectedTheme = 'warm';
-
-  final Map<String, ThemeData> _themes = {
-    'warm': _buildWarmTheme(),
-    'clean': _buildCleanTheme(),
-    'golden': _buildGoldenTheme(),
-  };
-
-  final Map<String, String> _themeNames = {
-    'warm': 'Warm Orange',
-    'clean': 'Clean Blue',
-    'golden': 'Golden Companion',
-  };
-
-  final Map<String, String> _themeDescriptions = {
-    'warm': 'Vibrant orange theme with warm, friendly colors',
-    'clean': 'Professional blue theme with clean, modern aesthetics',
-    'golden': 'Golden yellow with cyan accents for a premium feel',
-  };
-
   @override
   Widget build(BuildContext context) {
+    final themeManager = context.watch<ThemeManager>();
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -45,21 +28,12 @@ class _ThemeSelectorScreenState extends State<ThemeSelectorScreen> {
         ),
         backgroundColor: AppColors.surface,
         elevation: 0,
-        actions: [
-          TextButton(
-            onPressed: _saveTheme,
-            child: Text(
-              'Apply',
-              style: TextStyle(color: AppColors.primary),
-            ),
-          ),
-        ],
       ),
       body: ListView(
         padding: AppSpacing.pageInsets,
         children: [
           Text(
-            'Select your preferred color theme. You can change this anytime in settings.',
+            'Select your preferred color theme. You can change this anytime.',
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.textSecondary,
             ),
@@ -67,18 +41,59 @@ class _ThemeSelectorScreenState extends State<ThemeSelectorScreen> {
 
           AppSpacing.vSpaceLg,
 
-          ..._themes.keys.map((themeKey) {
-            final isSelected = _selectedTheme == themeKey;
-            return _buildThemeOption(
-              themeKey,
-              _themeNames[themeKey]!,
-              _themeDescriptions[themeKey]!,
-              _themes[themeKey]!,
-              isSelected,
-            );
+          ...AppTheme.values.map((theme) {
+            final isSelected = themeManager.currentTheme == theme;
+            return _buildThemeOption(theme, isSelected);
           }),
 
           AppSpacing.vSpaceXl,
+
+          // Dark mode toggle
+          Container(
+            padding: AppSpacing.cardInsets,
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: AppSpacing.borderRadiusMd,
+              border: Border.all(color: AppColors.border),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  themeManager.isDarkMode ? Icons.dark_mode : Icons.light_mode,
+                  color: AppColors.primary,
+                ),
+                AppSpacing.hSpaceMd,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Dark Mode',
+                        style: AppTextStyles.h4,
+                      ),
+                      Text(
+                        themeManager.isDarkMode ? 'Enabled' : 'Disabled',
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Switch(
+                  value: themeManager.isDarkMode,
+                  onChanged: (value) {
+                    themeManager.setThemeMode(
+                      value ? ThemeMode.dark : ThemeMode.light,
+                    );
+                  },
+                  activeColor: AppColors.primary,
+                ),
+              ],
+            ),
+          ),
+
+          AppSpacing.vSpaceLg,
 
           // Preview section
           Container(
@@ -96,7 +111,7 @@ class _ThemeSelectorScreenState extends State<ThemeSelectorScreen> {
                   style: AppTextStyles.h3,
                 ),
                 AppSpacing.vSpaceMd,
-                _buildPreview(_themes[_selectedTheme]!),
+                _buildPreview(themeManager),
               ],
             ),
           ),
@@ -105,13 +120,7 @@ class _ThemeSelectorScreenState extends State<ThemeSelectorScreen> {
     );
   }
 
-  Widget _buildThemeOption(
-    String themeKey,
-    String name,
-    String description,
-    ThemeData theme,
-    bool isSelected,
-  ) {
+  Widget _buildThemeOption(AppTheme theme, bool isSelected) {
     return Container(
       margin: EdgeInsets.only(bottom: AppSpacing.md),
       decoration: BoxDecoration(
@@ -123,7 +132,9 @@ class _ThemeSelectorScreenState extends State<ThemeSelectorScreen> {
         ),
       ),
       child: InkWell(
-        onTap: () => setState(() => _selectedTheme = themeKey),
+        onTap: () {
+          context.read<ThemeManager>().setTheme(theme);
+        },
         borderRadius: AppSpacing.borderRadiusMd,
         child: Padding(
           padding: AppSpacing.cardInsets,
@@ -153,7 +164,8 @@ class _ThemeSelectorScreenState extends State<ThemeSelectorScreen> {
                     Expanded(
                       child: Container(
                         decoration: BoxDecoration(
-                          color: theme.colorScheme.secondary,
+                          color: Color.lerp(
+                              theme.primaryColor, Colors.white, 0.3)!,
                           borderRadius: BorderRadius.only(
                             topRight: Radius.circular(AppSpacing.radiusSm),
                             bottomRight: Radius.circular(AppSpacing.radiusSm),
@@ -173,14 +185,14 @@ class _ThemeSelectorScreenState extends State<ThemeSelectorScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      name,
+                      theme.name,
                       style: AppTextStyles.h4.copyWith(
                         color: isSelected ? AppColors.primary : null,
                       ),
                     ),
                     AppSpacing.vSpaceXs,
                     Text(
-                      description,
+                      _getThemeDescription(theme),
                       style: AppTextStyles.bodySmall.copyWith(
                         color: AppColors.textSecondary,
                       ),
@@ -218,7 +230,26 @@ class _ThemeSelectorScreenState extends State<ThemeSelectorScreen> {
     );
   }
 
-  Widget _buildPreview(ThemeData theme) {
+  String _getThemeDescription(AppTheme theme) {
+    switch (theme) {
+      case AppTheme.warmOrange:
+        return 'Vibrant orange theme with warm, friendly colors';
+      case AppTheme.coolBlue:
+        return 'Professional blue theme with clean aesthetics';
+      case AppTheme.freshGreen:
+        return 'Natural green theme inspired by nature';
+      case AppTheme.purpleDream:
+        return 'Elegant purple theme with modern vibes';
+      case AppTheme.sunsetPink:
+        return 'Playful pink theme with sunset warmth';
+    }
+  }
+
+  Widget _buildPreview(ThemeManager themeManager) {
+    final theme = themeManager.isDarkMode
+        ? themeManager.getDarkTheme()
+        : themeManager.getLightTheme();
+
     return Theme(
       data: theme,
       child: Builder(
@@ -268,107 +299,26 @@ class _ThemeSelectorScreenState extends State<ThemeSelectorScreen> {
 
             AppSpacing.vSpaceSm,
 
-            // Sample card
-            Container(
-              padding: AppSpacing.cardInsets,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.surface,
-                borderRadius: AppSpacing.borderRadiusSm,
-                border: Border.all(color: theme.colorScheme.outline),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: theme.colorScheme.secondary,
-                        radius: 16,
-                        child: Icon(
-                          Icons.pets,
-                          color: theme.colorScheme.onSecondary,
-                          size: 16,
-                        ),
-                      ),
-                      AppSpacing.hSpaceSm,
-                      Text(
-                        'Sample Pet Card',
-                        style: AppTextStyles.h4.copyWith(
-                          color: theme.colorScheme.onSurface,
-                        ),
-                      ),
-                    ],
+            // Sample buttons
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    child: Text('Button'),
                   ),
-                  AppSpacing.vSpaceSm,
-                  Text(
-                    'This is how your content will look with the selected theme.',
-                    style: AppTextStyles.bodySmall.copyWith(
-                      color: theme.colorScheme.onSurface.withOpacity(0.7),
-                    ),
+                ),
+                AppSpacing.hSpaceSm,
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {},
+                    child: Text('Button'),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  void _saveTheme() {
-    // Here you would normally save to SharedPreferences
-    // For now, just show success message
-    AppErrorHandler.showSuccessSnackBar(
-      context,
-      'Theme "${_themeNames[_selectedTheme]}" applied successfully!',
-    );
-    Navigator.of(context).pop();
-  }
-
-  static ThemeData _buildWarmTheme() {
-    const primaryColor = Color(0xFFFF8C42);
-    const secondaryColor = Color(0xFFFF6B35);
-    
-    return ThemeData(
-      useMaterial3: true,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: primaryColor,
-        brightness: Brightness.light,
-      ).copyWith(
-        primary: primaryColor,
-        secondary: secondaryColor,
-      ),
-    );
-  }
-
-  static ThemeData _buildCleanTheme() {
-    const primaryColor = Color(0xFF2196F3);
-    const secondaryColor = Color(0xFF03DAC6);
-    
-    return ThemeData(
-      useMaterial3: true,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: primaryColor,
-        brightness: Brightness.light,
-      ).copyWith(
-        primary: primaryColor,
-        secondary: secondaryColor,
-      ),
-    );
-  }
-
-  static ThemeData _buildGoldenTheme() {
-    const primaryColor = Color(0xFFFFB74D);
-    const secondaryColor = Color(0xFF4DD0E1);
-    
-    return ThemeData(
-      useMaterial3: true,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: primaryColor,
-        brightness: Brightness.light,
-      ).copyWith(
-        primary: primaryColor,
-        secondary: secondaryColor,
       ),
     );
   }

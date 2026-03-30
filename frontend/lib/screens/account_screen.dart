@@ -428,9 +428,45 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 
   void _editProfile() {
-    AppErrorHandler.showInfoSnackBar(
-      context,
-      'Profile editing coming soon',
+    final TextEditingController nameController =
+        TextEditingController(text: _username);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit Profile'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(
+                labelText: 'Username',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () {
+              setState(() {
+                _username = nameController.text;
+              });
+              Navigator.pop(context);
+              AppErrorHandler.showSuccessSnackBar(
+                context,
+                'Profile updated!',
+              );
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
     );
   }
 

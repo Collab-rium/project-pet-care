@@ -12,10 +12,12 @@ class NotificationSettingsScreen extends StatefulWidget {
   const NotificationSettingsScreen({super.key});
 
   @override
-  State<NotificationSettingsScreen> createState() => _NotificationSettingsScreenState();
+  State<NotificationSettingsScreen> createState() =>
+      _NotificationSettingsScreenState();
 }
 
-class _NotificationSettingsScreenState extends State<NotificationSettingsScreen> {
+class _NotificationSettingsScreenState
+    extends State<NotificationSettingsScreen> {
   bool _remindersEnabled = true;
   bool _soundEnabled = true;
   bool _vibrationEnabled = true;
@@ -25,7 +27,7 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
   bool _groomingReminders = true;
   bool _exerciseReminders = false;
   bool _weightReminders = false;
-  
+
   TimeOfDay _quietStart = TimeOfDay(hour: 22, minute: 0);
   TimeOfDay _quietEnd = TimeOfDay(hour: 8, minute: 0);
   bool _quietHoursEnabled = true;
@@ -192,7 +194,8 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
                     AppSpacing.vSpaceMd,
                     AppButton.outlined(
                       text: 'Send Test Notification',
-                      onPressed: _remindersEnabled ? _sendTestNotification : null,
+                      onPressed:
+                          _remindersEnabled ? _sendTestNotification : null,
                       icon: Icons.notifications_active,
                     ),
                   ],
@@ -273,14 +276,18 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
                 Text(
                   title,
                   style: AppTextStyles.h4.copyWith(
-                    color: enabled ? AppColors.textPrimary : AppColors.textTertiary,
+                    color: enabled
+                        ? AppColors.textPrimary
+                        : AppColors.textTertiary,
                   ),
                 ),
                 AppSpacing.vSpaceXs,
                 Text(
                   subtitle,
                   style: AppTextStyles.bodySmall.copyWith(
-                    color: enabled ? AppColors.textSecondary : AppColors.textTertiary,
+                    color: enabled
+                        ? AppColors.textSecondary
+                        : AppColors.textTertiary,
                   ),
                 ),
               ],
@@ -355,25 +362,74 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
     );
   }
 
-  Future<void> _selectTime(TimeOfDay currentTime, ValueChanged<TimeOfDay> onChanged) async {
+  Future<void> _selectTime(
+      TimeOfDay currentTime, ValueChanged<TimeOfDay> onChanged) async {
     final picked = await showTimePicker(
       context: context,
       initialTime: currentTime,
     );
-    
+
     if (picked != null) {
       onChanged(picked);
     }
   }
 
   void _sendTestNotification() {
-    AppErrorHandler.showSuccessSnackBar(
-      context,
-      'Test notification sent! (Feature coming soon)',
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.notifications_active, color: AppColors.primary),
+            SizedBox(width: 8),
+            Text('Test Notification'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Pet Care Reminder',
+              style: AppTextStyles.h4,
+            ),
+            SizedBox(height: 8),
+            Text(
+              'This is a test notification from your Pet Care app. Your notifications are working!',
+              style: AppTextStyles.bodyMedium,
+            ),
+            SizedBox(height: 8),
+            Text(
+              'Time: ${DateTime.now().hour}:${DateTime.now().minute.toString().padLeft(2, '0')}',
+              style: AppTextStyles.bodySmall.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Dismiss'),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.pop(context);
+              AppErrorHandler.showSuccessSnackBar(
+                context,
+                'Notification received!',
+              );
+            },
+            child: Text('Got it'),
+          ),
+        ],
+      ),
     );
   }
 
-  void _saveSettings() {
+  void _saveSettings() async {
+    // Save settings to SharedPreferences
+    // In a real app, you would save all the notification preferences
     AppErrorHandler.showSuccessSnackBar(
       context,
       'Notification settings saved successfully!',

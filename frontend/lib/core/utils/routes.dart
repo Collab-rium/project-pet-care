@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import '../../screens/login_screen.dart';
+import '../../screens/register_screen.dart';
+import '../../screens/home_screen.dart';
+import '../../screens/dashboard_screen.dart';
 import '../../screens/tasks_screen.dart';
 import '../../screens/theme_selector_screen.dart';
 import '../../screens/wallpaper_screen.dart';
@@ -6,6 +10,10 @@ import '../../screens/notification_settings_screen.dart';
 import '../../screens/payment_subscription_screen.dart';
 import '../../screens/backup_restore_screen.dart';
 import '../../screens/account_screen.dart';
+import '../../screens/pet_list_screen.dart';
+import '../../screens/add_pet_screen.dart';
+import '../../screens/budget_screen.dart';
+import '../../screens/add_expense_screen.dart';
 
 /// App routes configuration
 class AppRoutes {
@@ -65,27 +73,44 @@ class RouteGenerator {
     final args = settings.arguments;
 
     switch (settings.name) {
-      // Auth routes - these will be implemented when we create screens
       case AppRoutes.login:
         return MaterialPageRoute(
-          builder: (_) => Scaffold(
-            body: Center(child: Text('Login Screen - To be implemented')),
-          ),
+          builder: (_) => const LoginScreen(),
         );
 
       case AppRoutes.register:
         return MaterialPageRoute(
-          builder: (_) => Scaffold(
-            body: Center(child: Text('Register Screen - To be implemented')),
-          ),
+          builder: (_) => const RegisterScreen(),
         );
 
       case AppRoutes.home:
+        return MaterialPageRoute(
+          builder: (_) => const HomeScreen(),
+        );
+
       case AppRoutes.dashboard:
         return MaterialPageRoute(
-          builder: (_) => Scaffold(
-            body: Center(child: Text('Dashboard Screen - To be implemented')),
-          ),
+          builder: (_) => const DashboardScreen(),
+        );
+
+      case AppRoutes.petList:
+        return MaterialPageRoute(
+          builder: (_) => const PetListScreen(),
+        );
+
+      case AppRoutes.addPet:
+        return MaterialPageRoute(
+          builder: (_) => const AddPetScreen(),
+        );
+
+      case AppRoutes.budget:
+        return MaterialPageRoute(
+          builder: (_) => const BudgetScreen(),
+        );
+
+      case AppRoutes.addExpense:
+        return MaterialPageRoute(
+          builder: (_) => const AddExpenseScreen(),
         );
 
       case AppRoutes.tasks:
