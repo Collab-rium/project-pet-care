@@ -3,12 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../models/models.dart';
 import '../services/auth_service.dart';
-import '../core/constants/colors.dart';
-import '../core/constants/spacing.dart';
-import '../core/constants/text_styles.dart';
-import '../core/utils/error_handler.dart';
 
-/// Dashboard screen showing today's tasks with full task management
+/// Dashboard screen showing tasks with full task management
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
@@ -19,6 +15,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   List<Task> _tasks = [];
   bool _isLoading = true;
+  String _filter = 'all'; // all, pending, completed, overdue
 
   @override
   void initState() {
@@ -29,7 +26,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Future<void> _loadTasks() async {
     setState(() => _isLoading = true);
 
-    // Mock tasks for demo
     await Future.delayed(const Duration(milliseconds: 300));
 
     final now = DateTime.now();
@@ -78,9 +74,46 @@ class _DashboardScreenState extends State<DashboardScreen> {
         isOverdue: false,
         repeat: 'daily',
       ),
+      Task(
+        id: 'task-5',
+        petId: 'pet-1',
+        petName: 'Bella',
+        type: 'vet_visit',
+        message: 'Vet appointment next week',
+        scheduledTime: now.add(const Duration(days: 7)).toIso8601String(),
+        status: 'pending',
+        isOverdue: false,
+        repeat: 'none',
+      ),
     ];
 
     setState(() => _isLoading = false);
+  }
+
+  List<Task> get _filteredTasks {
+    var tasks = List<Task>.from(_tasks);
+
+    switch (_filter) {
+      case 'pending':
+        tasks =
+            tasks.where((t) => t.status == 'pending' && !t.isOverdue).toList();
+        break;
+      case 'completed':
+        tasks = tasks.where((t) => t.status == 'completed').toList();
+        break;
+      case 'overdue':
+        tasks = tasks.where((t) => t.isOverdue).toList();
+        break;
+      default:
+        // All tasks - show pending and overdue first, then completed
+        tasks.sort((a, b) {
+          if (a.status == 'completed' && b.status != 'completed') return 1;
+          if (a.status != 'completed' && b.status == 'completed') return -1;
+          return 0;
+        });
+    }
+
+    return tasks;
   }
 
   int get _completedCount =>
@@ -115,10 +148,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
         _tasks.add(newTask);
       });
 
-      AppErrorHandler.showSuccessSnackBar(
-        context,
-        'Task added successfully!',
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Task added!'),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+          ),
+        );
+      }
     }
   }
 
@@ -148,11 +185,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
           );
         }
       });
-
-      AppErrorHandler.showSuccessSnackBar(
-        context,
-        'Task updated successfully!',
-      );
     }
   }
 
@@ -161,7 +193,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete Task'),
-        content: Text('Are you sure you want to delete "${task.message}"?'),
+        content: Text('Delete "${task.message}"?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -173,10 +205,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 _tasks.removeWhere((t) => t.id == task.id);
               });
               Navigator.pop(context);
-              AppErrorHandler.showSuccessSnackBar(
-                context,
-                'Task deleted',
-              );
             },
             child: Text('Delete',
                 style: TextStyle(color: Theme.of(context).colorScheme.error)),
@@ -198,7 +226,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           message: task.message,
           scheduledTime: task.scheduledTime,
           status: task.status == 'completed' ? 'pending' : 'completed',
-          isOverdue: task.isOverdue,
+          isOverdue: task.isOverdue && task.status == 'completed'
+              ? false
+              : task.isOverdue,
           repeat: task.repeat,
         );
       }
@@ -226,34 +256,42 @@ class _DashboardScreenState extends State<DashboardScreen> {
               onRefresh: _loadTasks,
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Greeting
-                    Text(
-                      'Hello, $userName! 👋',
-                      style:
-                          Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
+                    // Greeting section
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Hello, $userName! 👋',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            _getGreetingSubtitle(),
+                            style: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant),
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      _getGreetingSubtitle(),
-                      style: TextStyle(color: Colors.grey[600]),
-                    ),
-                    const SizedBox(height: 24),
 
                     // Summary cards
-                    Row(
-                      children: [
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(context, '/tasks',
-                                  arguments: 'completed');
-                            },
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        children: [
+                          Expanded(
                             child: _SummaryCard(
                               icon: Icons.check_circle,
                               label: 'Completed',
@@ -261,14 +299,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               color: Colors.green,
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(context, '/tasks',
-                                  arguments: 'pending');
-                            },
+                          const SizedBox(width: 12),
+                          Expanded(
                             child: _SummaryCard(
                               icon: Icons.pending,
                               label: 'Pending',
@@ -276,14 +308,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               color: Colors.blue,
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(context, '/tasks',
-                                  arguments: 'overdue');
-                            },
+                          const SizedBox(width: 12),
+                          Expanded(
                             child: _SummaryCard(
                               icon: Icons.warning,
                               label: 'Overdue',
@@ -291,76 +317,102 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               color: Colors.red,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Quick actions
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _QuickAction(
-                            icon: Icons.add_task,
-                            label: 'Add Task',
-                            onTap: _addTask,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: _QuickAction(
-                            icon: Icons.pets,
-                            label: 'My Pets',
-                            onTap: () => Navigator.pushNamed(context, '/pets'),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: _QuickAction(
-                            icon: Icons.account_balance_wallet,
-                            label: 'Budget',
-                            onTap: () =>
-                                Navigator.pushNamed(context, '/budget'),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Today's tasks
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Today's Tasks",
-                          style:
-                              Theme.of(context).textTheme.titleLarge?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                        ),
-                        TextButton.icon(
-                          onPressed: _addTask,
-                          icon: const Icon(Icons.add, size: 18),
-                          label: const Text('Add'),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 16),
 
-                    if (_tasks.isEmpty)
-                      Center(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 32),
+                    // Filter chips
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        children: [
+                          _FilterChip(
+                            label: 'All',
+                            isSelected: _filter == 'all',
+                            onSelected: () => setState(() => _filter = 'all'),
+                          ),
+                          const SizedBox(width: 8),
+                          _FilterChip(
+                            label: 'Pending',
+                            isSelected: _filter == 'pending',
+                            onSelected: () =>
+                                setState(() => _filter = 'pending'),
+                          ),
+                          const SizedBox(width: 8),
+                          _FilterChip(
+                            label: 'Completed',
+                            isSelected: _filter == 'completed',
+                            onSelected: () =>
+                                setState(() => _filter = 'completed'),
+                          ),
+                          const SizedBox(width: 8),
+                          _FilterChip(
+                            label: 'Overdue',
+                            isSelected: _filter == 'overdue',
+                            onSelected: () =>
+                                setState(() => _filter = 'overdue'),
+                          ),
+                          if (_filter != 'all') ...[
+                            const SizedBox(width: 8),
+                            ActionChip(
+                              avatar: const Icon(Icons.clear, size: 16),
+                              label: const Text('Reset'),
+                              onPressed: () => setState(() => _filter = 'all'),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Tasks section
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Tasks',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                          TextButton.icon(
+                            onPressed: _addTask,
+                            icon: const Icon(Icons.add, size: 18),
+                            label: const Text('Add'),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Task list
+                    if (_filteredTasks.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.all(32),
+                        child: Center(
                           child: Column(
                             children: [
                               Icon(
-                                Icons.check_circle_outline,
+                                _filter == 'completed'
+                                    ? Icons.check_circle_outline
+                                    : Icons.task_alt,
                                 size: 64,
-                                color: Theme.of(context).colorScheme.tertiary,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant
+                                    .withOpacity(0.5),
                               ),
                               const SizedBox(height: 16),
                               Text(
-                                'No tasks for today!',
+                                _filter == 'all'
+                                    ? 'No tasks yet'
+                                    : 'No $_filter tasks',
                                 style: Theme.of(context)
                                     .textTheme
                                     .titleMedium
@@ -370,25 +422,38 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                           .onSurfaceVariant,
                                     ),
                               ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Tap + to add your first task',
-                                style: TextStyle(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurfaceVariant),
-                              ),
+                              if (_filter == 'all') ...[
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Tap + to add your first task',
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant),
+                                ),
+                              ],
                             ],
                           ),
                         ),
                       )
                     else
-                      ..._tasks.map((task) => _TaskCard(
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemCount: _filteredTasks.length,
+                        itemBuilder: (context, index) {
+                          final task = _filteredTasks[index];
+                          return _TaskCard(
                             task: task,
                             onToggle: () => _toggleTaskStatus(task),
                             onEdit: () => _editTask(task),
                             onDelete: () => _deleteTask(task),
-                          )),
+                          );
+                        },
+                      ),
+
+                    const SizedBox(height: 80), // Space for FAB
                   ],
                 ),
               ),
@@ -396,7 +461,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: _addTask,
         backgroundColor: Theme.of(context).colorScheme.primary,
-        child: const Icon(Icons.add, color: Colors.white),
+        child: Icon(Icons.add, color: Theme.of(context).colorScheme.onPrimary),
       ),
     );
   }
@@ -404,13 +469,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   String _getGreetingSubtitle() {
     final total = _tasks.length;
     if (total == 0) {
-      return 'No tasks scheduled for today';
+      return 'No tasks yet. Tap + to add one!';
     }
     if (_overdueCount > 0) {
       return 'You have $_overdueCount overdue task${_overdueCount > 1 ? 's' : ''}';
     }
     if (_pendingCount > 0) {
-      return 'You have $_pendingCount task${_pendingCount > 1 ? 's' : ''} remaining today';
+      return 'You have $_pendingCount task${_pendingCount > 1 ? 's' : ''} remaining';
     }
     return 'All tasks completed! Great job! 🎉';
   }
@@ -452,7 +517,7 @@ class _SummaryCard extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                color: Colors.grey[600],
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 fontSize: 10,
               ),
             ),
@@ -463,49 +528,25 @@ class _SummaryCard extends StatelessWidget {
   }
 }
 
-class _QuickAction extends StatelessWidget {
-  final IconData icon;
+class _FilterChip extends StatelessWidget {
   final String label;
-  final VoidCallback onTap;
+  final bool isSelected;
+  final VoidCallback onSelected;
 
-  const _QuickAction({
-    required this.icon,
+  const _FilterChip({
     required this.label,
-    required this.onTap,
+    required this.isSelected,
+    required this.onSelected,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
-          ),
-        ),
-        child: Column(
-          children: [
-            Icon(
-              icon,
-              color: Theme.of(context).colorScheme.primary,
-              size: 28,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.w500,
-                fontSize: 12,
-              ),
-            ),
-          ],
-        ),
-      ),
+    return FilterChip(
+      label: Text(label),
+      selected: isSelected,
+      onSelected: (_) => onSelected(),
+      selectedColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+      checkmarkColor: Theme.of(context).colorScheme.primary,
     );
   }
 }
@@ -542,119 +583,161 @@ class _TaskCard extends StatelessWidget {
     }
   }
 
-  Color _getStatusColor() {
+  Color _getStatusColor(BuildContext context) {
     if (task.isOverdue) return Colors.red;
     if (task.status == 'completed') return Colors.green;
-    return Colors.blue;
+    return Theme.of(context).colorScheme.primary;
   }
 
   @override
   Widget build(BuildContext context) {
-    final color = _getStatusColor();
+    final color = _getStatusColor(context);
     final isCompleted = task.status == 'completed';
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        leading: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Checkbox(
-              value: isCompleted,
-              onChanged: (_) => onToggle(),
-              activeColor: Theme.of(context).colorScheme.primary,
-            ),
-            const SizedBox(width: 4),
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(_getTaskIcon(), color: color, size: 20),
-            ),
-          ],
-        ),
-        title: Text(
-          task.message,
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            decoration: isCompleted ? TextDecoration.lineThrough : null,
-          ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (task.petName?.isNotEmpty ?? false)
-              Text(
-                'Pet: ${task.petName}',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 12,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            const SizedBox(height: 4),
-            Row(
-              children: [
-                Icon(Icons.access_time, size: 14, color: color),
-                const SizedBox(width: 4),
-                Flexible(
-                  child: Text(
-                    DateFormat('MMM d, h:mm a')
-                        .format(DateTime.parse(task.scheduledTime)),
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: color,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+      margin: const EdgeInsets.only(bottom: 8),
+      child: InkWell(
+        onTap: onEdit,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              // Checkbox
+              SizedBox(
+                width: 24,
+                height: 24,
+                child: Checkbox(
+                  value: isCompleted,
+                  onChanged: (_) => onToggle(),
+                  activeColor: Theme.of(context).colorScheme.primary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
                   ),
                 ),
-                if (task.isOverdue)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: Colors.red.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(4),
+              ),
+              const SizedBox(width: 12),
+
+              // Icon
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(_getTaskIcon(), color: color, size: 20),
+              ),
+              const SizedBox(width: 12),
+
+              // Info
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      task.message,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                        decoration:
+                            isCompleted ? TextDecoration.lineThrough : null,
+                        decorationThickness: 2.5,
+                        color: isCompleted
+                            ? Theme.of(context).colorScheme.onSurfaceVariant
+                            : null,
                       ),
-                      child: const Text(
-                        'OVERDUE',
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        if (task.petName?.isNotEmpty ?? false) ...[
+                          Icon(Icons.pets,
+                              size: 12,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant),
+                          const SizedBox(width: 4),
+                          Text(
+                            task.petName!,
+                            style: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                              fontSize: 12,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                        ],
+                        Icon(Icons.access_time, size: 12, color: color),
+                        const SizedBox(width: 4),
+                        Flexible(
+                          child: Text(
+                            DateFormat('MMM d, h:mm a')
+                                .format(DateTime.parse(task.scheduledTime)),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: color,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                      ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
+              // Status badge
+              if (task.isOverdue)
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.red.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: const Text(
+                    'OVERDUE',
+                    style: TextStyle(
+                      fontSize: 9,
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-              ],
-            ),
-          ],
-        ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              icon: const Icon(Icons.edit_outlined, size: 20),
-              color: Colors.grey[500],
-              onPressed: onEdit,
-            ),
-            IconButton(
-              icon: const Icon(Icons.delete_outline, size: 20),
-              color: Colors.red[400],
-              onPressed: onDelete,
-            ),
-          ],
+                )
+              else if (isCompleted)
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.green.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: const Text(
+                    'DONE',
+                    style: TextStyle(
+                      fontSize: 9,
+                      color: Colors.green,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+
+              // Delete button
+              IconButton(
+                icon: const Icon(Icons.delete_outline, size: 20),
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                onPressed: onDelete,
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                padding: EdgeInsets.zero,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -669,7 +752,6 @@ class _AddTaskDialog extends StatefulWidget {
 class _AddTaskDialogState extends State<_AddTaskDialog> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
-  final _descriptionController = TextEditingController();
 
   String _selectedType = 'feeding';
   DateTime _scheduledTime = DateTime.now().add(const Duration(hours: 1));
@@ -719,8 +801,9 @@ class _AddTaskDialogState extends State<_AddTaskDialog> {
               TextFormField(
                 controller: _titleController,
                 decoration: const InputDecoration(
-                  labelText: 'Title',
+                  labelText: 'Task Title',
                   border: OutlineInputBorder(),
+                  hintText: 'e.g., Feed Bella breakfast',
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -730,21 +813,12 @@ class _AddTaskDialogState extends State<_AddTaskDialog> {
                 },
               ),
               const SizedBox(height: 16),
-              TextFormField(
-                controller: _descriptionController,
-                decoration: const InputDecoration(
-                  labelText: 'Description (optional)',
-                  border: OutlineInputBorder(),
-                ),
-                maxLines: 2,
-              ),
-              const SizedBox(height: 16),
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.calendar_today),
-                title: Text(
-                  DateFormat('MMM d, yyyy h:mm a').format(_scheduledTime),
-                ),
+                title: const Text('Date & Time'),
+                subtitle: Text(
+                    DateFormat('MMM d, yyyy h:mm a').format(_scheduledTime)),
                 onTap: () async {
                   final date = await showDatePicker(
                     context: context,
@@ -788,7 +862,6 @@ class _AddTaskDialogState extends State<_AddTaskDialog> {
               Navigator.pop(context, {
                 'type': _selectedType,
                 'title': _titleController.text,
-                'description': _descriptionController.text,
                 'scheduledTime': _scheduledTime,
               });
             }
@@ -802,7 +875,6 @@ class _AddTaskDialogState extends State<_AddTaskDialog> {
   @override
   void dispose() {
     _titleController.dispose();
-    _descriptionController.dispose();
     super.dispose();
   }
 }
@@ -819,7 +891,6 @@ class _EditTaskDialog extends StatefulWidget {
 class _EditTaskDialogState extends State<_EditTaskDialog> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _titleController;
-  late TextEditingController _descriptionController;
 
   late String _selectedType;
   late DateTime _scheduledTime;
@@ -837,7 +908,6 @@ class _EditTaskDialogState extends State<_EditTaskDialog> {
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.task.message);
-    _descriptionController = TextEditingController();
     _selectedType = widget.task.type;
     _scheduledTime = DateTime.parse(widget.task.scheduledTime);
   }
@@ -878,7 +948,7 @@ class _EditTaskDialogState extends State<_EditTaskDialog> {
               TextFormField(
                 controller: _titleController,
                 decoration: const InputDecoration(
-                  labelText: 'Title',
+                  labelText: 'Task Title',
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
@@ -889,21 +959,12 @@ class _EditTaskDialogState extends State<_EditTaskDialog> {
                 },
               ),
               const SizedBox(height: 16),
-              TextFormField(
-                controller: _descriptionController,
-                decoration: const InputDecoration(
-                  labelText: 'Description (optional)',
-                  border: OutlineInputBorder(),
-                ),
-                maxLines: 2,
-              ),
-              const SizedBox(height: 16),
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.calendar_today),
-                title: Text(
-                  DateFormat('MMM d, yyyy h:mm a').format(_scheduledTime),
-                ),
+                title: const Text('Date & Time'),
+                subtitle: Text(
+                    DateFormat('MMM d, yyyy h:mm a').format(_scheduledTime)),
                 onTap: () async {
                   final date = await showDatePicker(
                     context: context,
@@ -948,7 +1009,6 @@ class _EditTaskDialogState extends State<_EditTaskDialog> {
               Navigator.pop(context, {
                 'type': _selectedType,
                 'title': _titleController.text,
-                'description': _descriptionController.text,
                 'scheduledTime': _scheduledTime,
               });
             }
@@ -962,7 +1022,6 @@ class _EditTaskDialogState extends State<_EditTaskDialog> {
   @override
   void dispose() {
     _titleController.dispose();
-    _descriptionController.dispose();
     super.dispose();
   }
 }

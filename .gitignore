@@ -211,3 +211,8 @@ docs/.obsidian/
 !.env.example
 !backend/.env.example
 !docs/mvp/.gitkeep
+
+# Docker files
+Dockerfile
+docker-compose.yml
+.devcontainer/

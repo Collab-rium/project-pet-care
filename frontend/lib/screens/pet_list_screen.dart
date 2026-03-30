@@ -249,11 +249,11 @@ class _PetListScreenState extends State<PetListScreen> {
     return Container(
       margin: EdgeInsets.only(bottom: AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: AppSpacing.borderRadiusMd,
         boxShadow: [
           BoxShadow(
-            color: AppColors.shadow,
+            color: Theme.of(context).shadowColor.withOpacity(0.1),
             blurRadius: 4,
             offset: Offset(0, 2),
           ),
