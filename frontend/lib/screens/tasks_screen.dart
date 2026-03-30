@@ -37,35 +37,35 @@ class _TasksScreenState extends State<TasksScreen> {
       Task(
         id: 'task-1',
         petId: 'pet-1',
-        userId: 'user-1',
+        petName: 'Bella',
         type: 'feeding',
-        title: 'Feed Bella breakfast',
-        description: 'Premium kibble with vitamins',
-        scheduledTime: now.subtract(const Duration(hours: 2)),
+        message: 'Feed Bella breakfast',
+        scheduledTime: now.subtract(const Duration(hours: 2)).toIso8601String(),
         status: 'completed',
-        createdAt: now.subtract(const Duration(days: 1)),
+        isOverdue: false,
+        repeat: 'daily',
       ),
       Task(
         id: 'task-2',
         petId: 'pet-1',
-        userId: 'user-1',
+        petName: 'Bella',
         type: 'medication',
-        title: 'Give flea treatment',
-        description: 'Monthly flea and tick prevention',
-        scheduledTime: now.add(const Duration(hours: 3)),
+        message: 'Give flea treatment',
+        scheduledTime: now.add(const Duration(hours: 3)).toIso8601String(),
         status: 'pending',
-        createdAt: now.subtract(const Duration(days: 1)),
+        isOverdue: false,
+        repeat: 'monthly',
       ),
       Task(
         id: 'task-3',
         petId: 'pet-2',
-        userId: 'user-1',
+        petName: 'Max',
         type: 'grooming',
-        title: 'Brush Max\'s coat',
-        description: 'Use de-shedding tool',
-        scheduledTime: now.subtract(const Duration(hours: 5)),
+        message: 'Brush Max\'s coat',
+        scheduledTime: now.subtract(const Duration(hours: 5)).toIso8601String(),
         status: 'pending',
-        createdAt: now.subtract(const Duration(days: 2)),
+        isOverdue: true,
+        repeat: 'weekly',
       ),
     ];
     
@@ -75,14 +75,13 @@ class _TasksScreenState extends State<TasksScreen> {
   List<Task> get _filteredTasks {
     if (widget.filter == null) return _tasks;
     
-    final now = DateTime.now();
     switch (widget.filter) {
       case 'completed':
         return _tasks.where((t) => t.status == 'completed').toList();
       case 'pending':
-        return _tasks.where((t) => t.status == 'pending' && t.scheduledTime.isAfter(now)).toList();
+        return _tasks.where((t) => t.status == 'pending' && !t.isOverdue).toList();
       case 'overdue':
-        return _tasks.where((t) => t.status == 'pending' && t.scheduledTime.isBefore(now)).toList();
+        return _tasks.where((t) => t.isOverdue).toList();
       default:
         return _tasks;
     }
@@ -109,16 +108,19 @@ class _TasksScreenState extends State<TasksScreen> {
     );
     
     if (result != null) {
+      final now = DateTime.now();
+      final schedTime = result['scheduledTime'] as DateTime;
+      
       final newTask = Task(
         id: 'task-${DateTime.now().millisecondsSinceEpoch}',
         petId: result['petId'] ?? 'pet-1',
-        userId: 'user-1',
+        petName: result['petName'] ?? 'Pet',
         type: result['type'],
-        title: result['title'],
-        description: result['description'],
-        scheduledTime: result['scheduledTime'],
+        message: result['title'],
+        scheduledTime: schedTime.toIso8601String(),
         status: 'pending',
-        createdAt: DateTime.now(),
+        isOverdue: schedTime.isBefore(now),
+        repeat: 'none',
       );
       
       setState(() {
@@ -168,14 +170,13 @@ class _TasksScreenState extends State<TasksScreen> {
         _tasks[index] = Task(
           id: task.id,
           petId: task.petId,
-          userId: task.userId,
+          petName: task.petName,
           type: task.type,
-          title: task.title,
-          description: task.description,
+          message: task.message,
           scheduledTime: task.scheduledTime,
           status: task.status == 'completed' ? 'pending' : 'completed',
-          createdAt: task.createdAt,
-          completedAt: task.status != 'completed' ? DateTime.now() : null,
+          isOverdue: task.isOverdue,
+          repeat: task.repeat,
         );
       }
     });
@@ -338,11 +339,11 @@ class _TaskItem extends StatelessWidget {
                           : null,
                     ),
                   ),
-                  if (task.description?.isNotEmpty ?? false)
+                  if (task.petName?.isNotEmpty ?? false)
                     Padding(
                       padding: const EdgeInsets.only(top: 4),
                       child: Text(
-                        task.description!,
+                        'Pet: ${task.petName}',
                         style: AppTextStyles.bodySmall.copyWith(
                           color: AppColors.textSecondary,
                         ),
@@ -356,7 +357,7 @@ class _TaskItem extends StatelessWidget {
                       Icon(Icons.access_time, size: 14, color: color),
                       const SizedBox(width: 4),
                       Text(
-                        DateFormat('MMM d, h:mm a').format(task.scheduledTime),
+                        DateFormat('MMM d, h:mm a').format(DateTime.parse(task.scheduledTime)),
                         style: TextStyle(
                           fontSize: 12,
                           color: color,
@@ -443,14 +444,14 @@ class _AddTaskDialogState extends State<_AddTaskDialog> {
                   labelText: 'Task Type',
                   border: OutlineInputBorder(),
                 ),
-                items: _taskTypes.map((type) {
-                  return DropdownMenuItem(
-                    value: type['value'],
+                items: _taskTypes.map<DropdownMenuItem<String>>((type) {
+                  return DropdownMenuItem<String>(
+                    value: type['value'] as String,
                     child: Row(
                       children: [
-                        Icon(type['icon'], size: 20),
+                        Icon(type['icon'] as IconData, size: 20),
                         const SizedBox(width: 8),
-                        Text(type['label']),
+                        Text(type['label'] as String),
                       ],
                     ),
                   );
