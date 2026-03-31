@@ -4,7 +4,6 @@ import '../../screens/register_screen.dart';
 import '../../screens/home_screen.dart';
 import '../../screens/dashboard_screen.dart';
 import '../../screens/tasks_screen.dart';
-import '../../screens/theme_selector_screen.dart';
 import '../../screens/wallpaper_screen.dart';
 import '../../screens/notification_settings_screen.dart';
 import '../../screens/payment_subscription_screen.dart';
@@ -117,11 +116,6 @@ class RouteGenerator {
         final filter = args as String?;
         return MaterialPageRoute(
           builder: (_) => TasksScreen(filter: filter),
-        );
-
-      case AppRoutes.themeSelector:
-        return MaterialPageRoute(
-          builder: (_) => const ThemeSelectorScreen(),
         );
 
       case AppRoutes.wallpaper:

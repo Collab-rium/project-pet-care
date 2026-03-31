@@ -145,13 +145,15 @@ class _PetListScreenState extends State<PetListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         title: Text(
           'My Pets',
-          style: AppTextStyles.h1,
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
         ),
-        backgroundColor: AppColors.surface,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         actions: [
           IconButton(
@@ -164,8 +166,8 @@ class _PetListScreenState extends State<PetListScreen> {
         children: [
           // Search bar
           Container(
-            color: AppColors.surface,
-            padding: AppSpacing.pageInsets.copyWith(top: 0),
+            color: Theme.of(context).colorScheme.surface,
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: AppSearchBar(
               controller: _searchController,
               placeholder: 'Search pets...',
@@ -246,138 +248,138 @@ class _PetListScreenState extends State<PetListScreen> {
   }
 
   Widget _buildPetCard(Pet pet) {
-    return Container(
-      margin: EdgeInsets.only(bottom: AppSpacing.md),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: AppSpacing.borderRadiusMd,
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).shadowColor.withOpacity(0.1),
-            blurRadius: 4,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () => _navigateToEditPet(pet),
-          borderRadius: AppSpacing.borderRadiusMd,
-          child: Padding(
-            padding: AppSpacing.cardInsets,
-            child: Row(
-              children: [
-                // Pet photo
-                Container(
-                  width: 64,
-                  height: 64,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.background,
-                    border: Border.all(
-                      color: AppColors.border,
-                      width: 1,
-                    ),
-                  ),
-                  child: ClipOval(
-                    child: pet.photoUrl != null
-                        ? Image.file(
-                            File(pet.photoUrl!),
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return _buildPetAvatar(pet);
-                            },
-                          )
-                        : _buildPetAvatar(pet),
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: InkWell(
+        onTap: () => _navigateToEditPet(pet),
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              // Pet photo
+              Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  border: Border.all(
+                    color:
+                        Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                    width: 1,
                   ),
                 ),
-
-                AppSpacing.hSpaceMd,
-
-                // Pet info
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        pet.name,
-                        style: AppTextStyles.h3,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      AppSpacing.vSpaceXs,
-                      Text(
-                        _buildPetSubtitle(pet),
-                        style: AppTextStyles.bodyMedium.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      AppSpacing.vSpaceXs,
-                      Text(
-                        pet.ageText,
-                        style: AppTextStyles.bodySmall.copyWith(
-                          color: AppColors.textTertiary,
-                        ),
-                      ),
-                      if (pet.weight != null) ...[
-                        AppSpacing.vSpaceXs,
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.monitor_weight,
-                              size: 14,
-                              color: AppColors.textTertiary,
-                            ),
-                            SizedBox(width: 4),
-                            Text(
-                              '${pet.weight} kg',
-                              style: AppTextStyles.bodySmall.copyWith(
-                                color: AppColors.textTertiary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ],
-                  ),
+                child: ClipOval(
+                  child: pet.photoUrl != null
+                      ? Image.file(
+                          File(pet.photoUrl!),
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return _buildPetAvatar(pet);
+                          },
+                        )
+                      : _buildPetAvatar(pet),
                 ),
+              ),
 
-                // Actions
-                Row(
-                  mainAxisSize: MainAxisSize.min,
+              const SizedBox(width: 12),
+
+              // Pet info
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.edit,
-                        color: AppColors.primary,
-                        size: 20,
+                    Text(
+                      pet.name,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
                       ),
-                      onPressed: () => _navigateToEditPet(pet),
-                      padding: EdgeInsets.all(8),
-                      constraints: BoxConstraints(),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.delete_outline,
-                        color: AppColors.error,
-                        size: 20,
+                    const SizedBox(height: 4),
+                    Text(
+                      _buildPetSubtitle(pet),
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontSize: 13,
                       ),
-                      onPressed: () => _deletePet(pet),
-                      padding: EdgeInsets.all(8),
-                      constraints: BoxConstraints(),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    Icon(
-                      Icons.chevron_right,
-                      color: AppColors.textTertiary,
-                      size: 20,
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.cake,
+                          size: 12,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          pet.ageText,
+                          style: TextStyle(
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                            fontSize: 12,
+                          ),
+                        ),
+                        if (pet.weight != null) ...[
+                          const SizedBox(width: 12),
+                          Icon(
+                            Icons.monitor_weight,
+                            size: 12,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${pet.weight} kg',
+                            style: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+
+              // Actions
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.edit_outlined,
+                      size: 20,
+                    ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    onPressed: () => _navigateToEditPet(pet),
+                    constraints:
+                        const BoxConstraints(minWidth: 32, minHeight: 32),
+                    padding: EdgeInsets.zero,
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.delete_outline,
+                      size: 20,
+                    ),
+                    color: Theme.of(context).colorScheme.error,
+                    onPressed: () => _deletePet(pet),
+                    constraints:
+                        const BoxConstraints(minWidth: 32, minHeight: 32),
+                    padding: EdgeInsets.zero,
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),

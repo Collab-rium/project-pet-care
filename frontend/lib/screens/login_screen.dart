@@ -13,7 +13,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
+  final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
   String? _errorMessage;
@@ -21,7 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final authService = context.read<AuthService>();
       await authService.login(
-        _emailController.text.trim(),
+        _usernameController.text.trim(),
         _passwordController.text,
       );
       // Navigation handled by AuthGate listening to AuthService
@@ -116,22 +116,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 16),
                   ],
 
-                  // Email field
+                  // Username field
                   TextFormField(
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
+                    controller: _usernameController,
                     textInputAction: TextInputAction.next,
                     decoration: const InputDecoration(
-                      labelText: 'Email',
-                      prefixIcon: Icon(Icons.email_outlined),
+                      labelText: 'Username',
+                      prefixIcon: Icon(Icons.person_outlined),
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Please enter your email';
-                      }
-                      if (!value.contains('@')) {
-                        return 'Please enter a valid email';
+                        return 'Please enter your username';
                       }
                       return null;
                     },
@@ -213,14 +209,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   // Quick demo button
                   OutlinedButton(
                     onPressed: () {
-                      _emailController.text = 'demo@example.com';
+                      _usernameController.text = 'demo';
                       _passwordController.text = 'demo1234';
                     },
                     child: const Text('Fill Demo Credentials'),
                   ),
-                  
+
                   const SizedBox(height: 8),
-                  
+
                   // Skip login button (for UI testing)
                   TextButton(
                     onPressed: () {

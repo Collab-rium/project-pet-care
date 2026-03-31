@@ -235,8 +235,7 @@ class _AccountScreenState extends State<AccountScreen> {
             return _buildSettingsTile(
               icon: Icons.palette,
               title: 'Appearance',
-              subtitle:
-                  '${themeManager.currentTheme.name} - ${themeManager.isDarkMode ? "Dark" : "Light"}',
+              subtitle: themeManager.isDarkMode ? 'Dark Mode' : 'Light Mode',
               trailing: const Icon(Icons.chevron_right,
                   color: AppColors.textTertiary),
               onTap: () {
