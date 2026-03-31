@@ -310,38 +310,45 @@ class _PetListScreenState extends State<PetListScreen> {
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 4),
-                    Row(
+                    // Use Wrap so small screens can wrap age/weight instead of
+                    // causing a Row overflow.
+                    Wrap(
+                      spacing: 8,
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         Icon(
                           Icons.cake,
                           size: 12,
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
-                        const SizedBox(width: 4),
-                        Text(
-                          pet.ageText,
-                          style: TextStyle(
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
-                            fontSize: 12,
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 120),
+                          child: Text(
+                            pet.ageText,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              fontSize: 12,
+                            ),
                           ),
                         ),
                         if (pet.weight != null) ...[
-                          const SizedBox(width: 12),
                           Icon(
                             Icons.monitor_weight,
                             size: 12,
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '${pet.weight} kg',
-                            style: TextStyle(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
-                              fontSize: 12,
+                          ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 80),
+                            child: Text(
+                              '${pet.weight} kg',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                fontSize: 12,
+                              ),
                             ),
                           ),
                         ],
@@ -387,13 +394,14 @@ class _PetListScreenState extends State<PetListScreen> {
   }
 
   Widget _buildPetAvatar(Pet pet) {
+    // Match the avatar size used in the card (56x56) to avoid layout jumps.
     return Container(
-      width: 64,
-      height: 64,
+      width: 56,
+      height: 56,
       color: AppColors.background,
       child: Icon(
         _getPetIcon(pet.species),
-        size: 32,
+        size: 28,
         color: AppColors.textTertiary,
       ),
     );
