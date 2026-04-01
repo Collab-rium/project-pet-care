@@ -16,7 +16,7 @@
 {
   "id": "user-uuid-1",
   "email": "owner@example.com",
-  "name": "Alice",
+  "name": "Alice",w
   "createdAt": "2026-03-20T10:00:00Z"
 }
 ```

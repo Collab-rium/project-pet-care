@@ -106,58 +106,28 @@ class _PetListScreenState extends State<PetListScreen> {
     }
   }
 
-  Future<void> _deletePet(Pet pet) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Pet'),
-        content: Text('Are you sure you want to delete ${pet.name}?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed == true) {
-      try {
-        await _petRepository.deletePet(pet.id);
-        _loadPets(); // Refresh the list
-        AppErrorHandler.showSuccessSnackBar(
-          context,
-          '${pet.name} deleted successfully',
-        );
-      } catch (e) {
-        AppErrorHandler.showErrorSnackBar(
-          context,
-          'Failed to delete pet: ${e.toString()}',
-        );
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        centerTitle: true,
         title: Text(
           'My Pets',
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
         ),
-        backgroundColor: Theme.of(context).colorScheme.surface,
+        // Let AppBar use theme defaults so it visually matches Dashboard
         elevation: 0,
+        iconTheme: IconThemeData(
+          color: Theme.of(context).colorScheme.onSurface,
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.refresh),
+            color: Theme.of(context).colorScheme.onSurface,
             onPressed: _loadPets,
           ),
         ],
@@ -166,7 +136,7 @@ class _PetListScreenState extends State<PetListScreen> {
         children: [
           // Search bar
           Container(
-            color: Theme.of(context).colorScheme.surface,
+            color: Theme.of(context).scaffoldBackgroundColor,
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: AppSearchBar(
               controller: _searchController,
@@ -191,8 +161,8 @@ class _PetListScreenState extends State<PetListScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _navigateToAddPet,
-        backgroundColor: AppColors.primary,
-        child: Icon(Icons.add, color: AppColors.textOnPrimary),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        child: Icon(Icons.add, color: Theme.of(context).colorScheme.onPrimary),
       ),
     );
   }
@@ -249,6 +219,8 @@ class _PetListScreenState extends State<PetListScreen> {
 
   Widget _buildPetCard(Pet pet) {
     return Card(
+      color: Theme.of(context).cardColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       margin: const EdgeInsets.only(bottom: 8),
       child: InkWell(
         onTap: () => _navigateToEditPet(pet),
@@ -359,32 +331,16 @@ class _PetListScreenState extends State<PetListScreen> {
               ),
 
               // Actions
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.edit_outlined,
-                      size: 20,
-                    ),
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    onPressed: () => _navigateToEditPet(pet),
-                    constraints:
-                        const BoxConstraints(minWidth: 32, minHeight: 32),
-                    padding: EdgeInsets.zero,
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.delete_outline,
-                      size: 20,
-                    ),
-                    color: Theme.of(context).colorScheme.error,
-                    onPressed: () => _deletePet(pet),
-                    constraints:
-                        const BoxConstraints(minWidth: 32, minHeight: 32),
-                    padding: EdgeInsets.zero,
-                  ),
-                ],
+              IconButton(
+                icon: Icon(
+                  Icons.edit_outlined,
+                  size: 20,
+                ),
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                onPressed: () => _navigateToEditPet(pet),
+                constraints:
+                    const BoxConstraints(minWidth: 32, minHeight: 32),
+                padding: EdgeInsets.zero,
               ),
             ],
           ),

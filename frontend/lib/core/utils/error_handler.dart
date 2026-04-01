@@ -222,6 +222,22 @@ class AppErrorHandler {
   static void showInfoSnackBar(BuildContext context, String message) => ErrorHandler.showInfo(context, message);
   // Backwards-compatible positional API used across the codebase
   static Future<bool?> showConfirmDialog(BuildContext context, String title, String message) {
-    return ErrorHandler.showErrorDialog(context, title: title, message: message, showRetry: false);
+    return showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text('Confirm'),
+          ),
+        ],
+      ),
+    );
   }
 }
