@@ -4,6 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import '../components/atoms/app_button.dart';
 import '../components/atoms/app_dropdown.dart';
 import '../components/organisms/loading_widgets.dart';
+import '../core/constants/colors.dart';
 import '../core/constants/spacing.dart';
 import '../core/constants/text_styles.dart';
 import '../core/models/models.dart';
@@ -26,7 +27,6 @@ class _BudgetScreenState extends State<BudgetScreen> {
   List<Budget> _budgets = [];
   Map<String, double> _monthlyExpenses = {};
   Map<String, Map<String, double>> _categoryBreakdown = {};
-  List<Expense> _currentMonthExpenses = [];
 
   Pet? _selectedPet;
   bool _isLoading = true;
@@ -69,6 +69,8 @@ class _BudgetScreenState extends State<BudgetScreen> {
 
     try {
       final budgets = await _budgetRepository.getPetBudgets(_selectedPet!.id);
+      final currentBudget =
+          await _budgetRepository.getCurrentBudget(_selectedPet!.id);
 
       // Load monthly expenses for the last 6 months
       final now = DateTime.now();
@@ -96,17 +98,10 @@ class _BudgetScreenState extends State<BudgetScreen> {
         categoryBreakdown[monthKey] = categoryTotals;
       }
 
-      // Load current month's expenses
-      final currentMonthExpenses = await _expenseRepository.getPetExpenses(_selectedPet!.id);
-      final filteredExpenses = currentMonthExpenses.where((expense) {
-        return expense.date.year == now.year && expense.date.month == now.month;
-      }).toList();
-
       setState(() {
         _budgets = budgets;
         _monthlyExpenses = monthlyExpenses;
         _categoryBreakdown = categoryBreakdown;
-        _currentMonthExpenses = filteredExpenses;
       });
     } catch (e) {
       AppErrorHandler.showErrorSnackBar(
@@ -166,43 +161,16 @@ class _BudgetScreenState extends State<BudgetScreen> {
       ),
     );
 
-    if (result != null && _selectedPet != null) {
-      try {
-        final amount = result;
-        final now = DateTime.now();
-
-        final budget = Budget(
-          id: _currentBudget?.id ??
-              'budget-${DateTime.now().millisecondsSinceEpoch}',
-          userId: 'user-1',
-          petId: _selectedPet!.id,
-          monthlyLimit: amount,
-          currentSpent: _currentBudget?.currentSpent ?? 0.0,
-          month: now.month.toString().padLeft(2, '0'),
-          year: now.year,
-          createdAt: _currentBudget?.createdAt ?? now,
-          updatedAt: now,
-        );
-
-        if (_currentBudget != null) {
-          await _budgetRepository.updateBudget(budget);
-        } else {
-          await _budgetRepository.createBudget(budget);
-        }
-
-        AppErrorHandler.showSuccessSnackBar(
-          context,
-          _currentBudget != null
-              ? 'Budget updated to \$${amount.toStringAsFixed(2)}'
-              : 'Budget set to \$${amount.toStringAsFixed(2)}',
-        );
-        await _loadData(); // Refresh data
-      } catch (e) {
-        AppErrorHandler.showErrorSnackBar(
-          context,
-          'Failed to save budget: ${e.toString()}',
-        );
-      }
+    if (result != null) {
+      // In a real app, you would save this to the database
+      // For now, just show a success message
+      AppErrorHandler.showSuccessSnackBar(
+        context,
+        _currentBudget != null
+            ? 'Budget updated to \$${result.toStringAsFixed(2)}'
+            : 'Budget set to \$${result.toStringAsFixed(2)}',
+      );
+      _loadData(); // Refresh data
     }
   }
 
@@ -215,176 +183,16 @@ class _BudgetScreenState extends State<BudgetScreen> {
         .firstOrNull;
   }
 
-  Future<void> _showAddExpenseDialog() async {
-    final TextEditingController descriptionController = TextEditingController();
-    final TextEditingController amountController = TextEditingController();
-    String selectedCategory = 'Food';
-    final categories = ['Food', 'Medical', 'Grooming', 'Toys', 'Other'];
-
-    final result = await showDialog<Map<String, dynamic>>(
-      context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: const Text('Add Expense'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: descriptionController,
-                  decoration: const InputDecoration(
-                    labelText: 'Description',
-                    border: OutlineInputBorder(),
-                    hintText: 'What was purchased?',
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: amountController,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(
-                    labelText: 'Amount',
-                    prefixText: '\$ ',
-                    border: OutlineInputBorder(),
-                    hintText: 'Enter amount',
-                  ),
-                ),
-                const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
-                  value: selectedCategory,
-                  decoration: const InputDecoration(
-                    labelText: 'Category',
-                    border: OutlineInputBorder(),
-                  ),
-                  items: categories.map((category) {
-                    return DropdownMenuItem(
-                      value: category,
-                      child: Text(category),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() => selectedCategory = value);
-                    }
-                  },
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-            FilledButton(
-              onPressed: () {
-                final amount = double.tryParse(amountController.text);
-                final description = descriptionController.text.trim();
-                
-                if (description.isEmpty) {
-                  AppErrorHandler.showErrorSnackBar(
-                    context,
-                    'Please enter a description',
-                  );
-                  return;
-                }
-                
-                if (amount == null || amount <= 0) {
-                  AppErrorHandler.showErrorSnackBar(
-                    context,
-                    'Please enter a valid amount',
-                  );
-                  return;
-                }
-                
-                Navigator.pop(context, {
-                  'description': description,
-                  'amount': amount,
-                  'category': selectedCategory,
-                });
-              },
-              child: const Text('Save'),
-            ),
-          ],
-        ),
-      ),
-    );
-
-    if (result != null && _selectedPet != null) {
-      try {
-        final now = DateTime.now();
-        final expense = Expense(
-          id: 'expense-${now.millisecondsSinceEpoch}',
-          userId: 'user-1',
-          petId: _selectedPet!.id,
-          amount: result['amount'],
-          category: result['category'],
-          description: result['description'],
-          date: now,
-          createdAt: now,
-          updatedAt: now,
-        );
-
-        await _expenseRepository.createExpense(expense);
-        await _updateBudgetSpending();
-        await _loadData();
-
-        AppErrorHandler.showSuccessSnackBar(
-          context,
-          'Expense added: \$${result['amount'].toStringAsFixed(2)}',
-        );
-      } catch (e) {
-        AppErrorHandler.showErrorSnackBar(
-          context,
-          'Failed to add expense: ${e.toString()}',
-        );
-      }
-    }
-  }
-
-  Future<void> _updateBudgetSpending() async {
-    if (_selectedPet == null || _currentBudget == null) return;
-
-    try {
-      final total = _currentMonthExpenses.fold<double>(
-        0.0,
-        (sum, expense) => sum + expense.amount,
-      );
-
-      final updatedBudget = Budget(
-        id: _currentBudget!.id,
-        userId: _currentBudget!.userId,
-        petId: _currentBudget!.petId,
-        monthlyLimit: _currentBudget!.monthlyLimit,
-        currentSpent: total,
-        month: _currentBudget!.month,
-        year: _currentBudget!.year,
-        createdAt: _currentBudget!.createdAt,
-        updatedAt: DateTime.now(),
-      );
-
-      await _budgetRepository.updateBudget(updatedBudget);
-    } catch (e) {
-      AppErrorHandler.showErrorSnackBar(
-        context,
-        'Failed to update budget spending: ${e.toString()}',
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
     return Scaffold(
-      backgroundColor: colorScheme.surface,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(
           'Budget Management',
-          style: AppTextStyles.h2.copyWith(color: colorScheme.onSurface),
+          style: AppTextStyles.h2,
         ),
-        backgroundColor: colorScheme.surface,
+        backgroundColor: AppColors.surface,
         elevation: 0,
         actions: [
           IconButton(
@@ -393,13 +201,6 @@ class _BudgetScreenState extends State<BudgetScreen> {
           ),
         ],
       ),
-      floatingActionButton: _selectedPet != null
-          ? FloatingActionButton(
-              onPressed: _showAddExpenseDialog,
-              child: Icon(Icons.add),
-              tooltip: 'Add Expense',
-            )
-          : null,
       body: _isLoading
           ? const ChartLoadingSkeleton()
           : _pets.isEmpty
@@ -409,7 +210,6 @@ class _BudgetScreenState extends State<BudgetScreen> {
   }
 
   Widget _buildEmptyPetsState() {
-    final colorScheme = Theme.of(context).colorScheme;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -417,7 +217,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
           Icon(
             Icons.pets,
             size: 64,
-            color: colorScheme.onSurfaceVariant.withOpacity(0.6),
+            color: AppColors.textTertiary,
           ),
           AppSpacing.vSpaceMd,
           Text(
@@ -428,7 +228,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
           Text(
             'Add a pet first to manage budgets',
             style: AppTextStyles.bodyMedium.copyWith(
-              color: colorScheme.onSurfaceVariant,
+              color: AppColors.textSecondary,
             ),
           ),
         ],
@@ -437,12 +237,11 @@ class _BudgetScreenState extends State<BudgetScreen> {
   }
 
   Widget _buildContent() {
-    final colorScheme = Theme.of(context).colorScheme;
     return Column(
       children: [
         // Pet selector
         Container(
-          color: colorScheme.surfaceContainerHighest,
+          color: AppColors.surface,
           padding: AppSpacing.pageInsets,
           child: Row(
             children: [
@@ -477,11 +276,6 @@ class _BudgetScreenState extends State<BudgetScreen> {
 
               AppSpacing.vSpaceLg,
 
-              // Expenses list
-              _buildExpensesList(),
-
-              AppSpacing.vSpaceLg,
-
               // Monthly spending chart
               _buildSpendingChart(),
 
@@ -502,7 +296,6 @@ class _BudgetScreenState extends State<BudgetScreen> {
   }
 
   Widget _buildCurrentBudgetCard() {
-    final colorScheme = Theme.of(context).colorScheme;
     final budget = _currentBudget;
     final now = DateTime.now();
     final currentMonthKey =
@@ -513,16 +306,16 @@ class _BudgetScreenState extends State<BudgetScreen> {
       return Container(
         padding: AppSpacing.cardInsets,
         decoration: BoxDecoration(
-          color: colorScheme.surfaceContainerHighest,
+          color: AppColors.surface,
           borderRadius: AppSpacing.borderRadiusMd,
-          border: Border.all(color: colorScheme.outline),
+          border: Border.all(color: AppColors.border),
         ),
         child: Column(
           children: [
             Icon(
               Icons.account_balance_wallet,
               size: 48,
-              color: colorScheme.onSurfaceVariant.withOpacity(0.6),
+              color: AppColors.textTertiary,
             ),
             AppSpacing.vSpaceMd,
             Text(
@@ -533,7 +326,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
             Text(
               'Set a monthly budget to track spending',
               style: AppTextStyles.bodyMedium.copyWith(
-                color: colorScheme.onSurfaceVariant,
+                color: AppColors.textSecondary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -558,13 +351,16 @@ class _BudgetScreenState extends State<BudgetScreen> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: isOverBudget
-              ? [colorScheme.error, colorScheme.error.withOpacity(0.8)]
-              : [colorScheme.primary, colorScheme.primary.withOpacity(0.8)],
+              ? [Colors.red, Colors.red.withOpacity(0.8)]
+              : [
+                  Theme.of(context).colorScheme.primary,
+                  Theme.of(context).colorScheme.primary.withOpacity(0.8)
+                ],
         ),
         borderRadius: AppSpacing.borderRadiusMd,
         boxShadow: [
           BoxShadow(
-            color: colorScheme.shadow.withOpacity(0.1),
+            color: Colors.black.withOpacity(0.1),
             blurRadius: 8,
             offset: Offset(0, 4),
           ),
@@ -579,7 +375,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
               Text(
                 'This Month\'s Budget',
                 style: TextStyle(
-                  color: colorScheme.onPrimary,
+                  color: Colors.white,
                   fontWeight: FontWeight.w600,
                   fontSize: 16,
                 ),
@@ -591,13 +387,13 @@ class _BudgetScreenState extends State<BudgetScreen> {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: colorScheme.onPrimary.withOpacity(0.2),
+                    color: Colors.white.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
                     'OVER BUDGET',
                     style: TextStyle(
-                      color: colorScheme.onPrimary,
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 10,
                     ),
@@ -618,7 +414,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                     Text(
                       'Spent',
                       style: TextStyle(
-                        color: colorScheme.onPrimary.withOpacity(0.8),
+                        color: Colors.white.withOpacity(0.8),
                         fontSize: 12,
                       ),
                     ),
@@ -629,7 +425,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                       child: Text(
                         '\$${currentSpent.toStringAsFixed(2)}',
                         style: TextStyle(
-                          color: colorScheme.onPrimary,
+                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 24,
                         ),
@@ -645,7 +441,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                     Text(
                       isOverBudget ? 'Over by' : 'Remaining',
                       style: TextStyle(
-                        color: colorScheme.onPrimary.withOpacity(0.8),
+                        color: Colors.white.withOpacity(0.8),
                         fontSize: 12,
                       ),
                     ),
@@ -656,7 +452,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                       child: Text(
                         '\$${isOverBudget ? (currentSpent - budget.monthlyLimit).toStringAsFixed(2) : remaining.toStringAsFixed(2)}',
                         style: TextStyle(
-                          color: colorScheme.onPrimary,
+                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 24,
                         ),
@@ -672,7 +468,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                     Text(
                       'Budget',
                       style: TextStyle(
-                        color: colorScheme.onPrimary.withOpacity(0.8),
+                        color: Colors.white.withOpacity(0.8),
                         fontSize: 12,
                       ),
                     ),
@@ -683,7 +479,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                       child: Text(
                         '\$${budget.monthlyLimit.toStringAsFixed(2)}',
                         style: TextStyle(
-                          color: colorScheme.onPrimary,
+                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 24,
                         ),
@@ -707,7 +503,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                   Text(
                     '${percentageUsed.toStringAsFixed(1)}% used',
                     style: TextStyle(
-                      color: colorScheme.onPrimary.withOpacity(0.8),
+                      color: Colors.white.withOpacity(0.8),
                       fontSize: 12,
                     ),
                   ),
@@ -715,7 +511,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                     Text(
                       '${(percentageUsed - 100).toStringAsFixed(1)}% over',
                       style: TextStyle(
-                        color: colorScheme.onPrimary.withOpacity(0.8),
+                        color: Colors.white.withOpacity(0.8),
                         fontSize: 12,
                       ),
                     ),
@@ -726,9 +522,9 @@ class _BudgetScreenState extends State<BudgetScreen> {
                 borderRadius: BorderRadius.circular(4),
                 child: LinearProgressIndicator(
                   value: (percentageUsed / 100).clamp(0, 1),
-                  backgroundColor: colorScheme.onPrimary.withOpacity(0.3),
+                  backgroundColor: Colors.white.withOpacity(0.3),
                   valueColor: AlwaysStoppedAnimation<Color>(
-                    colorScheme.onPrimary.withOpacity(0.9),
+                    Colors.white.withOpacity(0.9),
                   ),
                   minHeight: 8,
                 ),
@@ -741,14 +537,13 @@ class _BudgetScreenState extends State<BudgetScreen> {
   }
 
   Widget _buildSpendingChart() {
-    final colorScheme = Theme.of(context).colorScheme;
     if (_monthlyExpenses.isEmpty) {
       return Container(
         padding: AppSpacing.cardInsets,
         decoration: BoxDecoration(
-          color: colorScheme.surfaceContainerHighest,
+          color: AppColors.surface,
           borderRadius: AppSpacing.borderRadiusMd,
-          border: Border.all(color: colorScheme.outline),
+          border: Border.all(color: AppColors.border),
         ),
         child: Column(
           children: [
@@ -760,13 +555,13 @@ class _BudgetScreenState extends State<BudgetScreen> {
             Icon(
               Icons.timeline,
               size: 48,
-              color: colorScheme.onSurfaceVariant.withOpacity(0.6),
+              color: AppColors.textTertiary,
             ),
             AppSpacing.vSpaceSm,
             Text(
               'No spending data available',
               style: AppTextStyles.bodyMedium.copyWith(
-                color: colorScheme.onSurfaceVariant,
+                color: AppColors.textSecondary,
               ),
             ),
           ],
@@ -784,11 +579,11 @@ class _BudgetScreenState extends State<BudgetScreen> {
     return Container(
       padding: AppSpacing.cardInsets,
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest,
+        color: AppColors.surface,
         borderRadius: AppSpacing.borderRadiusMd,
         boxShadow: [
           BoxShadow(
-            color: colorScheme.shadow,
+            color: AppColors.shadow,
             blurRadius: 4,
             offset: Offset(0, 2),
           ),
@@ -817,8 +612,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                           return Text(
                             entry.key.split('/')[0],
                             style: AppTextStyles.bodySmall.copyWith(
-                              color:
-                                  colorScheme.onSurfaceVariant.withOpacity(0.6),
+                              color: AppColors.textTertiary,
                             ),
                           );
                         }
@@ -833,8 +627,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                         return Text(
                           '\$${value.toInt()}',
                           style: AppTextStyles.bodySmall.copyWith(
-                            color:
-                                colorScheme.onSurfaceVariant.withOpacity(0.6),
+                            color: AppColors.textTertiary,
                           ),
                         );
                       },
@@ -850,12 +643,12 @@ class _BudgetScreenState extends State<BudgetScreen> {
                   LineChartBarData(
                     spots: spots,
                     isCurved: true,
-                    color: colorScheme.primary,
+                    color: AppColors.primary,
                     barWidth: 3,
                     dotData: FlDotData(show: true),
                     belowBarData: BarAreaData(
                       show: true,
-                      color: colorScheme.primary.withOpacity(0.1),
+                      color: AppColors.primary.withOpacity(0.1),
                     ),
                   ),
                 ],
@@ -868,7 +661,6 @@ class _BudgetScreenState extends State<BudgetScreen> {
   }
 
   Widget _buildCategoryBreakdown() {
-    final colorScheme = Theme.of(context).colorScheme;
     final now = DateTime.now();
     final currentMonthKey =
         '${now.month.toString().padLeft(2, '0')}/${now.year}';
@@ -878,9 +670,9 @@ class _BudgetScreenState extends State<BudgetScreen> {
       return Container(
         padding: AppSpacing.cardInsets,
         decoration: BoxDecoration(
-          color: colorScheme.surfaceContainerHighest,
+          color: AppColors.surface,
           borderRadius: AppSpacing.borderRadiusMd,
-          border: Border.all(color: colorScheme.outline),
+          border: Border.all(color: AppColors.border),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -894,7 +686,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
               child: Text(
                 'No expenses recorded this month',
                 style: AppTextStyles.bodyMedium.copyWith(
-                  color: colorScheme.onSurfaceVariant,
+                  color: AppColors.textSecondary,
                 ),
               ),
             ),
@@ -909,11 +701,11 @@ class _BudgetScreenState extends State<BudgetScreen> {
     return Container(
       padding: AppSpacing.cardInsets,
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest,
+        color: AppColors.surface,
         borderRadius: AppSpacing.borderRadiusMd,
         boxShadow: [
           BoxShadow(
-            color: colorScheme.shadow,
+            color: AppColors.shadow,
             blurRadius: 4,
             offset: Offset(0, 2),
           ),
@@ -942,7 +734,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                           '\$${entry.value.toStringAsFixed(2)}',
                           style: AppTextStyles.bodyMedium.copyWith(
                             fontWeight: FontWeight.w600,
-                            color: colorScheme.primary,
+                            color: AppColors.primary,
                           ),
                         ),
                       ],
@@ -955,14 +747,13 @@ class _BudgetScreenState extends State<BudgetScreen> {
   }
 
   Widget _buildBudgetHistory() {
-    final colorScheme = Theme.of(context).colorScheme;
     if (_budgets.isEmpty) {
       return Container(
         padding: AppSpacing.cardInsets,
         decoration: BoxDecoration(
-          color: colorScheme.surfaceContainerHighest,
+          color: AppColors.surface,
           borderRadius: AppSpacing.borderRadiusMd,
-          border: Border.all(color: colorScheme.outline),
+          border: Border.all(color: AppColors.border),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -976,7 +767,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
               child: Text(
                 'No budget history available',
                 style: AppTextStyles.bodyMedium.copyWith(
-                  color: colorScheme.onSurfaceVariant,
+                  color: AppColors.textSecondary,
                 ),
               ),
             ),
@@ -988,11 +779,11 @@ class _BudgetScreenState extends State<BudgetScreen> {
     return Container(
       padding: AppSpacing.cardInsets,
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest,
+        color: AppColors.surface,
         borderRadius: AppSpacing.borderRadiusMd,
         boxShadow: [
           BoxShadow(
-            color: colorScheme.shadow,
+            color: AppColors.shadow,
             blurRadius: 4,
             offset: Offset(0, 2),
           ),
@@ -1016,7 +807,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
               margin: EdgeInsets.only(bottom: AppSpacing.sm),
               padding: AppSpacing.cardInsets,
               decoration: BoxDecoration(
-                border: Border.all(color: colorScheme.outline),
+                border: Border.all(color: AppColors.border),
                 borderRadius: AppSpacing.borderRadiusSm,
               ),
               child: Column(
@@ -1040,11 +831,11 @@ class _BudgetScreenState extends State<BudgetScreen> {
                   AppSpacing.vSpaceXs,
                   LinearProgressIndicator(
                     value: percentage / 100,
-                    backgroundColor: colorScheme.outline,
+                    backgroundColor: AppColors.border,
                     valueColor: AlwaysStoppedAnimation<Color>(
                       spent > budget.monthlyLimit
-                          ? colorScheme.error
-                          : colorScheme.primary,
+                          ? AppColors.error
+                          : AppColors.primary,
                     ),
                   ),
                 ],
@@ -1054,236 +845,5 @@ class _BudgetScreenState extends State<BudgetScreen> {
         ],
       ),
     );
-  }
-
-  Widget _buildExpensesList() {
-    final colorScheme = Theme.of(context).colorScheme;
-    
-    if (_currentMonthExpenses.isEmpty) {
-      return Container(
-        padding: AppSpacing.cardInsets,
-        decoration: BoxDecoration(
-          color: colorScheme.surfaceContainerHighest,
-          borderRadius: AppSpacing.borderRadiusMd,
-          border: Border.all(color: colorScheme.outline),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'This Month\'s Expenses',
-              style: AppTextStyles.h3,
-            ),
-            AppSpacing.vSpaceMd,
-            Center(
-              child: Column(
-                children: [
-                  Icon(
-                    Icons.receipt_long,
-                    size: 48,
-                    color: colorScheme.onSurfaceVariant.withOpacity(0.6),
-                  ),
-                  AppSpacing.vSpaceSm,
-                  Text(
-                    'No expenses recorded yet',
-                    style: AppTextStyles.bodyMedium.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  AppSpacing.vSpaceXs,
-                  Text(
-                    'Tap the + button to add your first expense',
-                    style: AppTextStyles.bodySmall.copyWith(
-                      color: colorScheme.onSurfaceVariant.withOpacity(0.7),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    final totalSpent = _currentMonthExpenses.fold<double>(
-      0.0,
-      (sum, expense) => sum + expense.amount,
-    );
-
-    return Container(
-      padding: AppSpacing.cardInsets,
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest,
-        borderRadius: AppSpacing.borderRadiusMd,
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.shadow,
-            blurRadius: 4,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'This Month\'s Expenses',
-                style: AppTextStyles.h3,
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: colorScheme.primaryContainer,
-                  borderRadius: AppSpacing.borderRadiusSm,
-                ),
-                child: Text(
-                  '${_currentMonthExpenses.length} items',
-                  style: AppTextStyles.bodySmall.copyWith(
-                    color: colorScheme.onPrimaryContainer,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          AppSpacing.vSpaceMd,
-          
-          // Expense list
-          ..._currentMonthExpenses.map((expense) {
-            final dateStr = '${expense.date.month}/${expense.date.day}';
-            
-            return Container(
-              margin: EdgeInsets.only(bottom: AppSpacing.sm),
-              padding: AppSpacing.cardInsets,
-              decoration: BoxDecoration(
-                border: Border.all(color: colorScheme.outline),
-                borderRadius: AppSpacing.borderRadiusSm,
-              ),
-              child: Row(
-                children: [
-                  // Icon based on category
-                  Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: colorScheme.primaryContainer.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Icon(
-                      _getCategoryIcon(expense.category),
-                      size: 24,
-                      color: colorScheme.primary,
-                    ),
-                  ),
-                  AppSpacing.hSpaceSm,
-                  
-                  // Expense details
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          expense.description ?? 'No description',
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: colorScheme.secondaryContainer,
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: Text(
-                                expense.category,
-                                style: AppTextStyles.bodySmall.copyWith(
-                                  color: colorScheme.onSecondaryContainer,
-                                  fontSize: 11,
-                                ),
-                              ),
-                            ),
-                            AppSpacing.hSpaceXs,
-                            Text(
-                              dateStr,
-                              style: AppTextStyles.bodySmall.copyWith(
-                                color: colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  
-                  // Amount
-                  Text(
-                    '\$${expense.amount.toStringAsFixed(2)}',
-                    style: AppTextStyles.bodyLarge.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: colorScheme.primary,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
-          
-          // Total
-          Container(
-            margin: EdgeInsets.only(top: AppSpacing.sm),
-            padding: AppSpacing.cardInsets,
-            decoration: BoxDecoration(
-              color: colorScheme.primaryContainer.withOpacity(0.3),
-              borderRadius: AppSpacing.borderRadiusSm,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Total Spent',
-                  style: AppTextStyles.bodyLarge.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  '\$${totalSpent.toStringAsFixed(2)}',
-                  style: AppTextStyles.h3.copyWith(
-                    color: colorScheme.primary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  IconData _getCategoryIcon(String category) {
-    switch (category) {
-      case 'Food':
-        return Icons.restaurant;
-      case 'Medical':
-        return Icons.medical_services;
-      case 'Grooming':
-        return Icons.cut;
-      case 'Toys':
-        return Icons.toys;
-      case 'Other':
-      default:
-        return Icons.shopping_bag;
-    }
   }
 }

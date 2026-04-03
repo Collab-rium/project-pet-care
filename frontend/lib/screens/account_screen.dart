@@ -29,46 +29,45 @@ class _AccountScreenState extends State<AccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: colorScheme.surface,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(
           'Account',
           style: AppTextStyles.h2,
         ),
-        backgroundColor: colorScheme.surface,
+        backgroundColor: AppColors.surface,
         elevation: 0,
       ),
       body: ListView(
         padding: AppSpacing.pageInsets,
         children: [
           // Profile section
-          _buildProfileSection(colorScheme),
+          _buildProfileSection(),
 
           AppSpacing.vSpaceLg,
 
           // Settings sections
-          _buildSettingsSection(colorScheme),
+          _buildSettingsSection(),
 
           AppSpacing.vSpaceLg,
 
           // Account actions
-          _buildAccountActions(colorScheme),
+          _buildAccountActions(),
         ],
       ),
     );
   }
 
-  Widget _buildProfileSection(ColorScheme colorScheme) {
+  Widget _buildProfileSection() {
     return Container(
       padding: AppSpacing.cardInsets,
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest,
+        color: AppColors.surface,
         borderRadius: AppSpacing.borderRadiusMd,
         boxShadow: [
           BoxShadow(
-            color: colorScheme.shadow,
+            color: AppColors.shadow,
             blurRadius: 4,
             offset: Offset(0, 2),
           ),
@@ -86,9 +85,9 @@ class _AccountScreenState extends State<AccountScreen> {
                   height: 100,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: colorScheme.surface,
+                    color: AppColors.background,
                     border: Border.all(
-                      color: colorScheme.outline,
+                      color: AppColors.border,
                       width: 2,
                     ),
                   ),
@@ -98,10 +97,10 @@ class _AccountScreenState extends State<AccountScreen> {
                             File(_profilePhotoPath!),
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) {
-                              return _buildAvatarPlaceholder(colorScheme);
+                              return _buildAvatarPlaceholder();
                             },
                           )
-                        : _buildAvatarPlaceholder(colorScheme),
+                        : _buildAvatarPlaceholder(),
                   ),
                 ),
 
@@ -113,16 +112,16 @@ class _AccountScreenState extends State<AccountScreen> {
                     width: 32,
                     height: 32,
                     decoration: BoxDecoration(
-                      color: colorScheme.primary,
+                      color: Theme.of(context).colorScheme.primary,
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: colorScheme.surfaceContainerHighest,
+                        color: AppColors.surface,
                         width: 2,
                       ),
                     ),
                     child: Icon(
                       Icons.camera_alt,
-                      color: colorScheme.onPrimary,
+                      color: Theme.of(context).colorScheme.onPrimary,
                       size: 16,
                     ),
                   ),
@@ -144,7 +143,7 @@ class _AccountScreenState extends State<AccountScreen> {
           Text(
             'Local User Account',
             style: AppTextStyles.bodyMedium.copyWith(
-              color: colorScheme.onSurfaceVariant,
+              color: AppColors.textSecondary,
             ),
           ),
 
@@ -160,23 +159,22 @@ class _AccountScreenState extends State<AccountScreen> {
     );
   }
 
-  Widget _buildAvatarPlaceholder(ColorScheme colorScheme) {
+  Widget _buildAvatarPlaceholder() {
     return Container(
-      color: colorScheme.surface,
+      color: AppColors.background,
       child: Icon(
         Icons.person,
         size: 48,
-        color: colorScheme.onSurfaceVariant.withOpacity(0.6),
+        color: AppColors.textTertiary,
       ),
     );
   }
 
-  Widget _buildSettingsSection(ColorScheme colorScheme) {
+  Widget _buildSettingsSection() {
     return Column(
       children: [
         // Notifications
         _buildSettingsTile(
-          colorScheme: colorScheme,
           icon: Icons.notifications,
           title: 'Notifications',
           subtitle: 'Reminder alerts and updates',
@@ -190,7 +188,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   SnackBar(
                     content: Row(
                       children: [
-                        Icon(Icons.notifications_active, color: colorScheme.onPrimary),
+                        Icon(Icons.notifications_active, color: Colors.white),
                         SizedBox(width: 12),
                         Expanded(
                           child: Column(
@@ -207,7 +205,7 @@ class _AccountScreenState extends State<AccountScreen> {
                         ),
                       ],
                     ),
-                    backgroundColor: colorScheme.primary,
+                    backgroundColor: AppColors.success,
                     duration: Duration(seconds: 3),
                   ),
                 );
@@ -218,18 +216,17 @@ class _AccountScreenState extends State<AccountScreen> {
                 );
               }
             },
-            activeColor: colorScheme.primary,
+            activeColor: Theme.of(context).colorScheme.primary,
           ),
           onTap: () => _showNotificationSettings(),
         ),
 
         // Payments & Subscription
         _buildSettingsTile(
-          colorScheme: colorScheme,
           icon: Icons.payment,
           title: 'Payments & Subscription',
           subtitle: 'Manage billing and plans',
-          trailing: Icon(Icons.chevron_right, color: colorScheme.onSurfaceVariant.withOpacity(0.6)),
+          trailing: Icon(Icons.chevron_right, color: AppColors.textTertiary),
           onTap: () => _showPaymentSettings(),
         ),
 
@@ -237,12 +234,11 @@ class _AccountScreenState extends State<AccountScreen> {
         Consumer<ThemeManager>(
           builder: (context, themeManager, child) {
             return _buildSettingsTile(
-              colorScheme: colorScheme,
               icon: Icons.palette,
               title: 'Theme & Appearance',
               subtitle: '${themeManager.currentTheme.name} • ${themeManager.isDarkMode ? 'Dark Mode' : 'Light Mode'}',
-              trailing: Icon(Icons.chevron_right,
-                  color: colorScheme.onSurfaceVariant.withOpacity(0.6)),
+              trailing: const Icon(Icons.chevron_right,
+                  color: AppColors.textTertiary),
               onTap: () {
                 Navigator.push(
                   context,
@@ -257,31 +253,28 @@ class _AccountScreenState extends State<AccountScreen> {
 
         // Wallpaper
         _buildSettingsTile(
-          colorScheme: colorScheme,
           icon: Icons.wallpaper,
           title: 'Wallpaper',
           subtitle: 'Set pet photo as wallpaper',
-          trailing: Icon(Icons.chevron_right, color: colorScheme.onSurfaceVariant.withOpacity(0.6)),
+          trailing: Icon(Icons.chevron_right, color: AppColors.textTertiary),
           onTap: () => _showWallpaperSettings(),
         ),
 
         // Privacy & Policy
         _buildSettingsTile(
-          colorScheme: colorScheme,
           icon: Icons.privacy_tip,
           title: 'Privacy & Policy',
           subtitle: 'Terms and privacy information',
-          trailing: Icon(Icons.chevron_right, color: colorScheme.onSurfaceVariant.withOpacity(0.6)),
+          trailing: Icon(Icons.chevron_right, color: AppColors.textTertiary),
           onTap: () => _showPrivacyPolicy(),
         ),
 
         // Backup & Restore
         _buildSettingsTile(
-          colorScheme: colorScheme,
           icon: Icons.backup,
           title: 'Backup & Restore',
           subtitle: 'Export or import your data',
-          trailing: Icon(Icons.chevron_right, color: colorScheme.onSurfaceVariant.withOpacity(0.6)),
+          trailing: Icon(Icons.chevron_right, color: AppColors.textTertiary),
           onTap: () => _showBackupRestore(),
         ),
       ],
@@ -289,7 +282,6 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 
   Widget _buildSettingsTile({
-    required ColorScheme colorScheme,
     required IconData icon,
     required String title,
     required String subtitle,
@@ -299,9 +291,9 @@ class _AccountScreenState extends State<AccountScreen> {
     return Container(
       margin: EdgeInsets.only(bottom: AppSpacing.sm),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest,
+        color: AppColors.surface,
         borderRadius: AppSpacing.borderRadiusMd,
-        border: Border.all(color: colorScheme.outline),
+        border: Border.all(color: AppColors.border),
       ),
       child: Material(
         color: Colors.transparent,
@@ -317,12 +309,12 @@ class _AccountScreenState extends State<AccountScreen> {
                   height: 48,
                   decoration: BoxDecoration(
                     color:
-                        colorScheme.primary.withOpacity(0.1),
+                        Theme.of(context).colorScheme.primary.withOpacity(0.1),
                     borderRadius: AppSpacing.borderRadiusSm,
                   ),
                   child: Icon(
                     icon,
-                    color: colorScheme.primary,
+                    color: Theme.of(context).colorScheme.primary,
                     size: 24,
                   ),
                 ),
@@ -339,7 +331,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       Text(
                         subtitle,
                         style: AppTextStyles.bodySmall.copyWith(
-                          color: colorScheme.onSurfaceVariant,
+                          color: AppColors.textSecondary,
                         ),
                       ),
                     ],
@@ -355,7 +347,7 @@ class _AccountScreenState extends State<AccountScreen> {
     );
   }
 
-  Widget _buildAccountActions(ColorScheme colorScheme) {
+  Widget _buildAccountActions() {
     return Column(
       children: [
         // Switch Account
@@ -373,8 +365,8 @@ class _AccountScreenState extends State<AccountScreen> {
           icon: const Icon(Icons.logout),
           label: const Text('Log Out'),
           style: ElevatedButton.styleFrom(
-            backgroundColor: colorScheme.error,
-            foregroundColor: colorScheme.onError,
+            backgroundColor: Theme.of(context).colorScheme.error,
+            foregroundColor: Theme.of(context).colorScheme.onError,
             minimumSize: const Size(double.infinity, 50),
           ),
         ),
@@ -387,14 +379,14 @@ class _AccountScreenState extends State<AccountScreen> {
             Text(
               'Pet Care App',
               style: AppTextStyles.bodySmall.copyWith(
-                color: colorScheme.onSurfaceVariant.withOpacity(0.6),
+                color: AppColors.textTertiary,
               ),
             ),
             AppSpacing.vSpaceXs,
             Text(
               'Version 1.0.0',
               style: AppTextStyles.bodySmall.copyWith(
-                color: colorScheme.onSurfaceVariant.withOpacity(0.6),
+                color: AppColors.textTertiary,
               ),
             ),
           ],
@@ -596,7 +588,6 @@ class AccountFloatingButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     return Positioned(
       bottom: AppSpacing.lg,
       right: AppSpacing.lg,
@@ -612,11 +603,11 @@ class AccountFloatingButton extends StatelessWidget {
           width: 56,
           height: 56,
           decoration: BoxDecoration(
-            color: colorScheme.primary,
+            color: AppColors.primary,
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: colorScheme.shadow,
+                color: AppColors.shadow,
                 blurRadius: 8,
                 offset: Offset(0, 4),
               ),
@@ -624,7 +615,7 @@ class AccountFloatingButton extends StatelessWidget {
           ),
           child: Icon(
             Icons.account_circle,
-            color: colorScheme.onPrimary,
+            color: AppColors.textOnPrimary,
             size: 32,
           ),
         ),
