@@ -19,6 +19,20 @@ void main() async {
   await FileLoggerService.initialize();
   await FileLoggerService.log('App started');
 
+  // Catch ALL Flutter framework errors
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details);
+    LoggerService.error('Flutter Error: ${details.exceptionAsString()}', exception: details.exception);
+    FileLoggerService.logError('Flutter Error', exception: details.exception, stackTrace: details.stack);
+  };
+
+  // Catch ALL unhandled async errors
+  PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
+    LoggerService.critical('Unhandled Platform Error: $error');
+    FileLoggerService.logError('Unhandled Platform Error', exception: error, stackTrace: stack);
+    return true;
+  };
+
 
   // Initialize notifications
   try {

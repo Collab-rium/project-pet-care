@@ -10,6 +10,8 @@ import '../core/constants/text_styles.dart';
 import '../core/models/models.dart';
 import '../core/repositories/repositories.dart';
 import '../core/utils/error_handler.dart';
+import '../core/services/logger_service.dart';
+import '../core/services/file_logger_service.dart';
 
 class WallpaperCustomizationScreen extends StatefulWidget {
   const WallpaperCustomizationScreen({super.key});
@@ -40,6 +42,9 @@ class _WallpaperCustomizationScreenState extends State<WallpaperCustomizationScr
       final photos = await _photoRepository.getAllPhotos('user-1');
       final pets = await _petRepository.getUserPets('user-1');
       
+      LoggerService.info('Wallpaper screen loaded: ${photos.length} photos, ${pets.length} pets');
+      await FileLoggerService.log('WallpaperScreen: Loaded ${photos.length} photos and ${pets.length} pets');
+      
       // Load current wallpaper from storage (placeholder)
       _currentWallpaper = null; // Would load from SharedPreferences
       
@@ -48,7 +53,9 @@ class _WallpaperCustomizationScreenState extends State<WallpaperCustomizationScr
         _pets = pets;
         _isLoading = false;
       });
-    } catch (e) {
+    } catch (e, st) {
+      LoggerService.error('Failed to load wallpaper data: $e', exception: e);
+      await FileLoggerService.logError('WallpaperScreen load failed', exception: e, stackTrace: st);
       AppErrorHandler.showErrorSnackBar(
         context,
         'Failed to load data: ${e.toString()}',
@@ -336,10 +343,12 @@ class _WallpaperCustomizationScreenState extends State<WallpaperCustomizationScr
           borderRadius: AppSpacing.borderRadiusSm,
           border: Border.all(color: AppColors.border),
           image: DecorationImage(
-            image: isAsset 
-                ? AssetImage(imagePath) as ImageProvider
-                : FileImage(File(imagePath)),
+            image: _buildImageProvider(imagePath, isAsset),
             fit: BoxFit.cover,
+            onError: (exception, stackTrace) {
+              LoggerService.error('Failed to load wallpaper: $imagePath');
+              FileLoggerService.logError('Wallpaper load failed: $imagePath', exception: exception, stackTrace: stackTrace);
+            },
           ),
         ),
         child: Container(
@@ -370,6 +379,23 @@ class _WallpaperCustomizationScreenState extends State<WallpaperCustomizationScr
         ),
       ),
     );
+  }
+
+  ImageProvider _buildImageProvider(String imagePath, bool isAsset) {
+    try {
+      if (isAsset) {
+        LoggerService.debug('Loading asset image: $imagePath');
+        return AssetImage(imagePath);
+      } else {
+        LoggerService.debug('Loading file image: $imagePath');
+        return FileImage(File(imagePath));
+      }
+    } catch (e, st) {
+      LoggerService.error('Error building image provider for $imagePath: $e');
+      FileLoggerService.logError('Image provider error', exception: e, stackTrace: st);
+      // Return placeholder
+      return AssetImage('assets/placeholder.png');
+    }
   }
 
   Widget _buildPetPhotoOption(Photo photo, Pet pet) {
