@@ -6,6 +6,8 @@ import '../../core/constants/colors.dart';
 import '../core/constants/spacing.dart';
 import '../core/constants/text_styles.dart';
 import '../core/utils/error_handler.dart';
+import '../core/services/logger_service.dart';
+import '../core/services/file_logger_service.dart';
 
 /// Screen for setting custom wallpaper
 class WallpaperScreen extends StatefulWidget {
@@ -22,19 +24,31 @@ class _WallpaperScreenState extends State<WallpaperScreen> {
   @override
   void initState() {
     super.initState();
+    LoggerService.info('WallpaperScreen: Screen opened');
+    FileLoggerService.log('WallpaperScreen: Screen initialized');
     _loadWallpaper();
   }
 
   Future<void> _loadWallpaper() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _wallpaperPath = prefs.getString('wallpaper_path');
-      _isLoading = false;
-    });
+    try {
+      LoggerService.info('WallpaperScreen: Loading wallpaper...');
+      final prefs = await SharedPreferences.getInstance();
+      setState(() {
+        _wallpaperPath = prefs.getString('wallpaper_path');
+        _isLoading = false;
+      });
+      LoggerService.info('WallpaperScreen: Wallpaper loaded (${_wallpaperPath != null ? 'set' : 'not set'})');
+      await FileLoggerService.log('WallpaperScreen: Wallpaper loaded');
+    } catch (e, st) {
+      LoggerService.error('WallpaperScreen: Load failed - $e', exception: e);
+      await FileLoggerService.logError('WallpaperScreen load failed', exception: e, stackTrace: st);
+      setState(() => _isLoading = false);
+    }
   }
 
   Future<void> _pickWallpaper() async {
     try {
+      LoggerService.info('WallpaperScreen: Picking wallpaper...');
       final ImagePicker picker = ImagePicker();
       final XFile? image = await picker.pickImage(
         source: ImageSource.gallery,
@@ -47,6 +61,8 @@ class _WallpaperScreenState extends State<WallpaperScreen> {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('wallpaper_path', image.path);
         
+        LoggerService.info('WallpaperScreen: Wallpaper set successfully');
+        await FileLoggerService.log('WallpaperScreen: Wallpaper set');
         setState(() {
           _wallpaperPath = image.path;
         });
@@ -58,7 +74,9 @@ class _WallpaperScreenState extends State<WallpaperScreen> {
           );
         }
       }
-    } catch (e) {
+    } catch (e, st) {
+      LoggerService.error('WallpaperScreen: Pick failed - $e', exception: e);
+      await FileLoggerService.logError('WallpaperScreen pick failed', exception: e, stackTrace: st);
       if (mounted) {
         AppErrorHandler.showErrorSnackBar(
           context,

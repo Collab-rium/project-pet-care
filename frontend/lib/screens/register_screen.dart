@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_service.dart';
+import '../core/services/logger_service.dart';
+import '../core/services/file_logger_service.dart';
 
 /// Registration screen for new users
 class RegisterScreen extends StatefulWidget {
@@ -22,6 +24,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _obscureConfirmPassword = true;
 
   @override
+  void initState() {
+    super.initState();
+    LoggerService.info('RegisterScreen: Screen opened');
+    FileLoggerService.log('RegisterScreen: Screen initialized');
+  }
+
+  @override
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
@@ -39,17 +48,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
 
     try {
+      LoggerService.info('RegisterScreen: Attempting registration...');
       final authService = context.read<AuthService>();
       await authService.register(
         _emailController.text.trim(),
         _passwordController.text,
         _nameController.text.trim(),
       );
+      LoggerService.info('RegisterScreen: Registration successful');
+      await FileLoggerService.log('RegisterScreen: New user registered');
       // Navigation handled by AuthGate listening to AuthService
       if (mounted) {
         Navigator.of(context).popUntil((route) => route.isFirst);
       }
-    } catch (e) {
+    } catch (e, st) {
+      LoggerService.error('RegisterScreen: Registration failed - $e', exception: e);
+      await FileLoggerService.logError('RegisterScreen registration failed', exception: e, stackTrace: st);
       setState(() {
         _errorMessage = e.toString().replaceAll('Exception: ', '');
       });

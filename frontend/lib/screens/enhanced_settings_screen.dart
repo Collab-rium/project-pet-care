@@ -9,6 +9,8 @@ import '../core/utils/error_handler.dart';
 import 'account_screen.dart';
 import 'notification_settings_screen.dart';
 import 'theme_selector_screen.dart';
+import '../core/services/logger_service.dart';
+import '../core/services/file_logger_service.dart';
 
 class EnhancedSettingsScreen extends StatefulWidget {
   const EnhancedSettingsScreen({super.key});
@@ -19,6 +21,13 @@ class EnhancedSettingsScreen extends StatefulWidget {
 
 class _EnhancedSettingsScreenState extends State<EnhancedSettingsScreen> {
   bool _isDarkMode = false;
+
+  @override
+  void initState() {
+    super.initState();
+    LoggerService.info('EnhancedSettingsScreen: Screen opened');
+    FileLoggerService.log('EnhancedSettingsScreen: Screen initialized');
+  }
 
   @override
   Widget build(BuildContext context) {

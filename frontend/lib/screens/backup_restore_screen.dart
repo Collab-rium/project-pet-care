@@ -10,6 +10,8 @@ import '../../core/constants/colors.dart';
 import '../core/constants/spacing.dart';
 import '../core/constants/text_styles.dart';
 import '../core/utils/error_handler.dart';
+import '../core/services/logger_service.dart';
+import '../core/services/file_logger_service.dart';
 import '../core/utils/validators.dart';
 
 class BackupRestoreScreen extends StatefulWidget {
@@ -38,6 +40,8 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen>
   @override
   void initState() {
     super.initState();
+    LoggerService.info('BackupRestoreScreen: Screen opened');
+    FileLoggerService.log('BackupRestoreScreen: Screen initialized');
     _tabController = TabController(length: 2, vsync: this);
   }
 

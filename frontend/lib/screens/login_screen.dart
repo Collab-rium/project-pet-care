@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_service.dart';
 import 'register_screen.dart';
+import '../core/services/logger_service.dart';
+import '../core/services/file_logger_service.dart';
 
 /// Login screen with email/password authentication
 class LoginScreen extends StatefulWidget {
@@ -20,6 +22,13 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
 
   @override
+  void initState() {
+    super.initState();
+    LoggerService.info('LoginScreen: Screen opened');
+    FileLoggerService.log('LoginScreen: Screen initialized');
+  }
+
+  @override
   void dispose() {
     _usernameController.dispose();
     _passwordController.dispose();
@@ -35,13 +44,18 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
+      LoggerService.info('LoginScreen: Attempting login...');
       final authService = context.read<AuthService>();
       await authService.login(
         _usernameController.text.trim(),
         _passwordController.text,
       );
+      LoggerService.info('LoginScreen: Login successful');
+      await FileLoggerService.log('LoginScreen: User logged in successfully');
       // Navigation handled by AuthGate listening to AuthService
-    } catch (e) {
+    } catch (e, st) {
+      LoggerService.error('LoginScreen: Login failed - $e', exception: e);
+      await FileLoggerService.logError('LoginScreen login failed', exception: e, stackTrace: st);
       setState(() {
         _errorMessage = e.toString().replaceAll('Exception: ', '');
       });

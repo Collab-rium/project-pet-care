@@ -13,6 +13,8 @@ import '../core/constants/text_styles.dart';
 import '../core/models/models.dart';
 import '../core/repositories/repositories.dart';
 import '../core/utils/error_handler.dart';
+import '../core/services/logger_service.dart';
+import '../core/services/file_logger_service.dart';
 import '../core/utils/validators.dart';
 
 class WeightTrackingScreen extends StatefulWidget {
@@ -37,6 +39,8 @@ class _WeightTrackingScreenState extends State<WeightTrackingScreen> {
   @override
   void initState() {
     super.initState();
+    LoggerService.info('WeightTrackingScreen: Screen opened for pet ${widget.pet.name}');
+    FileLoggerService.log('WeightTrackingScreen: Screen initialized');
     _loadWeightRecords();
   }
 
@@ -49,13 +53,18 @@ class _WeightTrackingScreenState extends State<WeightTrackingScreen> {
 
   Future<void> _loadWeightRecords() async {
     try {
+      LoggerService.info('WeightTrackingScreen: Loading weight records...');
       setState(() => _isLoading = true);
       final records = await _weightRepository.getPetWeightRecords(widget.pet.id);
+      LoggerService.info('WeightTrackingScreen: Loaded ${records.length} weight records');
+      await FileLoggerService.log('WeightTrackingScreen: Loaded ${records.length} weight records');
       setState(() {
         _weightRecords = records;
         _isLoading = false;
       });
-    } catch (e) {
+    } catch (e, st) {
+      LoggerService.error('WeightTrackingScreen: Load failed - $e', exception: e);
+      await FileLoggerService.logError('WeightTrackingScreen load failed', exception: e, stackTrace: st);
       AppErrorHandler.showErrorSnackBar(
         context,
         'Failed to load weight records: ${e.toString()}',

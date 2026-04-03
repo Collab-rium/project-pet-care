@@ -7,6 +7,8 @@ import '../../core/constants/colors.dart';
 import '../core/constants/spacing.dart';
 import '../core/constants/text_styles.dart';
 import '../core/utils/error_handler.dart';
+import '../core/services/logger_service.dart';
+import '../core/services/file_logger_service.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -25,6 +27,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   String _selectedSpecies = 'dog';
   
   final List<String> _species = ['dog', 'cat', 'bird', 'fish', 'rabbit', 'hamster', 'other'];
+
+  @override
+  void initState() {
+    super.initState();
+    LoggerService.info('OnboardingScreen: Screen opened');
+    FileLoggerService.log('OnboardingScreen: Screen initialized');
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _petNameController.dispose();
+    _petSpeciesController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

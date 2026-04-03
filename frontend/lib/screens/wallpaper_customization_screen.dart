@@ -32,6 +32,8 @@ class _WallpaperCustomizationScreenState extends State<WallpaperCustomizationScr
   @override
   void initState() {
     super.initState();
+    LoggerService.info('WallpaperCustomizationScreen: Screen opened');
+    FileLoggerService.log('WallpaperCustomizationScreen: Screen initialized');
     _loadData();
   }
 

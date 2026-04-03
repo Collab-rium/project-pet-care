@@ -7,6 +7,8 @@ import '../../core/constants/colors.dart';
 import '../core/constants/spacing.dart';
 import '../core/constants/text_styles.dart';
 import '../core/utils/error_handler.dart';
+import '../core/services/logger_service.dart';
+import '../core/services/file_logger_service.dart';
 
 class NotificationSettingsScreen extends StatefulWidget {
   const NotificationSettingsScreen({super.key});
@@ -31,6 +33,13 @@ class _NotificationSettingsScreenState
   TimeOfDay _quietStart = TimeOfDay(hour: 22, minute: 0);
   TimeOfDay _quietEnd = TimeOfDay(hour: 8, minute: 0);
   bool _quietHoursEnabled = true;
+
+  @override
+  void initState() {
+    super.initState();
+    LoggerService.info('NotificationSettingsScreen: Screen opened');
+    FileLoggerService.log('NotificationSettingsScreen: Screen initialized');
+  }
 
   @override
   Widget build(BuildContext context) {

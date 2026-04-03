@@ -4,6 +4,8 @@ import '../components/atoms/app_button.dart';
 import '../../core/constants/colors.dart';
 import '../core/constants/spacing.dart';
 import '../core/constants/text_styles.dart';
+import '../core/services/logger_service.dart';
+import '../core/services/file_logger_service.dart';
 
 class PaymentSubscriptionScreen extends StatefulWidget {
   const PaymentSubscriptionScreen({super.key});
@@ -69,6 +71,13 @@ class _PaymentSubscriptionScreenState extends State<PaymentSubscriptionScreen> {
       isPopular: true,
     ),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    LoggerService.info('PaymentSubscriptionScreen: Screen opened');
+    FileLoggerService.log('PaymentSubscriptionScreen: Screen initialized');
+  }
 
   @override
   Widget build(BuildContext context) {
