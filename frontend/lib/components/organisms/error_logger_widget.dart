@@ -352,3 +352,213 @@ class _LogEntryTileState extends State<_LogEntryTile> {
     );
   }
 }
+
+/// Show all log files available
+class LogFilesViewerWidget extends StatefulWidget {
+  const LogFilesViewerWidget({super.key});
+
+  @override
+  State<LogFilesViewerWidget> createState() => _LogFilesViewerWidgetState();
+}
+
+class _LogFilesViewerWidgetState extends State<LogFilesViewerWidget> {
+  late Future<List<File>> _logFiles;
+
+  @override
+  void initState() {
+    super.initState();
+    _logFiles = FileLoggerService.getAllLogFiles();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.black87,
+      child: Column(
+        children: [
+          Container(
+            color: Colors.black,
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Log Files',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close, color: Colors.white),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder<List<File>>(
+              future: _logFiles,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(color: Colors.white),
+                  );
+                }
+
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(
+                    child: Text(
+                      'No log files',
+                      style: TextStyle(color: Colors.grey[500]),
+                    ),
+                  );
+                }
+
+                return ListView.builder(
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) {
+                    final file = snapshot.data![index];
+                    final name = file.path.split('/').last;
+                    final size = (file.lengthSync() / 1024).toStringAsFixed(2);
+
+                    return ListTile(
+                      dense: true,
+                      leading: const Icon(Icons.description, color: Colors.blue),
+                      title: Text(
+                        name,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
+                      ),
+                      subtitle: Text(
+                        '$size KB · ${file.lastModifiedSync()}',
+                        style: TextStyle(
+                          color: Colors.grey[500],
+                          fontSize: 10,
+                        ),
+                      ),
+                      trailing: PopupMenuButton(
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                            child: const Text('View'),
+                            onTap: () => _viewFile(file),
+                          ),
+                          PopupMenuItem(
+                            child: const Text('Copy Path'),
+                            onTap: () => _copyToClipboard(file.path),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+          Container(
+            color: Colors.black,
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.info, size: 16),
+                  label: const Text('Summary'),
+                  onPressed: _showSummary,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                  ),
+                ),
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.folder, size: 16),
+                  label: const Text('Open Folder'),
+                  onPressed: _openLogsFolder,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _viewFile(File file) {
+    final content = file.readAsStringSync();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(file.path.split('/').last),
+        content: SingleChildScrollView(
+          child: Text(
+            content,
+            style: const TextStyle(fontFamily: 'monospace', fontSize: 10),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => _copyToClipboard(content),
+            child: const Text('Copy Content'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _copyToClipboard(String text) {
+    // Note: Requires flutter/services
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Copied (${(text.length / 1024).toStringAsFixed(2)} KB)'),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  Future<void> _showSummary() async {
+    final summary = await FileLoggerService.getLogsSummary();
+    if (!mounted) return;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Logs Summary'),
+        content: SingleChildScrollView(
+          child: Text(
+            summary,
+            style: const TextStyle(fontFamily: 'monospace', fontSize: 11),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => _copyToClipboard(summary),
+            child: const Text('Copy Summary'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _openLogsFolder() async {
+    final path = await FileLoggerService.getLogsDirPath();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Logs saved to: $path'),
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+}

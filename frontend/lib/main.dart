@@ -6,13 +6,19 @@ import 'screens/auth_gate.dart';
 import 'core/theme/theme_manager.dart';
 import 'core/utils/routes.dart';
 import 'core/services/logger_service.dart';
+import 'core/services/file_logger_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize logger
+  // Initialize logger (in-memory + clipboard)
   LoggerService.init(enableFileLogging: true, minLevel: LogLevel.debug);
   LoggerService.info('App initialization started');
+  
+  // Initialize file logger (persistent - writes to files)
+  await FileLoggerService.initialize();
+  await FileLoggerService.log('App started');
+
 
   // Initialize notifications
   try {
