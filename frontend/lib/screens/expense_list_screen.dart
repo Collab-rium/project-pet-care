@@ -313,6 +313,7 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'expense_list_fab',
         onPressed: _navigateToAddExpense,
         backgroundColor: AppColors.primary,
         child: Icon(Icons.add, color: AppColors.textOnPrimary),

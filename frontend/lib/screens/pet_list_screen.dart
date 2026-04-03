@@ -171,6 +171,7 @@ class _PetListScreenState extends State<PetListScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'pet_list_fab',
         onPressed: _navigateToAddPet,
         backgroundColor: Theme.of(context).colorScheme.primary,
         child: Icon(Icons.add, color: Theme.of(context).colorScheme.onPrimary),

@@ -472,6 +472,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'dashboard_fab',
         onPressed: _addTask,
         backgroundColor: Theme.of(context).colorScheme.primary,
         child: Icon(Icons.add, color: Theme.of(context).colorScheme.onPrimary),

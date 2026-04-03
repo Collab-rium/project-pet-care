@@ -265,6 +265,7 @@ class _TasksScreenState extends State<TasksScreen> {
                   },
                 ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'tasks_fab',
         onPressed: _addTask,
         backgroundColor: AppColors.primary,
         child: Icon(Icons.add, color: Theme.of(context).colorScheme.onPrimary),

@@ -317,6 +317,7 @@ class _PhotoGalleryScreenState extends State<PhotoGalleryScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'photo_gallery_fab',
         onPressed: _showPhotoOptions,
         backgroundColor: AppColors.primary,
         child: Icon(Icons.add_a_photo, color: AppColors.textOnPrimary),

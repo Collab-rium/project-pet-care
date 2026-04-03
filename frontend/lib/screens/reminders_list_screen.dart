@@ -195,6 +195,7 @@ class _RemindersListScreenState extends State<RemindersListScreen> with SingleTi
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'reminders_list_fab',
         onPressed: _addReminder,
         backgroundColor: AppColors.primary,
         child: Icon(Icons.add, color: Theme.of(context).colorScheme.onPrimary),
