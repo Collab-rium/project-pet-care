@@ -5,7 +5,7 @@ import '../components/atoms/app_button.dart';
 import '../components/molecules/app_search_bar.dart';
 import '../components/organisms/loading_widgets.dart';
 import '../components/organisms/empty_states.dart';
-import '../core/constants/colors.dart';
+import '../../core/constants/colors.dart';
 import '../core/constants/spacing.dart';
 import '../core/constants/text_styles.dart';
 import '../core/models/models.dart';

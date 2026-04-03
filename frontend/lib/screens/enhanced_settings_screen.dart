@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../components/atoms/app_button.dart';
 import '../components/atoms/app_toggle.dart';
-import '../core/constants/colors.dart';
+import '../../core/constants/colors.dart';
 import '../core/constants/spacing.dart';
 import '../core/constants/text_styles.dart';
 import '../core/utils/error_handler.dart';

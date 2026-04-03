@@ -4,7 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:image/image.dart' as img;
 
 import '../components/atoms/app_button.dart';
-import '../core/constants/colors.dart';
+import '../../core/constants/colors.dart';
 import '../core/constants/spacing.dart';
 import '../core/constants/text_styles.dart';
 import '../core/models/models.dart';

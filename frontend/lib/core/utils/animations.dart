@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../core/constants/colors.dart';
+import '../constants/AppColors.dart';
 
 class AnimationConstants {
   static const Duration fast = Duration(milliseconds: 200);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../constants/colors.dart';
 import 'config/theme_config.dart';
 import 'config/theme_tokens.dart';
 
@@ -20,43 +21,43 @@ class ThemeFactory {
       // Color Scheme - Material 3 standard colors
       colorScheme: ColorScheme(
         brightness: brightness,
-        primary: colors.primary,
-        onPrimary: colors.textOnPrimary,
-        primaryContainer: colors.primaryLight,
-        onPrimaryContainer: colors.textPrimary,
-        secondary: colors.secondary,
-        onSecondary: colors.textPrimary,
-        secondaryContainer: colors.secondaryLight,
-        onSecondaryContainer: colors.textPrimary,
-        tertiary: colors.primaryDark,
-        onTertiary: colors.textOnPrimary,
-        error: colors.error,
-        onError: colors.textOnPrimary,
-        errorContainer: colors.error,
-        onErrorContainer: colors.textOnPrimary,
-        surface: colors.surface,
-        onSurface: colors.textPrimary,
-        surfaceContainerHighest: colors.surfaceVariant,
-        onSurfaceVariant: colors.textSecondary,
-        outline: colors.border,
-        outlineVariant: colors.divider,
-        shadow: colors.shadow,
-        scrim: colors.overlay,
-        inverseSurface: isDark ? colors.surface : colors.background,
-        onInverseSurface: colors.textPrimary,
-        inversePrimary: colors.primaryDark,
+        primary: AppColors.primary,
+        onPrimary: AppColors.textOnPrimary,
+        primaryContainer: AppColors.primaryLight,
+        onPrimaryContainer: AppColors.textPrimary,
+        secondary: AppColors.secondary,
+        onSecondary: AppColors.textPrimary,
+        secondaryContainer: AppColors.secondaryLight,
+        onSecondaryContainer: AppColors.textPrimary,
+        tertiary: AppColors.primaryDark,
+        onTertiary: AppColors.textOnPrimary,
+        error: AppColors.error,
+        onError: AppColors.textOnPrimary,
+        errorContainer: AppColors.error,
+        onErrorContainer: AppColors.textOnPrimary,
+        surface: AppColors.surface,
+        onSurface: AppColors.textPrimary,
+        surfaceContainerHighest: AppColors.surfaceVariant,
+        onSurfaceVariant: AppColors.textSecondary,
+        outline: AppColors.border,
+        outlineVariant: AppColors.divider,
+        shadow: AppColors.shadow,
+        scrim: AppColors.shadowLight,
+        inverseSurface: isDark ? AppColors.surface : AppColors.background,
+        onInverseSurface: AppColors.textPrimary,
+        inversePrimary: AppColors.primaryDark,
       ),
 
       // Background
-      scaffoldBackgroundColor: colors.background,
+      scaffoldBackgroundColor: AppColors.background,
 
       // Typography - Build complete text theme
       textTheme: _buildTextTheme(typo, colors),
 
       // App Bar
       appBarTheme: AppBarTheme(
-        backgroundColor: colors.surface,
-        foregroundColor: colors.textPrimary,
+        backgroundColor: AppColors.surface,
+        foregroundColor: AppColors.textPrimary,
         elevation: spacing.elevationSm,
         centerTitle: false,
         titleTextStyle: GoogleFonts.getFont(
@@ -64,13 +65,13 @@ class ThemeFactory {
           fontSize: typo.h3Size,
           fontWeight: typo.h3Weight,
           letterSpacing: typo.h3LetterSpacing,
-          color: colors.textPrimary,
+          color: AppColors.textPrimary,
         ),
       ),
 
       // Cards
       cardTheme: CardThemeData(
-        color: colors.surface,
+        color: AppColors.surface,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(spacing.radiusMd),
@@ -80,70 +81,70 @@ class ThemeFactory {
 
       // Bottom Navigation
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: colors.surface,
-        indicatorColor: colors.primary.withOpacity(0.2),
+        backgroundColor: AppColors.surface,
+        indicatorColor: AppColors.primary.withOpacity(0.2),
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
             return GoogleFonts.getFont(
               typo.bodyFontFamily,
               fontSize: 12,
               fontWeight: typo.labelWeight,
-              color: colors.primary,
+              color: AppColors.primary,
             );
           }
           return GoogleFonts.getFont(
             typo.bodyFontFamily,
             fontSize: 12,
-            color: colors.textSecondary,
+            color: AppColors.textSecondary,
           );
         }),
         iconTheme: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return IconThemeData(color: colors.primary, size: 24);
+            return IconThemeData(color: AppColors.primary, size: 24);
           }
-          return IconThemeData(color: colors.textSecondary, size: 24);
+          return IconThemeData(color: AppColors.textSecondary, size: 24);
         }),
       ),
 
       // Bottom Navigation Bar (legacy style)
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: colors.surface,
-        selectedItemColor: colors.primary,
-        unselectedItemColor: colors.textSecondary,
+        backgroundColor: AppColors.surface,
+        selectedItemColor: AppColors.primary,
+        unselectedItemColor: AppColors.textSecondary,
         type: BottomNavigationBarType.fixed,
         elevation: spacing.elevationMd,
       ),
 
       // Floating Action Button
       floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: colors.primary,
-        foregroundColor: colors.textOnPrimary,
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.textOnPrimary,
         elevation: spacing.elevationMd,
       ),
 
       // Input Fields
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: isDark ? colors.surfaceVariant : colors.surface,
+        fillColor: isDark ? AppColors.surfaceVariant : AppColors.surface,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(spacing.radiusMd),
-          borderSide: BorderSide(color: colors.border),
+          borderSide: BorderSide(color: AppColors.border),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(spacing.radiusMd),
-          borderSide: BorderSide(color: colors.border),
+          borderSide: BorderSide(color: AppColors.border),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(spacing.radiusMd),
-          borderSide: BorderSide(color: colors.primary, width: 2),
+          borderSide: BorderSide(color: AppColors.primary, width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(spacing.radiusMd),
-          borderSide: BorderSide(color: colors.error, width: 1.5),
+          borderSide: BorderSide(color: AppColors.error, width: 1.5),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(spacing.radiusMd),
-          borderSide: BorderSide(color: colors.error, width: 2),
+          borderSide: BorderSide(color: AppColors.error, width: 2),
         ),
         contentPadding: EdgeInsets.all(spacing.md),
       ),
@@ -151,8 +152,8 @@ class ThemeFactory {
       // Elevated Button
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: colors.primary,
-          foregroundColor: colors.textOnPrimary,
+          backgroundColor: AppColors.primary,
+          foregroundColor: AppColors.textOnPrimary,
           elevation: spacing.elevationSm,
           padding: EdgeInsets.symmetric(
             horizontal: spacing.lg,
@@ -173,8 +174,8 @@ class ThemeFactory {
       // Filled Button
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          backgroundColor: colors.primary,
-          foregroundColor: colors.textOnPrimary,
+          backgroundColor: AppColors.primary,
+          foregroundColor: AppColors.textOnPrimary,
           padding: EdgeInsets.symmetric(
             horizontal: spacing.lg,
             vertical: spacing.md,
@@ -188,8 +189,8 @@ class ThemeFactory {
       // Outlined Button
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: colors.primary,
-          side: BorderSide(color: colors.primary, width: 1.5),
+          foregroundColor: AppColors.primary,
+          side: BorderSide(color: AppColors.primary, width: 1.5),
           padding: EdgeInsets.symmetric(
             horizontal: spacing.lg,
             vertical: spacing.md,
@@ -203,7 +204,7 @@ class ThemeFactory {
       // Text Button
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: colors.primary,
+          foregroundColor: AppColors.primary,
           padding: EdgeInsets.symmetric(
             horizontal: spacing.lg,
             vertical: spacing.md,
@@ -217,19 +218,19 @@ class ThemeFactory {
       // Icon Button
       iconButtonTheme: IconButtonThemeData(
         style: IconButton.styleFrom(
-          foregroundColor: colors.primary,
+          foregroundColor: AppColors.primary,
         ),
       ),
 
       // Switches & Toggles
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) return colors.primary;
+          if (states.contains(WidgetState.selected)) return AppColors.primary;
           return null;
         }),
         trackColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return colors.primary.withOpacity(0.3);
+            return AppColors.primary.withOpacity(0.3);
           }
           return null;
         }),
@@ -238,7 +239,7 @@ class ThemeFactory {
       // Checkbox
       checkboxTheme: CheckboxThemeData(
         fillColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) return colors.primary;
+          if (states.contains(WidgetState.selected)) return AppColors.primary;
           return null;
         }),
       ),
@@ -246,26 +247,26 @@ class ThemeFactory {
       // Radio
       radioTheme: RadioThemeData(
         fillColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) return colors.primary;
+          if (states.contains(WidgetState.selected)) return AppColors.primary;
           return null;
         }),
       ),
 
       // Dividers
       dividerTheme: DividerThemeData(
-        color: colors.divider,
+        color: AppColors.divider,
         thickness: 1,
         space: spacing.md,
       ),
 
       // Chips
       chipTheme: ChipThemeData(
-        backgroundColor: colors.surfaceVariant,
-        selectedColor: colors.primary.withOpacity(0.2),
+        backgroundColor: AppColors.surfaceVariant,
+        selectedColor: AppColors.primary.withOpacity(0.2),
         labelStyle: GoogleFonts.getFont(
           typo.bodyFontFamily,
           fontSize: typo.bodySmallSize,
-          color: colors.textPrimary,
+          color: AppColors.textPrimary,
         ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(spacing.radiusSm),
@@ -274,7 +275,7 @@ class ThemeFactory {
 
       // Dialogs
       dialogTheme: DialogThemeData(
-        backgroundColor: colors.surface,
+        backgroundColor: AppColors.surface,
         elevation: spacing.elevationLg,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(spacing.radiusLg),
@@ -283,11 +284,11 @@ class ThemeFactory {
 
       // Snackbar
       snackBarTheme: SnackBarThemeData(
-        backgroundColor: colors.surface,
+        backgroundColor: AppColors.surface,
         contentTextStyle: GoogleFonts.getFont(
           typo.bodyFontFamily,
           fontSize: typo.bodyMediumSize,
-          color: colors.textPrimary,
+          color: AppColors.textPrimary,
         ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(spacing.radiusMd),
@@ -297,14 +298,14 @@ class ThemeFactory {
 
       // Progress Indicators
       progressIndicatorTheme: ProgressIndicatorThemeData(
-        color: colors.primary,
+        color: AppColors.primary,
       ),
 
       // List Tiles
       listTileTheme: ListTileThemeData(
-        textColor: colors.textPrimary,
-        iconColor: colors.textSecondary,
-        tileColor: colors.surface,
+        textColor: AppColors.textPrimary,
+        iconColor: AppColors.textSecondary,
+        tileColor: AppColors.surface,
       ),
     );
   }
@@ -319,21 +320,21 @@ class ThemeFactory {
         fontSize: typo.h1Size,
         fontWeight: typo.h1Weight,
         letterSpacing: typo.h1LetterSpacing,
-        color: colors.textPrimary,
+        color: AppColors.textPrimary,
       ),
       displayMedium: GoogleFonts.getFont(
         typo.headingFontFamily,
         fontSize: typo.h2Size,
         fontWeight: typo.h2Weight,
         letterSpacing: typo.h2LetterSpacing,
-        color: colors.textPrimary,
+        color: AppColors.textPrimary,
       ),
       displaySmall: GoogleFonts.getFont(
         typo.headingFontFamily,
         fontSize: typo.h3Size,
         fontWeight: typo.h3Weight,
         letterSpacing: typo.h3LetterSpacing,
-        color: colors.textPrimary,
+        color: AppColors.textPrimary,
       ),
 
       // Headline styles
@@ -342,21 +343,21 @@ class ThemeFactory {
         fontSize: typo.h1Size,
         fontWeight: typo.h1Weight,
         letterSpacing: typo.h1LetterSpacing,
-        color: colors.textPrimary,
+        color: AppColors.textPrimary,
       ),
       headlineMedium: GoogleFonts.getFont(
         typo.headingFontFamily,
         fontSize: typo.h2Size,
         fontWeight: typo.h2Weight,
         letterSpacing: typo.h2LetterSpacing,
-        color: colors.textPrimary,
+        color: AppColors.textPrimary,
       ),
       headlineSmall: GoogleFonts.getFont(
         typo.headingFontFamily,
         fontSize: typo.h3Size,
         fontWeight: typo.h3Weight,
         letterSpacing: typo.h3LetterSpacing,
-        color: colors.textPrimary,
+        color: AppColors.textPrimary,
       ),
 
       // Title styles
@@ -365,20 +366,20 @@ class ThemeFactory {
         fontSize: typo.h3Size,
         fontWeight: typo.h3Weight,
         letterSpacing: typo.h3LetterSpacing,
-        color: colors.textPrimary,
+        color: AppColors.textPrimary,
       ),
       titleMedium: GoogleFonts.getFont(
         typo.headingFontFamily,
         fontSize: typo.h4Size,
         fontWeight: typo.h4Weight,
         letterSpacing: typo.h4LetterSpacing,
-        color: colors.textPrimary,
+        color: AppColors.textPrimary,
       ),
       titleSmall: GoogleFonts.getFont(
         typo.headingFontFamily,
         fontSize: typo.bodyLargeSize,
         fontWeight: typo.h4Weight,
-        color: colors.textPrimary,
+        color: AppColors.textPrimary,
       ),
 
       // Body styles
@@ -387,21 +388,21 @@ class ThemeFactory {
         fontSize: typo.bodyLargeSize,
         fontWeight: typo.bodyWeight,
         height: typo.bodyLineHeight,
-        color: colors.textPrimary,
+        color: AppColors.textPrimary,
       ),
       bodyMedium: GoogleFonts.getFont(
         typo.bodyFontFamily,
         fontSize: typo.bodyMediumSize,
         fontWeight: typo.bodyWeight,
         height: typo.bodyLineHeight,
-        color: colors.textPrimary,
+        color: AppColors.textPrimary,
       ),
       bodySmall: GoogleFonts.getFont(
         typo.bodyFontFamily,
         fontSize: typo.bodySmallSize,
         fontWeight: typo.bodyWeight,
         height: typo.captionLineHeight,
-        color: colors.textSecondary,
+        color: AppColors.textSecondary,
       ),
 
       // Label styles (buttons, tabs)
@@ -410,21 +411,21 @@ class ThemeFactory {
         fontSize: typo.bodyLargeSize,
         fontWeight: typo.buttonWeight,
         letterSpacing: typo.buttonLetterSpacing,
-        color: colors.textPrimary,
+        color: AppColors.textPrimary,
       ),
       labelMedium: GoogleFonts.getFont(
         typo.bodyFontFamily,
         fontSize: typo.labelSize,
         fontWeight: typo.labelWeight,
         letterSpacing: typo.labelLetterSpacing,
-        color: colors.textPrimary,
+        color: AppColors.textPrimary,
       ),
       labelSmall: GoogleFonts.getFont(
         typo.bodyFontFamily,
         fontSize: typo.captionSize,
         fontWeight: typo.labelWeight,
         letterSpacing: typo.captionLetterSpacing,
-        color: colors.textSecondary,
+        color: AppColors.textSecondary,
       ),
     );
   }

@@ -9,7 +9,7 @@ import '../components/atoms/app_input.dart';
 import '../components/atoms/app_dropdown.dart';
 import '../components/molecules/app_form_field.dart';
 import '../components/organisms/loading_widgets.dart';
-import '../core/constants/colors.dart';
+import '../../core/constants/colors.dart';
 import '../core/constants/spacing.dart';
 import '../core/constants/text_styles.dart';
 import '../core/models/models.dart';

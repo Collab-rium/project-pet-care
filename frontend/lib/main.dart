@@ -5,23 +5,31 @@ import 'services/notification_service.dart';
 import 'screens/auth_gate.dart';
 import 'core/theme/theme_manager.dart';
 import 'core/utils/routes.dart';
+import 'core/services/logger_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize logger
+  LoggerService.init(enableFileLogging: true, minLevel: LogLevel.debug);
+  LoggerService.info('App initialization started');
 
   // Initialize notifications
   try {
     await NotificationService.initialize();
   } catch (e) {
+    LoggerService.warning('Notification service initialization warning: $e', exception: e);
     print('⚠️ Notification service initialization warning: $e');
   }
 
   // Create and initialize services
   final authService = AuthService();
   await authService.initialize();
+  LoggerService.info('AuthService initialized');
   
   final themeManager = ThemeManager();
   await themeManager.initialize();
+  LoggerService.info('ThemeManager initialized');
 
   runApp(MyApp(
     authService: authService,
