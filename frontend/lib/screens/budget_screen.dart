@@ -34,6 +34,15 @@ class _BudgetScreenState extends State<BudgetScreen> {
   Pet? _selectedPet;
   bool _isLoading = true;
 
+  /// Format currency cleanly - removes .00 for whole numbers
+  String _formatCurrency(num amount) {
+    final d = amount.toDouble();
+    if (d == d.toInt()) {
+      return '\$${d.toInt()}';
+    }
+    return '\$${d.toStringAsFixed(2)}';
+  }
+
   @override
   void initState() {
     super.initState();
@@ -427,28 +436,54 @@ class _BudgetScreenState extends State<BudgetScreen> {
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
-                  fontSize: 16,
+                  fontSize: 14,
                 ),
               ),
-              if (isOverBudget)
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    'OVER BUDGET',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 10,
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    if (isOverBudget)
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          'OVER BUDGET',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ),
+                    SizedBox(width: 8),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: InkWell(
+                        onTap: () => _showBudgetDialog(),
+                        child: Text(
+                          'Edit',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
+              ),
             ],
           ),
 
@@ -465,7 +500,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                       'Spent',
                       style: TextStyle(
                         color: Colors.white.withOpacity(0.8),
-                        fontSize: 12,
+                        fontSize: 11,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -473,11 +508,11 @@ class _BudgetScreenState extends State<BudgetScreen> {
                       fit: BoxFit.scaleDown,
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        '\$${currentSpent.toStringAsFixed(2)}',
+                        _formatCurrency(currentSpent),
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 24,
+                          fontSize: 18,
                         ),
                       ),
                     ),
@@ -492,7 +527,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                       isOverBudget ? 'Over by' : 'Remaining',
                       style: TextStyle(
                         color: Colors.white.withOpacity(0.8),
-                        fontSize: 12,
+                        fontSize: 11,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -500,11 +535,11 @@ class _BudgetScreenState extends State<BudgetScreen> {
                       fit: BoxFit.scaleDown,
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        '\$${isOverBudget ? (currentSpent - budget.monthlyLimit).toStringAsFixed(2) : remaining.toStringAsFixed(2)}',
+                        _formatCurrency(isOverBudget ? (currentSpent - budget.monthlyLimit) : remaining),
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 24,
+                          fontSize: 18,
                         ),
                       ),
                     ),
@@ -519,7 +554,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                       'Budget',
                       style: TextStyle(
                         color: Colors.white.withOpacity(0.8),
-                        fontSize: 12,
+                        fontSize: 11,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -527,11 +562,11 @@ class _BudgetScreenState extends State<BudgetScreen> {
                       fit: BoxFit.scaleDown,
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        '\$${budget.monthlyLimit.toStringAsFixed(2)}',
+                        _formatCurrency(budget.monthlyLimit),
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 24,
+                          fontSize: 18,
                         ),
                       ),
                     ),

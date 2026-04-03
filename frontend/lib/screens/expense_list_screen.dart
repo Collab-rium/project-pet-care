@@ -54,6 +54,15 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
     'This Year',
   ];
 
+  /// Format currency cleanly - removes .00 for whole numbers
+  String _formatCurrency(num amount) {
+    final d = amount.toDouble();
+    if (d == d.toInt()) {
+      return '\$${d.toInt()}';
+    }
+    return '\$${d.toStringAsFixed(2)}';
+  }
+
   @override
   void initState() {
     super.initState();
@@ -157,6 +166,49 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
     }
   }
 
+  Future<void> _deleteExpense(Expense expense) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Expense?'),
+        content: Text('Remove ${expense.category} expense of ${_formatCurrency(expense.amount)}?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: FilledButton.styleFrom(backgroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      try {
+        LoggerService.info('ExpenseListScreen: Deleting expense - ${expense.category} (\$${expense.amount})');
+        await _expenseRepository.deleteExpense(expense.id);
+        LoggerService.info('ExpenseListScreen: Expense deleted successfully');
+        await FileLoggerService.log('Expense deleted: ${expense.category} \$${expense.amount}');
+        
+        AppErrorHandler.showSuccessSnackBar(
+          context,
+          'Expense deleted',
+        );
+        _loadExpenses();
+      } catch (e, st) {
+        LoggerService.error('ExpenseListScreen: Failed to delete expense - $e', exception: e);
+        await FileLoggerService.logError('Expense delete failed', exception: e, stackTrace: st);
+        AppErrorHandler.showErrorSnackBar(
+          context,
+          'Failed to delete expense: $e',
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     
@@ -220,7 +272,7 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
                         ),
                         AppSpacing.vSpaceXs,
                         Text(
-                          '\$${_totalAmount.toStringAsFixed(2)}',
+                          _formatCurrency(_totalAmount),
                           style: AppTextStyles.h1.copyWith(
                             color: AppColors.textOnPrimary,
                           ),
@@ -427,7 +479,7 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
                             style: AppTextStyles.h4,
                           ),
                           Text(
-                            '\$${expense.amount.toStringAsFixed(2)}',
+                            _formatCurrency(expense.amount),
                             style: AppTextStyles.h4.copyWith(
                               color: AppColors.primary,
                             ),
@@ -467,6 +519,18 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
                     size: 20,
                   ),
                   onPressed: () => _navigateToEditExpense(expense),
+                  padding: EdgeInsets.all(8),
+                  constraints: BoxConstraints(),
+                ),
+                
+                // Delete button
+                IconButton(
+                  icon: Icon(
+                    Icons.delete,
+                    color: Colors.red.withOpacity(0.6),
+                    size: 20,
+                  ),
+                  onPressed: () => _deleteExpense(expense),
                   padding: EdgeInsets.all(8),
                   constraints: BoxConstraints(),
                 ),
