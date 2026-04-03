@@ -11,6 +11,8 @@ import '../core/constants/text_styles.dart';
 import '../core/models/models.dart';
 import '../core/repositories/repositories.dart';
 import '../core/utils/error_handler.dart';
+import '../core/services/logger_service.dart';
+import '../core/services/file_logger_service.dart';
 import 'pet_profile_screen.dart';
 
 class PetListScreen extends StatefulWidget {
@@ -32,6 +34,8 @@ class _PetListScreenState extends State<PetListScreen> {
   @override
   void initState() {
     super.initState();
+    LoggerService.info('PetListScreen: Screen opened');
+    FileLoggerService.log('PetListScreen: Screen initialized');
     _loadPets();
   }
 
@@ -43,17 +47,23 @@ class _PetListScreenState extends State<PetListScreen> {
 
   Future<void> _loadPets() async {
     try {
+      LoggerService.info('PetListScreen: Loading pets...');
       setState(() => _isLoading = true);
 
       final pets =
           await _petRepository.getUserPets('user-1'); // TODO: Get from auth
+      LoggerService.debug('PetListScreen: Fetched ${pets.length} pets');
 
       setState(() {
         _pets = pets;
         _filteredPets = pets;
         _isLoading = false;
       });
-    } catch (e) {
+      LoggerService.info('PetListScreen: Loaded ${pets.length} pets successfully');
+      await FileLoggerService.log('PetListScreen: Loaded ${pets.length} pets');
+    } catch (e, st) {
+      LoggerService.error('PetListScreen: Failed to load pets - $e', exception: e);
+      await FileLoggerService.logError('PetListScreen load failed', exception: e, stackTrace: st);
       AppErrorHandler.showErrorSnackBar(
         context,
         'Failed to load pets: ${e.toString()}',

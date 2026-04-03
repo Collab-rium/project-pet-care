@@ -13,6 +13,8 @@ import '../core/utils/image_compression.dart';
 import '../core/theme/theme_manager.dart';
 import '../services/auth_service.dart';
 import 'theme_selector_screen_new.dart';
+import '../core/services/logger_service.dart';
+import '../core/services/file_logger_service.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -26,6 +28,26 @@ class _AccountScreenState extends State<AccountScreen> {
   String? _profilePhotoPath;
   bool _notificationsEnabled = false;
   bool _isPickingPhoto = false;
+
+  @override
+  void initState() {
+    super.initState();
+    LoggerService.info('AccountScreen: Screen opened');
+    FileLoggerService.log('AccountScreen: Screen initialized');
+    _loadAccountData();
+  }
+
+  Future<void> _loadAccountData() async {
+    try {
+      LoggerService.info('AccountScreen: Loading account data...');
+      // Load account settings/profile info here
+      LoggerService.info('AccountScreen: Account data loaded');
+      await FileLoggerService.log('AccountScreen: Account data loaded');
+    } catch (e, st) {
+      LoggerService.error('AccountScreen: Failed to load account data - $e', exception: e);
+      await FileLoggerService.logError('AccountScreen load failed', exception: e, stackTrace: st);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

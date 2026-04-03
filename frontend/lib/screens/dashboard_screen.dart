@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../models/models.dart';
 import '../services/auth_service.dart';
+import '../core/services/logger_service.dart';
+import '../core/services/file_logger_service.dart';
 
 /// Dashboard screen showing tasks with full task management
 class DashboardScreen extends StatefulWidget {
@@ -20,15 +22,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
+    LoggerService.info('DashboardScreen: Screen opened');
+    FileLoggerService.log('DashboardScreen: Screen initialized');
     _loadTasks();
   }
 
   Future<void> _loadTasks() async {
-    setState(() => _isLoading = true);
+    try {
+      LoggerService.info('DashboardScreen: Loading tasks...');
+      setState(() => _isLoading = true);
 
-    await Future.delayed(const Duration(milliseconds: 300));
+      await Future.delayed(const Duration(milliseconds: 300));
 
-    final now = DateTime.now();
+      final now = DateTime.now();
     _tasks = [
       Task(
         id: 'task-1',
@@ -87,7 +93,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     ];
 
+    LoggerService.info('DashboardScreen: Loaded ${_tasks.length} tasks');
+    await FileLoggerService.log('DashboardScreen: Loaded ${_tasks.length} tasks');
     setState(() => _isLoading = false);
+    } catch (e, st) {
+      LoggerService.error('DashboardScreen: Failed to load tasks - $e', exception: e);
+      await FileLoggerService.logError('DashboardScreen load failed', exception: e, stackTrace: st);
+      setState(() => _isLoading = false);
+    }
   }
 
   List<Task> get _filteredTasks {

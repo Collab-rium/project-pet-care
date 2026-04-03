@@ -11,6 +11,8 @@ import '../core/models/models.dart';
 import '../core/repositories/repositories.dart';
 import '../core/utils/error_handler.dart';
 import '../core/theme/color_tokens_extension.dart';
+import '../core/services/logger_service.dart';
+import '../core/services/file_logger_service.dart';
 
 class BudgetScreen extends StatefulWidget {
   const BudgetScreen({super.key});
@@ -35,14 +37,18 @@ class _BudgetScreenState extends State<BudgetScreen> {
   @override
   void initState() {
     super.initState();
+    LoggerService.info('BudgetScreen: Screen opened');
+    FileLoggerService.log('BudgetScreen: Screen initialized');
     _loadData();
   }
 
   Future<void> _loadData() async {
     try {
+      LoggerService.info('BudgetScreen: Loading data...');
       setState(() => _isLoading = true);
 
       final pets = await _petRepository.getUserPets('user-1');
+      LoggerService.debug('BudgetScreen: Fetched ${pets.length} pets');
 
       setState(() {
         _pets = pets;
@@ -55,8 +61,12 @@ class _BudgetScreenState extends State<BudgetScreen> {
         await _loadPetBudgetData();
       }
 
+      LoggerService.info('BudgetScreen: Data loaded successfully');
+      await FileLoggerService.log('BudgetScreen: Loaded ${pets.length} pets');
       setState(() => _isLoading = false);
-    } catch (e) {
+    } catch (e, st) {
+      LoggerService.error('BudgetScreen: Failed to load data - $e', exception: e);
+      await FileLoggerService.logError('BudgetScreen load failed', exception: e, stackTrace: st);
       AppErrorHandler.showErrorSnackBar(
         context,
         'Failed to load data: ${e.toString()}',

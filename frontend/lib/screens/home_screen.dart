@@ -5,6 +5,8 @@ import 'dashboard_screen.dart';
 import 'pet_list_screen.dart';
 import 'budget_screen.dart';
 import 'account_screen.dart';
+import '../core/services/logger_service.dart';
+import '../core/services/file_logger_service.dart';
 
 /// Home screen with bottom navigation and wallpaper support
 class HomeScreen extends StatefulWidget {
@@ -28,14 +30,24 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    LoggerService.info('HomeScreen: Screen opened');
+    FileLoggerService.log('HomeScreen: Screen initialized');
     _loadWallpaper();
   }
 
   Future<void> _loadWallpaper() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _wallpaperPath = prefs.getString('wallpaper_path');
-    });
+    try {
+      LoggerService.info('HomeScreen: Loading wallpaper...');
+      final prefs = await SharedPreferences.getInstance();
+      setState(() {
+        _wallpaperPath = prefs.getString('wallpaper_path');
+      });
+      LoggerService.info('HomeScreen: Wallpaper loaded (${_wallpaperPath != null ? 'set' : 'not set'})');
+      await FileLoggerService.log('HomeScreen: Wallpaper loaded');
+    } catch (e, st) {
+      LoggerService.error('HomeScreen: Failed to load wallpaper - $e', exception: e);
+      await FileLoggerService.logError('HomeScreen wallpaper load failed', exception: e, stackTrace: st);
+    }
   }
 
   @override
