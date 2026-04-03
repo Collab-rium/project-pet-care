@@ -1,5 +1,6 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'dart:io';
 
 class DatabaseService {
   static final DatabaseService _instance = DatabaseService._internal();
@@ -391,7 +392,22 @@ class DatabaseService {
   Future<void> deleteDatabase() async {
     final databasePath = await getDatabasesPath();
     final path = join(databasePath, 'pet_care.db');
-    await databaseFactory.deleteDatabase(path);
-    _database = null;
+    
+    // Close existing connection first
+    if (_database != null) {
+      await _database!.close();
+      _database = null;
+    }
+    
+    // Delete database file directly (safer than databaseFactory which may not be initialized)
+    try {
+      final file = File(path);
+      if (await file.exists()) {
+        await file.delete();
+      }
+    } catch (e) {
+      // Log error but don't crash - database may not exist or may be locked
+      print('Warning: Could not delete database file: $e');
+    }
   }
 }
