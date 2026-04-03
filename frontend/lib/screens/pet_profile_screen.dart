@@ -17,6 +17,8 @@ import '../core/repositories/repositories.dart';
 import '../core/utils/error_handler.dart';
 import '../core/utils/validators.dart';
 import '../core/utils/image_compression.dart';
+import '../core/services/logger_service.dart';
+import '../core/services/file_logger_service.dart';
 
 class PetProfileScreen extends StatefulWidget {
   final Pet? pet;
@@ -68,6 +70,8 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
   @override
   void initState() {
     super.initState();
+    LoggerService.info('PetProfileScreen: Screen opened (${widget.pet != null ? 'editing' : 'creating'})');
+    FileLoggerService.log('PetProfileScreen: Screen initialized');
     _nameController = TextEditingController(text: widget.pet?.name ?? '');
     _breedController = TextEditingController(text: widget.pet?.breed ?? '');
     _weightController = TextEditingController(
@@ -153,6 +157,7 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
     });
 
     try {
+      LoggerService.info('PetProfileScreen: Saving pet (${widget.pet != null ? 'update' : 'create'})...');
       final species = _showCustomSpecies ? _customSpecies! : _selectedSpecies;
       final weight = _weightController.text.isNotEmpty 
           ? double.tryParse(_weightController.text) 
@@ -175,6 +180,8 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
         );
         
         await _petRepository.updatePet(petToSave);
+        LoggerService.info('PetProfileScreen: Pet updated successfully');
+        await FileLoggerService.log('PetProfileScreen: Pet updated (${_nameController.text.trim()})');
       } else {
         // Create new pet
         petToSave = Pet(
@@ -193,6 +200,8 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
         );
         
         await _petRepository.createPet(petToSave);
+        LoggerService.info('PetProfileScreen: Pet created successfully');
+        await FileLoggerService.log('PetProfileScreen: Pet created (${_nameController.text.trim()})');
       }
 
       if (mounted) {
@@ -202,7 +211,9 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
           widget.pet != null ? 'Pet updated successfully!' : 'Pet added successfully!',
         );
       }
-    } catch (e) {
+    } catch (e, st) {
+      LoggerService.error('PetProfileScreen: Save failed - $e', exception: e);
+      await FileLoggerService.logError('PetProfileScreen save failed', exception: e, stackTrace: st);
       AppErrorHandler.showErrorSnackBar(
         context,
         'Failed to save pet: ${e.toString()}',

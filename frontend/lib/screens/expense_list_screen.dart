@@ -11,6 +11,8 @@ import '../core/models/models.dart';
 import '../core/repositories/repositories.dart';
 import '../core/utils/error_handler.dart';
 import 'expense_form_screen.dart';
+import '../core/services/logger_service.dart';
+import '../core/services/file_logger_service.dart';
 
 class ExpenseListScreen extends StatefulWidget {
   final Pet pet;
@@ -55,21 +57,28 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
   @override
   void initState() {
     super.initState();
+    LoggerService.info('ExpenseListScreen: Screen opened');
+    FileLoggerService.log('ExpenseListScreen: Screen initialized');
     _loadExpenses();
   }
 
   Future<void> _loadExpenses() async {
     try {
+      LoggerService.info('ExpenseListScreen: Loading expenses...');
       setState(() => _isLoading = true);
       
       final expenses = await _expenseRepository.getPetExpenses(widget.pet.id);
       
+      LoggerService.info('ExpenseListScreen: Loaded ${expenses.length} expenses');
+      await FileLoggerService.log('ExpenseListScreen: Loaded ${expenses.length} expenses');
       setState(() {
         _expenses = expenses;
         _applyFilters();
         _isLoading = false;
       });
-    } catch (e) {
+    } catch (e, st) {
+      LoggerService.error('ExpenseListScreen: Load failed - $e', exception: e);
+      await FileLoggerService.logError('ExpenseListScreen load failed', exception: e, stackTrace: st);
       AppErrorHandler.showErrorSnackBar(
         context,
         'Failed to load expenses: ${e.toString()}',

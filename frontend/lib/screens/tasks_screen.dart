@@ -5,6 +5,8 @@ import '../core/constants/spacing.dart';
 import '../core/constants/text_styles.dart';
 import '../core/utils/error_handler.dart';
 import '../models/models.dart';
+import '../core/services/logger_service.dart';
+import '../core/services/file_logger_service.dart';
 
 /// Screen to manage all tasks with add/remove functionality
 class TasksScreen extends StatefulWidget {
@@ -23,16 +25,20 @@ class _TasksScreenState extends State<TasksScreen> {
   @override
   void initState() {
     super.initState();
+    LoggerService.info('TasksScreen: Screen opened (filter: ${widget.filter ?? 'all'})');
+    FileLoggerService.log('TasksScreen: Screen initialized');
     _loadTasks();
   }
 
   Future<void> _loadTasks() async {
-    setState(() => _isLoading = true);
+    try {
+      LoggerService.info('TasksScreen: Loading tasks...');
+      setState(() => _isLoading = true);
 
-    // Mock tasks - in real app would load from local storage
-    await Future.delayed(const Duration(milliseconds: 300));
+      // Mock tasks - in real app would load from local storage
+      await Future.delayed(const Duration(milliseconds: 300));
 
-    final now = DateTime.now();
+      final now = DateTime.now();
     _tasks = [
       Task(
         id: 'task-1',
@@ -69,7 +75,14 @@ class _TasksScreenState extends State<TasksScreen> {
       ),
     ];
 
+    LoggerService.info('TasksScreen: Loaded ${_tasks.length} tasks');
+    await FileLoggerService.log('TasksScreen: Loaded ${_tasks.length} tasks');
     setState(() => _isLoading = false);
+    } catch (e, st) {
+      LoggerService.error('TasksScreen: Load failed - $e', exception: e);
+      await FileLoggerService.logError('TasksScreen load failed', exception: e, stackTrace: st);
+      setState(() => _isLoading = false);
+    }
   }
 
   List<Task> get _filteredTasks {

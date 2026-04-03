@@ -13,6 +13,8 @@ import '../core/constants/text_styles.dart';
 import '../core/models/models.dart';
 import '../core/repositories/repositories.dart';
 import '../core/utils/error_handler.dart';
+import '../core/services/logger_service.dart';
+import '../core/services/file_logger_service.dart';
 import '../core/utils/image_compression.dart';
 
 class PhotoGalleryScreen extends StatefulWidget {
@@ -36,6 +38,8 @@ class _PhotoGalleryScreenState extends State<PhotoGalleryScreen> {
   @override
   void initState() {
     super.initState();
+    LoggerService.info('PhotoGalleryScreen: Screen opened for pet ${widget.petId}');
+    FileLoggerService.log('PhotoGalleryScreen: Screen initialized');
     _loadPhotos();
   }
 
@@ -47,18 +51,23 @@ class _PhotoGalleryScreenState extends State<PhotoGalleryScreen> {
 
   Future<void> _loadPhotos() async {
     try {
+      LoggerService.info('PhotoGalleryScreen: Loading photos...');
       setState(() => _isLoading = true);
       
       // TODO: Implement photo repository
       // For now, create some mock data
       await Future.delayed(Duration(seconds: 1));
       
+      LoggerService.info('PhotoGalleryScreen: Loaded photos');
+      await FileLoggerService.log('PhotoGalleryScreen: Loaded photos for pet ${widget.petId}');
       setState(() {
         _photos = [];
         _filteredPhotos = [];
         _isLoading = false;
       });
-    } catch (e) {
+    } catch (e, st) {
+      LoggerService.error('PhotoGalleryScreen: Load failed - $e', exception: e);
+      await FileLoggerService.logError('PhotoGalleryScreen load failed', exception: e, stackTrace: st);
       AppErrorHandler.showErrorSnackBar(
         context,
         'Failed to load photos: ${e.toString()}',

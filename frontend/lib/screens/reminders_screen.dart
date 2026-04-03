@@ -4,6 +4,8 @@ import '../models/models.dart';
 import '../services/auth_service.dart';
 import '../services/api_provider.dart';
 import 'add_reminder_screen.dart';
+import '../core/services/logger_service.dart';
+import '../core/services/file_logger_service.dart';
 
 /// Screen showing list of reminders
 class RemindersScreen extends StatefulWidget {
@@ -23,6 +25,8 @@ class _RemindersScreenState extends State<RemindersScreen> {
   @override
   void initState() {
     super.initState();
+    LoggerService.info('RemindersScreen: Screen opened');
+    FileLoggerService.log('RemindersScreen: Screen initialized');
     _loadData();
   }
 
@@ -33,18 +37,23 @@ class _RemindersScreenState extends State<RemindersScreen> {
     });
 
     try {
+      LoggerService.info('RemindersScreen: Loading reminders...');
       final authService = context.read<AuthService>();
       final api = ApiProvider.getApiService(authService: authService);
 
       final pets = await api.getPets();
       final reminders = await api.getReminders(petId: _selectedPetId);
 
+      LoggerService.info('RemindersScreen: Loaded ${reminders.length} reminders');
+      await FileLoggerService.log('RemindersScreen: Loaded ${reminders.length} reminders');
       setState(() {
         _pets = pets;
         _reminders = reminders;
         _isLoading = false;
       });
-    } catch (e) {
+    } catch (e, st) {
+      LoggerService.error('RemindersScreen: Load failed - $e', exception: e);
+      await FileLoggerService.logError('RemindersScreen load failed', exception: e, stackTrace: st);
       setState(() {
         _errorMessage = e.toString().replaceAll('Exception: ', '');
         _isLoading = false;

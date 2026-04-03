@@ -8,6 +8,8 @@ import '../core/constants/spacing.dart';
 import '../core/constants/text_styles.dart';
 import '../core/models/models.dart';
 import '../core/repositories/repositories.dart';
+import '../core/services/logger_service.dart';
+import '../core/services/file_logger_service.dart';
 import '../core/utils/error_handler.dart';
 import 'reminder_form_screen.dart';
 
@@ -47,26 +49,33 @@ class _RemindersListScreenState extends State<RemindersListScreen> with SingleTi
   @override
   void initState() {
     super.initState();
+    LoggerService.info('RemindersListScreen: Screen opened');
+    FileLoggerService.log('RemindersListScreen: Screen initialized');
     _tabController = TabController(length: 3, vsync: this);
     _loadData();
   }
 
   Future<void> _loadData() async {
-    setState(() => _isLoading = true);
-    
     try {
+      LoggerService.info('RemindersListScreen: Loading reminders...');
+      setState(() => _isLoading = true);
+      
       final reminders = widget.petId != null
           ? await _reminderRepository.getPetReminders(widget.petId!)
           : await _reminderRepository.getUserReminders('user-1');
       
       final pets = await _petRepository.getUserPets('user-1');
       
+      LoggerService.info('RemindersListScreen: Loaded ${reminders.length} reminders');
+      await FileLoggerService.log('RemindersListScreen: Loaded ${reminders.length} reminders');
       setState(() {
         _allReminders = reminders;
         _pets = pets;
         _isLoading = false;
       });
-    } catch (e) {
+    } catch (e, st) {
+      LoggerService.error('RemindersListScreen: Load failed - $e', exception: e);
+      await FileLoggerService.logError('RemindersListScreen load failed', exception: e, stackTrace: st);
       AppErrorHandler.showErrorSnackBar(
         context,
         'Failed to load reminders: ${e.toString()}',

@@ -4,6 +4,8 @@ import '../models/models.dart';
 import '../services/auth_service.dart';
 import '../services/api_provider.dart';
 import 'add_pet_screen.dart';
+import '../core/services/logger_service.dart';
+import '../core/services/file_logger_service.dart';
 
 /// Screen showing detailed info about a single pet
 class PetDetailScreen extends StatefulWidget {
@@ -24,6 +26,8 @@ class _PetDetailScreenState extends State<PetDetailScreen> {
   @override
   void initState() {
     super.initState();
+    LoggerService.info('PetDetailScreen: Screen opened for pet ${widget.petId}');
+    FileLoggerService.log('PetDetailScreen: Screen initialized');
     _loadPet();
   }
 
@@ -34,18 +38,24 @@ class _PetDetailScreenState extends State<PetDetailScreen> {
     });
 
     try {
+      LoggerService.info('PetDetailScreen: Loading pet ${widget.petId}...');
       final authService = context.read<AuthService>();
       final api = ApiProvider.getApiService(authService: authService);
       final pet = await api.getPet(widget.petId);
+      LoggerService.info('PetDetailScreen: Loaded pet ${pet.name}');
+      await FileLoggerService.log('PetDetailScreen: Loaded pet ${pet.name}');
       setState(() {
         _pet = pet;
         _isLoading = false;
       });
-    } catch (e) {
+    } catch (e, st) {
+      LoggerService.error('PetDetailScreen: Load failed - $e', exception: e);
+      await FileLoggerService.logError('PetDetailScreen load failed', exception: e, stackTrace: st);
       setState(() {
         _errorMessage = e.toString().replaceAll('Exception: ', '');
         _isLoading = false;
       });
+    }
     }
   }
 
