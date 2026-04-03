@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import '../models/models.dart';
 import '../services/auth_service.dart';
 import '../services/api_provider.dart';
+import '../core/services/logger_service.dart';
+import '../core/services/file_logger_service.dart';
 
 /// Screen for adding or editing a reminder
 class AddReminderScreen extends StatefulWidget {
@@ -36,6 +38,8 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
   @override
   void initState() {
     super.initState();
+    LoggerService.info('AddReminderScreen: Screen opened (${_isEditing ? 'editing' : 'creating'})');
+    FileLoggerService.log('AddReminderScreen: Screen initialized');
     _titleController = TextEditingController(text: widget.reminder?.message ?? '');
     _notesController = TextEditingController(); // Notes not used in backend
     _selectedPetId = widget.reminder?.petId ?? widget.pets.firstOrNull?.id;
@@ -100,6 +104,7 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
     });
 
     try {
+      LoggerService.info('AddReminderScreen: Saving reminder (${_isEditing ? 'update' : 'create'})...');
       final authService = context.read<AuthService>();
       final api = ApiProvider.getApiService(authService: authService);
 
@@ -127,14 +132,20 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
 
       if (_isEditing) {
         await api.updateReminder(widget.reminder!.id, reminderData);
+        LoggerService.info('AddReminderScreen: Reminder updated successfully');
+        await FileLoggerService.log('AddReminderScreen: Reminder updated');
       } else {
         await api.createReminder(reminderData);
+        LoggerService.info('AddReminderScreen: Reminder created successfully');
+        await FileLoggerService.log('AddReminderScreen: Reminder created');
       }
 
       if (mounted) {
         Navigator.of(context).pop(true); // Signal refresh needed
       }
-    } catch (e) {
+    } catch (e, st) {
+      LoggerService.error('AddReminderScreen: Save failed - $e', exception: e);
+      await FileLoggerService.logError('AddReminderScreen save failed', exception: e, stackTrace: st);
       setState(() {
         _errorMessage = e.toString().replaceAll('Exception: ', '');
       });

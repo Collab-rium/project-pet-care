@@ -12,6 +12,8 @@ import '../core/models/models.dart';
 import '../core/repositories/repositories.dart';
 import '../core/utils/error_handler.dart';
 import '../core/utils/validators.dart';
+import '../core/services/logger_service.dart';
+import '../core/services/file_logger_service.dart';
 
 class ReminderFormScreen extends StatefulWidget {
   final Reminder? reminder;
@@ -68,6 +70,8 @@ class _ReminderFormScreenState extends State<ReminderFormScreen> {
   @override
   void initState() {
     super.initState();
+    LoggerService.info('ReminderFormScreen: Screen opened (${widget.reminder != null ? 'editing' : 'creating'})');
+    FileLoggerService.log('ReminderFormScreen: Screen initialized');
     if (widget.reminder != null) {
       _loadReminderData();
     }
@@ -83,6 +87,7 @@ class _ReminderFormScreenState extends State<ReminderFormScreen> {
     _category = reminder.category;
     _priority = reminder.priority;
     _notificationEnabled = reminder.notificationEnabled;
+    LoggerService.info('ReminderFormScreen: Reminder data loaded');
   }
 
   @override
@@ -331,6 +336,7 @@ class _ReminderFormScreenState extends State<ReminderFormScreen> {
     setState(() => _isLoading = true);
 
     try {
+      LoggerService.info('ReminderFormScreen: Saving reminder (${widget.reminder == null ? 'create' : 'update'})...');
       final dateTime = DateTime(
         _selectedDate.year,
         _selectedDate.month,
@@ -358,12 +364,16 @@ class _ReminderFormScreenState extends State<ReminderFormScreen> {
 
       if (widget.reminder == null) {
         await _reminderRepository.createReminder(reminder);
+        LoggerService.info('ReminderFormScreen: Reminder created successfully');
+        await FileLoggerService.log('ReminderFormScreen: Reminder created (title: ${reminder.title}, category: $_category)');
         AppErrorHandler.showSuccessSnackBar(
           context,
           'Reminder added successfully!',
         );
       } else {
         await _reminderRepository.updateReminder(reminder);
+        LoggerService.info('ReminderFormScreen: Reminder updated successfully');
+        await FileLoggerService.log('ReminderFormScreen: Reminder updated (title: ${reminder.title})');
         AppErrorHandler.showSuccessSnackBar(
           context,
           'Reminder updated successfully!',
@@ -371,7 +381,9 @@ class _ReminderFormScreenState extends State<ReminderFormScreen> {
       }
 
       Navigator.of(context).pop(true);
-    } catch (e) {
+    } catch (e, st) {
+      LoggerService.error('ReminderFormScreen: Save failed - $e', exception: e);
+      await FileLoggerService.logError('ReminderFormScreen save failed', exception: e, stackTrace: st);
       AppErrorHandler.showErrorSnackBar(
         context,
         'Failed to save reminder: ${e.toString()}',

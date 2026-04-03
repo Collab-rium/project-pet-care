@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/colors.dart';
 import '../core/constants/spacing.dart';
+import '../core/services/logger_service.dart';
+import '../core/services/file_logger_service.dart';
 
 /// Add expense form screen
 class AddExpenseScreen extends StatefulWidget {
@@ -31,6 +33,13 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    LoggerService.info('AddExpenseScreen: Screen opened');
+    FileLoggerService.log('AddExpenseScreen: Screen initialized');
+  }
+
+  @override
   void dispose() {
     _amountController.dispose();
     _notesController.dispose();
@@ -51,24 +60,32 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   }
 
   void _saveExpense() {
-    if (_formKey.currentState!.validate()) {
-      // TODO: Save to local storage
-      final expense = {
-        'amount': double.parse(_amountController.text),
-        'category': _selectedCategory,
-        'date': _selectedDate.toIso8601String(),
-        'notes': _notesController.text,
-        'description':
-            _selectedCategory == 'Other' ? _descriptionController.text : '',
-      };
+    try {
+      LoggerService.info('AddExpenseScreen: Saving expense (\$${_amountController.text})...');
+      if (_formKey.currentState!.validate()) {
+        // TODO: Save to local storage
+        final expense = {
+          'amount': double.parse(_amountController.text),
+          'category': _selectedCategory,
+          'date': _selectedDate.toIso8601String(),
+          'notes': _notesController.text,
+          'description':
+              _selectedCategory == 'Other' ? _descriptionController.text : '',
+        };
 
-      Navigator.pop(context, expense);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Expense added: \$${_amountController.text}'),
-          backgroundColor: AppColors.success,
-        ),
-      );
+        LoggerService.info('AddExpenseScreen: Expense saved successfully');
+        FileLoggerService.log('AddExpenseScreen: Expense saved (category: $_selectedCategory, amount: \$${_amountController.text})');
+        Navigator.pop(context, expense);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Expense added: \$${_amountController.text}'),
+            backgroundColor: AppColors.success,
+          ),
+        );
+      }
+    } catch (e, st) {
+      LoggerService.error('AddExpenseScreen: Save failed - $e', exception: e);
+      FileLoggerService.logError('AddExpenseScreen save failed', exception: e, stackTrace: st);
     }
   }
 

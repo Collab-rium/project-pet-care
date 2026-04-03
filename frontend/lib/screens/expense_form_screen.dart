@@ -13,6 +13,8 @@ import '../core/models/models.dart';
 import '../core/repositories/repositories.dart';
 import '../core/utils/error_handler.dart';
 import '../core/utils/validators.dart';
+import '../core/services/logger_service.dart';
+import '../core/services/file_logger_service.dart';
 
 class ExpenseFormScreen extends StatefulWidget {
   final Pet pet;
@@ -55,6 +57,8 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
   @override
   void initState() {
     super.initState();
+    LoggerService.info('ExpenseFormScreen: Screen opened (${widget.expense != null ? 'editing' : 'creating'})');
+    FileLoggerService.log('ExpenseFormScreen: Screen initialized');
     
     if (widget.expense != null) {
       _amountController = TextEditingController(
@@ -102,6 +106,7 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
     setState(() => _isLoading = true);
 
     try {
+      LoggerService.info('ExpenseFormScreen: Saving expense (${widget.expense != null ? 'update' : 'create'})...');
       final amount = double.parse(_amountController.text);
       final now = DateTime.now();
 
@@ -122,6 +127,8 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
         );
         
         await _expenseRepository.updateExpense(updatedExpense);
+        LoggerService.info('ExpenseFormScreen: Expense updated successfully');
+        await FileLoggerService.log('ExpenseFormScreen: Expense updated (amount: \$${amount}, category: $_selectedCategory)');
       } else {
         // Create new expense
         final newExpense = Expense(
@@ -139,6 +146,8 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
         );
         
         await _expenseRepository.createExpense(newExpense);
+        LoggerService.info('ExpenseFormScreen: Expense created successfully');
+        await FileLoggerService.log('ExpenseFormScreen: Expense created (amount: \$${amount}, category: $_selectedCategory)');
       }
 
       if (mounted) {
@@ -148,7 +157,9 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
           widget.expense != null ? 'Expense updated successfully!' : 'Expense added successfully!',
         );
       }
-    } catch (e) {
+    } catch (e, st) {
+      LoggerService.error('ExpenseFormScreen: Save failed - $e', exception: e);
+      await FileLoggerService.logError('ExpenseFormScreen save failed', exception: e, stackTrace: st);
       AppErrorHandler.showErrorSnackBar(
         context,
         'Failed to save expense: ${e.toString()}',

@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import '../models/models.dart';
 import '../services/auth_service.dart';
 import '../services/api_provider.dart';
+import '../core/services/logger_service.dart';
+import '../core/services/file_logger_service.dart';
 
 /// Screen for adding or editing a pet
 class AddPetScreen extends StatefulWidget {
@@ -30,6 +32,8 @@ class _AddPetScreenState extends State<AddPetScreen> {
   @override
   void initState() {
     super.initState();
+    LoggerService.info('AddPetScreen: Screen opened (${_isEditing ? 'editing' : 'creating'})');
+    FileLoggerService.log('AddPetScreen: Screen initialized');
     _nameController = TextEditingController(text: widget.pet?.name ?? '');
     _breedController = TextEditingController(text: widget.pet?.breed ?? '');
     _weightController = TextEditingController(
@@ -74,6 +78,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
     });
 
     try {
+      LoggerService.info('AddPetScreen: Saving pet (${_isEditing ? 'update' : 'create'})...');
       final authService = context.read<AuthService>();
       final api = ApiProvider.getApiService(authService: authService);
 
@@ -91,14 +96,20 @@ class _AddPetScreenState extends State<AddPetScreen> {
 
       if (_isEditing) {
         await api.updatePet(widget.pet!.id, petData);
+        LoggerService.info('AddPetScreen: Pet updated successfully');
+        await FileLoggerService.log('AddPetScreen: Pet updated');
       } else {
         await api.createPet(petData);
+        LoggerService.info('AddPetScreen: Pet created successfully');
+        await FileLoggerService.log('AddPetScreen: Pet created');
       }
 
       if (mounted) {
         Navigator.of(context).pop(true); // Signal refresh needed
       }
-    } catch (e) {
+    } catch (e, st) {
+      LoggerService.error('AddPetScreen: Save failed - $e', exception: e);
+      await FileLoggerService.logError('AddPetScreen save failed', exception: e, stackTrace: st);
       setState(() {
         _errorMessage = e.toString().replaceAll('Exception: ', '');
       });
