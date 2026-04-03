@@ -515,11 +515,11 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
                 IconButton(
                   icon: Icon(
                     Icons.edit,
-                    color: AppColors.textSecondary,
-                    size: 20,
+                    color: AppColors.primary,
+                    size: 24,
                   ),
                   onPressed: () => _navigateToEditExpense(expense),
-                  padding: EdgeInsets.all(8),
+                  padding: EdgeInsets.all(12),
                   constraints: BoxConstraints(),
                 ),
                 
@@ -527,11 +527,11 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
                 IconButton(
                   icon: Icon(
                     Icons.delete,
-                    color: Colors.red.withOpacity(0.6),
-                    size: 20,
+                    color: Colors.red,
+                    size: 24,
                   ),
                   onPressed: () => _deleteExpense(expense),
-                  padding: EdgeInsets.all(8),
+                  padding: EdgeInsets.all(12),
                   constraints: BoxConstraints(),
                 ),
               ],

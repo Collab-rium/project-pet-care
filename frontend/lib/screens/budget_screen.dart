@@ -436,7 +436,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
-                  fontSize: 14,
+                  fontSize: 16,
                 ),
               ),
               Expanded(
@@ -500,7 +500,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                       'Spent',
                       style: TextStyle(
                         color: Colors.white.withOpacity(0.8),
-                        fontSize: 11,
+                        fontSize: 12,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -512,7 +512,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 18,
+                          fontSize: 22,
                         ),
                       ),
                     ),
@@ -527,7 +527,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                       isOverBudget ? 'Over by' : 'Remaining',
                       style: TextStyle(
                         color: Colors.white.withOpacity(0.8),
-                        fontSize: 11,
+                        fontSize: 12,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -539,7 +539,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 18,
+                          fontSize: 22,
                         ),
                       ),
                     ),
@@ -554,7 +554,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                       'Budget',
                       style: TextStyle(
                         color: Colors.white.withOpacity(0.8),
-                        fontSize: 11,
+                        fontSize: 12,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -566,7 +566,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 18,
+                          fontSize: 22,
                         ),
                       ),
                     ),
