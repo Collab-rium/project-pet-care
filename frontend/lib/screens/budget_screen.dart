@@ -173,15 +173,49 @@ class _BudgetScreenState extends State<BudgetScreen> {
     );
 
     if (result != null) {
-      // In a real app, you would save this to the database
-      // For now, just show a success message
-      AppErrorHandler.showSuccessSnackBar(
-        context,
-        _currentBudget != null
-            ? 'Budget updated to \$${result.toStringAsFixed(2)}'
-            : 'Budget set to \$${result.toStringAsFixed(2)}',
-      );
-      _loadData(); // Refresh data
+      try {
+        LoggerService.info('BudgetScreen: Saving budget - amount: $result');
+        
+        if (_selectedPet != null) {
+          final now = DateTime.now();
+          final budget = Budget(
+            id: _currentBudget?.id ?? 'budget-${_selectedPet!.id}-${DateTime.now().millisecondsSinceEpoch}',
+            petId: _selectedPet!.id,
+            userId: 'user-1',
+            monthlyLimit: result,
+            currentSpent: _currentBudget?.currentSpent ?? 0.0,
+            month: now.month.toString().padLeft(2, '0'),
+            year: now.year,
+            createdAt: _currentBudget?.createdAt ?? now,
+            updatedAt: now,
+          );
+          
+          if (_currentBudget != null) {
+            await _budgetRepository.updateBudget(budget);
+            LoggerService.info('BudgetScreen: Budget updated successfully');
+            await FileLoggerService.log('Budget updated: ${budget.monthlyLimit}');
+          } else {
+            await _budgetRepository.createBudget(budget);
+            LoggerService.info('BudgetScreen: Budget created successfully');
+            await FileLoggerService.log('Budget created: ${budget.monthlyLimit}');
+          }
+          
+          AppErrorHandler.showSuccessSnackBar(
+            context,
+            _currentBudget != null
+                ? 'Budget updated to \$${result.toStringAsFixed(2)}'
+                : 'Budget set to \$${result.toStringAsFixed(2)}',
+          );
+          _loadData(); // Refresh data
+        }
+      } catch (e, st) {
+        LoggerService.error('BudgetScreen: Failed to save budget - $e', exception: e);
+        await FileLoggerService.logError('Budget save failed', exception: e, stackTrace: st);
+        AppErrorHandler.showErrorSnackBar(
+          context,
+          'Failed to save budget: ${e.toString()}',
+        );
+      }
     }
   }
 
