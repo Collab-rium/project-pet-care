@@ -60,16 +60,16 @@ When current log gets too big (5MB):
 ### Option 3: Terminal
 ```bash
 # See all log files
-ls ~/.local/share/project_pet_care_frontend/documents/pet_care_logs/
+ls ~/Documents/pet_care_logs/
 
 # View current log
-cat ~/.local/share/project_pet_care_frontend/documents/pet_care_logs/current.log
+cat ~/Documents/pet_care_logs/current.log
 
 # View with timestamps
-tail -100 ~/.local/share/project_pet_care_frontend/documents/pet_care_logs/current.log
+tail -100 ~/Documents/pet_care_logs/current.log
 
 # Email to developer
-cat ~/.local/share/project_pet_care_frontend/documents/pet_care_logs/current.log | mail -s "Pet Care App Logs" developer@example.com
+cat ~/Documents/pet_care_logs/current.log | mail -s "Pet Care App Logs" developer@example.com
 ```
 
 ---
@@ -151,7 +151,7 @@ cd frontend && flutter run -d linux
 #### Step 4: Get the logs
 ```bash
 # Quick view
-tail -50 ~/.local/share/project_pet_care_frontend/documents/pet_care_logs/current.log
+tail -50 ~/Documents/pet_care_logs/current.log
 
 # Or via GUI
 # - Tap floating button
@@ -163,7 +163,7 @@ tail -50 ~/.local/share/project_pet_care_frontend/documents/pet_care_logs/curren
 #### Step 5: Share with developer
 ```bash
 # Email the logs
-cat ~/.local/share/project_pet_care_frontend/documents/pet_care_logs/current.log | mail -s "Budget Screen Debug" dev@example.com
+cat ~/Documents/pet_care_logs/current.log | mail -s "Budget Screen Debug" dev@example.com
 
 # Or just share the path
 echo "~/Documents/pet_care_logs/current.log"
@@ -177,7 +177,7 @@ Different OS, different locations:
 
 ### Linux
 ```
-~/.local/share/project_pet_care_frontend/documents/pet_care_logs/
+~/Documents/pet_care_logs/
 ```
 
 ### macOS
@@ -218,7 +218,7 @@ C:\Users\YourName\AppData\Local\project_pet_care_frontend\documents\pet_care_log
 ### "I can't find the log files"
 ```bash
 # Check the location exists
-ls ~/.local/share/project_pet_care_frontend/documents/pet_care_logs/
+ls ~/Documents/pet_care_logs/
 
 # If empty, logs haven't been written yet
 # Run app and trigger an action
@@ -245,19 +245,19 @@ await FileLoggerService.clearAllLogs();
 
 ```bash
 # View current log (last 100 lines)
-tail -100 ~/.local/share/project_pet_care_frontend/documents/pet_care_logs/current.log
+tail -100 ~/Documents/pet_care_logs/current.log
 
 # Count log entries
-wc -l ~/.local/share/project_pet_care_frontend/documents/pet_care_logs/current.log
+wc -l ~/Documents/pet_care_logs/current.log
 
 # Search for errors
-grep ERROR ~/.local/share/project_pet_care_frontend/documents/pet_care_logs/*.log
+grep ERROR ~/Documents/pet_care_logs/*.log
 
 # Save to shareable text file
-cp ~/.local/share/project_pet_care_frontend/documents/pet_care_logs/current.log ~/Downloads/pet-care-logs.txt
+cp ~/Documents/pet_care_logs/current.log ~/Downloads/pet-care-logs.txt
 
 # Open in text editor
-nano ~/.local/share/project_pet_care_frontend/documents/pet_care_logs/current.log
+nano ~/Documents/pet_care_logs/current.log
 ```
 
 ---

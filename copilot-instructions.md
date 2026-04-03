@@ -35,7 +35,7 @@ await FileLoggerService.log('message');
 await FileLoggerService.logError('failed', exception: e, stackTrace: st);
 ```
 - Accessed via: Floating button → "Files" tab OR terminal
-- Location: `~/.local/share/project_pet_care_frontend/documents/pet_care_logs/current.log`
+- Location: `~/Documents/pet_care_logs/current.log`
 - Lifespan: Persists indefinitely
 - Format: `[HH:MM:SS.mmm] [LEVEL] [ClassName] Message`
 
@@ -43,7 +43,7 @@ await FileLoggerService.logError('failed', exception: e, stackTrace: st);
 When debugging:
 1. Use FileLoggerService for issues needing persistence
 2. Use LoggerService for real-time console debugging
-3. Access file logs: `tail -f ~/.local/share/project_pet_care_frontend/documents/pet_care_logs/current.log`
+3. Access file logs: `tail -f ~/Documents/pet_care_logs/current.log`
 4. Share logs by copying from "Files" tab in GUI
 
 ## Code Standards
@@ -117,7 +117,7 @@ flutter build linux --release # Release
 cd frontend && flutter run -d linux
 
 # Terminal 2: Monitor logs
-tail -f ~/.local/share/project_pet_care_frontend/documents/pet_care_logs/current.log
+tail -f ~/Documents/pet_care_logs/current.log
 
 # In app: Tap floating button → check "Logs" and "Files" tabs
 ```
@@ -189,8 +189,8 @@ Reference implementation: `app_button.dart` - shows how to use `Theme.of(context
 
 ## Quick Reference
 
-- **Logs location**: `~/.local/share/project_pet_care_frontend/documents/pet_care_logs/`
-- **Check logs**: `tail -f ~/.local/share/project_pet_care_frontend/documents/pet_care_logs/current.log`
+- **Logs location**: `~/Documents/pet_care_logs/`
+- **Check logs**: `tail -f ~/Documents/pet_care_logs/current.log`
 - **Build app**: `cd frontend && flutter run -d linux`
 - **View in-app logs**: Tap floating button (bottom-right)
 - **Git status**: `git log --oneline -8`

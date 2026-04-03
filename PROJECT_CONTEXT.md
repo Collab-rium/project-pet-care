@@ -64,7 +64,7 @@ The project uses a **two-tier unified logging system** that automatically captur
 #### **Tier 2: File-Based Persistent Logging** (FileLoggerService)
 - **Location**: `frontend/lib/core/services/file_logger_service.dart`
 - **Storage Path**: 
-  - Linux: `~/.local/share/project_pet_care_frontend/documents/pet_care_logs/`
+  - Linux: `~/Documents/pet_care_logs/`
   - macOS: `~/Library/Application Support/project_pet_care_frontend/documents/pet_care_logs/`
   - Windows: `AppData/Local/project_pet_care_frontend/documents/pet_care_logs/`
 - **File Structure**:
@@ -107,16 +107,16 @@ Both Tiers Update Simultaneously
 #### **Option 2: Terminal/Command Line**
 ```bash
 # View current log file
-tail -50 ~/.local/share/project_pet_care_frontend/documents/pet_care_logs/current.log
+tail -50 ~/Documents/pet_care_logs/current.log
 
 # Follow logs in real-time
-tail -f ~/.local/share/project_pet_care_frontend/documents/pet_care_logs/current.log
+tail -f ~/Documents/pet_care_logs/current.log
 
 # Search for errors
-grep "ERROR\|CRITICAL" ~/.local/share/project_pet_care_frontend/documents/pet_care_logs/current.log
+grep "ERROR\|CRITICAL" ~/Documents/pet_care_logs/current.log
 
 # View all archived logs
-ls -lah ~/.local/share/project_pet_care_frontend/documents/pet_care_logs/
+ls -lah ~/Documents/pet_care_logs/
 ```
 
 #### **Option 3: Manual File Browser**

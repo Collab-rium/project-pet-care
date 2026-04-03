@@ -44,7 +44,7 @@ await FileLoggerService.logError('failed', exception: e, stackTrace: st);
 ```
 - **Accessed Via**: Floating debug button → "Files" tab OR terminal
 - **Storage Location**:
-  - Linux: `~/.local/share/project_pet_care_frontend/documents/pet_care_logs/`
+  - Linux: `~/Documents/pet_care_logs/`
   - macOS: `~/Library/Application Support/project_pet_care_frontend/documents/pet_care_logs/`
   - Windows: `AppData/Local/project_pet_care_frontend/documents/pet_care_logs/`
 - **File**: `current.log` (plain text, auto-rotates at 5MB)
@@ -57,7 +57,7 @@ await FileLoggerService.logError('failed', exception: e, stackTrace: st);
 1. Always add logging to suspect code sections
 2. Use FileLoggerService for issues that need persistence
 3. Use LoggerService for real-time console debugging
-4. Access logs via: Terminal → `tail -f ~/.local/share/project_pet_care_frontend/documents/pet_care_logs/current.log`
+4. Access logs via: Terminal → `tail -f ~/Documents/pet_care_logs/current.log`
 5. Share logs by copying file path from "Files" tab to user
 
 **Example debugging pattern**:
@@ -169,7 +169,7 @@ cd frontend && flutter run -d linux
 ### Logging Test
 ```bash
 # While app is running, check logs in real-time
-tail -f ~/.local/share/project_pet_care_frontend/documents/pet_care_logs/current.log
+tail -f ~/Documents/pet_care_logs/current.log
 ```
 
 ### Android (Known Issue)
@@ -309,7 +309,7 @@ await FileLoggerService.log('TASK: Fixing BudgetScreen dark mode - completed');
 
 User can then check logs to see exactly what happened:
 ```bash
-grep "TASK:" ~/.local/share/project_pet_care_frontend/documents/pet_care_logs/current.log
+grep "TASK:" ~/Documents/pet_care_logs/current.log
 ```
 
 ---
