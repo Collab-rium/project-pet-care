@@ -291,8 +291,8 @@ class _AppInputState extends State<AppInput> {
             counterText: widget.showCounter ? null : '',
             filled: true,
             fillColor: widget.enabled
-                ? AppColors.surface
-                : AppColors.surfaceVariant,
+                ? Theme.of(context).colorScheme.surface
+                : Theme.of(context).colorScheme.surfaceContainerHighest,
             border: OutlineInputBorder(
               borderRadius: AppSpacing.borderRadiusMd,
               borderSide: BorderSide(color: AppColors.border),

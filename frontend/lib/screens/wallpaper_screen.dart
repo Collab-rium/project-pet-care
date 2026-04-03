@@ -87,10 +87,10 @@ class _WallpaperScreenState extends State<WallpaperScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text('Wallpaper', style: AppTextStyles.h2),
-        backgroundColor: AppColors.surface,
+        
         elevation: 0,
       ),
       body: _isLoading
@@ -140,7 +140,7 @@ class _WallpaperScreenState extends State<WallpaperScreen> {
                   Container(
                     height: 300,
                     decoration: BoxDecoration(
-                      color: AppColors.surfaceVariant,
+                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                         color: AppColors.border,

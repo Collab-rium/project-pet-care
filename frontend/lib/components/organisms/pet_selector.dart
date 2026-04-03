@@ -69,7 +69,7 @@ class _PetSelectorState extends State<PetSelector> {
       return Container(
         padding: AppSpacing.cardInsets,
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: AppSpacing.borderRadiusSm,
           border: Border.all(color: AppColors.border),
         ),
@@ -85,7 +85,7 @@ class _PetSelectorState extends State<PetSelector> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: AppSpacing.borderRadiusSm,
         border: Border.all(color: AppColors.border),
       ),

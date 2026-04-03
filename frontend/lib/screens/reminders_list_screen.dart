@@ -78,13 +78,13 @@ class _RemindersListScreenState extends State<RemindersListScreen> with SingleTi
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           'Reminders',
           style: AppTextStyles.h2,
         ),
-        backgroundColor: AppColors.surface,
+        
         elevation: 0,
         bottom: TabBar(
           controller: _tabController,
@@ -129,7 +129,7 @@ class _RemindersListScreenState extends State<RemindersListScreen> with SingleTi
         children: [
           // Search and filters
           Container(
-            color: AppColors.surface,
+            color: Theme.of(context).colorScheme.surface,
             padding: AppSpacing.pageInsets,
             child: Column(
               children: [
@@ -151,7 +151,7 @@ class _RemindersListScreenState extends State<RemindersListScreen> with SingleTi
                           onSelected: (selected) {
                             setState(() => _selectedCategory = category);
                           },
-                          backgroundColor: AppColors.surface,
+                          
                           selectedColor: AppColors.primary.withOpacity(0.1),
                           checkmarkColor: AppColors.primary,
                           labelStyle: TextStyle(
@@ -187,7 +187,7 @@ class _RemindersListScreenState extends State<RemindersListScreen> with SingleTi
       floatingActionButton: FloatingActionButton(
         onPressed: _addReminder,
         backgroundColor: AppColors.primary,
-        child: Icon(Icons.add, color: Colors.white),
+        child: Icon(Icons.add, color: Theme.of(context).colorScheme.onPrimary),
       ),
     );
   }
@@ -268,7 +268,7 @@ class _RemindersListScreenState extends State<RemindersListScreen> with SingleTi
         padding: EdgeInsets.only(right: AppSpacing.lg),
         child: Icon(
           Icons.check,
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.onSecondaryContainer,
           size: 32,
         ),
       ),
@@ -276,7 +276,7 @@ class _RemindersListScreenState extends State<RemindersListScreen> with SingleTi
       child: Container(
         margin: EdgeInsets.only(bottom: AppSpacing.md),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: AppSpacing.borderRadiusMd,
           border: Border.all(
             color: isOverdue ? AppColors.error.withOpacity(0.3) : AppColors.border,

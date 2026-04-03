@@ -91,7 +91,7 @@ class AppBottomNav extends StatelessWidget {
     return Container(
       height: AppSpacing.bottomNavHeight,
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surface,
         boxShadow: [
           BoxShadow(
             color: AppColors.shadow,
@@ -104,7 +104,7 @@ class AppBottomNav extends StatelessWidget {
         currentIndex: currentIndex,
         onTap: onTap,
         type: BottomNavigationBarType.fixed,
-        backgroundColor: AppColors.surface,
+        
         selectedItemColor: AppColors.primary,
         unselectedItemColor: AppColors.textSecondary,
         selectedLabelStyle: AppTextStyles.caption.copyWith(
@@ -161,7 +161,7 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
         title,
         style: AppTextStyles.h3,
       ),
-      backgroundColor: AppColors.surface,
+      
       foregroundColor: AppColors.textPrimary,
       elevation: AppSpacing.elevationSm,
       centerTitle: false,
@@ -206,7 +206,7 @@ class AppBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(AppSpacing.radiusLg),
           topRight: Radius.circular(AppSpacing.radiusLg),

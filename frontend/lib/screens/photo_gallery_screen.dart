@@ -258,13 +258,13 @@ class _PhotoGalleryScreenState extends State<PhotoGalleryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           '${widget.pet.name} Photos',
           style: AppTextStyles.h2,
         ),
-        backgroundColor: AppColors.surface,
+        
         elevation: 0,
         actions: [
           IconButton(
@@ -283,7 +283,7 @@ class _PhotoGalleryScreenState extends State<PhotoGalleryScreen> {
         children: [
           // Search bar
           Container(
-            color: AppColors.surface,
+            color: Theme.of(context).colorScheme.surface,
             padding: AppSpacing.pageInsets.copyWith(top: 0),
             child: AppSearchBar(
               controller: _searchController,
@@ -401,7 +401,7 @@ class _PhotoGalleryScreenState extends State<PhotoGalleryScreen> {
             Container(
               width: double.infinity,
               height: double.infinity,
-              color: AppColors.surface,
+              color: Theme.of(context).colorScheme.surface,
               child: photo.thumbnailPath != null
                   ? Image.file(
                       File(photo.thumbnailPath!),
@@ -433,14 +433,14 @@ class _PhotoGalleryScreenState extends State<PhotoGalleryScreen> {
                       end: Alignment.bottomCenter,
                       colors: [
                         Colors.transparent,
-                        Colors.black.withOpacity(0.7),
+                        Theme.of(context).colorScheme.scrim.withOpacity(0.7),
                       ],
                     ),
                   ),
                   child: Text(
                     photo.caption!,
                     style: AppTextStyles.bodySmall.copyWith(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.onScrim,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -466,7 +466,7 @@ class _PhotoGalleryScreenState extends State<PhotoGalleryScreen> {
     return Container(
       margin: EdgeInsets.only(bottom: AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: AppSpacing.borderRadiusMd,
         boxShadow: [
           BoxShadow(
@@ -491,7 +491,7 @@ class _PhotoGalleryScreenState extends State<PhotoGalleryScreen> {
                   height: 80,
                   decoration: BoxDecoration(
                     borderRadius: AppSpacing.borderRadiusSm,
-                    color: AppColors.background,
+                    color: Theme.of(context).scaffoldBackgroundColor,
                   ),
                   child: ClipRRect(
                     borderRadius: AppSpacing.borderRadiusSm,
@@ -560,7 +560,7 @@ class _PhotoGalleryScreenState extends State<PhotoGalleryScreen> {
 
   Widget _buildPhotoPlaceholder() {
     return Container(
-      color: AppColors.background,
+      color: Theme.of(context).scaffoldBackgroundColor,
       child: Icon(
         Icons.photo,
         color: AppColors.textTertiary,
@@ -630,11 +630,11 @@ class PhotoViewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Theme.of(context).colorScheme.scrim,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: IconThemeData(color: Theme.of(context).colorScheme.onScrim),
       ),
       body: Center(
         child: InteractiveViewer(
@@ -643,7 +643,7 @@ class PhotoViewScreen extends StatelessWidget {
             fit: BoxFit.contain,
             errorBuilder: (context, error, stackTrace) {
               return Container(
-                color: AppColors.background,
+                color: Theme.of(context).scaffoldBackgroundColor,
                 child: Icon(
                   Icons.broken_image,
                   color: AppColors.textTertiary,
@@ -656,12 +656,12 @@ class PhotoViewScreen extends StatelessWidget {
       ),
       bottomNavigationBar: photo.caption != null
           ? Container(
-              color: Colors.black.withOpacity(0.7),
+              color: Theme.of(context).colorScheme.scrim.withOpacity(0.7),
               padding: AppSpacing.pageInsets,
               child: Text(
                 photo.caption!,
                 style: AppTextStyles.bodyMedium.copyWith(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.onScrim,
                 ),
                 textAlign: TextAlign.center,
               ),

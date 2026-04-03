@@ -151,13 +151,12 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           '${widget.pet.name} Expenses',
           style: AppTextStyles.h2,
         ),
-        backgroundColor: AppColors.surface,
         elevation: 0,
         actions: [
           IconButton(
@@ -170,7 +169,7 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
         children: [
           // Summary card
           Container(
-            color: AppColors.surface,
+            color: Theme.of(context).colorScheme.surface,
             padding: AppSpacing.pageInsets,
             child: Container(
               padding: AppSpacing.cardInsets,
@@ -189,7 +188,7 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
                     width: 48,
                     height: 48,
                     decoration: BoxDecoration(
-                      color: AppColors.surface.withOpacity(0.2),
+                      color: Colors.white.withOpacity(0.2),
                       borderRadius: AppSpacing.borderRadiusFull,
                     ),
                     child: Icon(
@@ -232,7 +231,7 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
           
           // Filters
           Container(
-            color: AppColors.surface,
+            color: Theme.of(context).colorScheme.surface,
             padding: AppSpacing.pageInsets.copyWith(top: 0),
             child: Column(
               children: [
@@ -368,7 +367,7 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
     return Container(
       margin: EdgeInsets.only(bottom: AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: AppSpacing.borderRadiusMd,
         boxShadow: [
           BoxShadow(

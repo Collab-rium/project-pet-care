@@ -23,13 +23,13 @@ class _EnhancedSettingsScreenState extends State<EnhancedSettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           'Settings',
           style: AppTextStyles.h2,
         ),
-        backgroundColor: AppColors.surface,
+        
         elevation: 0,
       ),
       body: ListView(
@@ -212,7 +212,7 @@ class _EnhancedSettingsScreenState extends State<EnhancedSettingsScreen> {
         ),
         Container(
           decoration: BoxDecoration(
-            color: AppColors.surface,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: AppSpacing.borderRadiusMd,
             border: Border.all(color: AppColors.border),
           ),

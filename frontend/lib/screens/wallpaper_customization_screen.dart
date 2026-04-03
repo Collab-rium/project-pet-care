@@ -60,13 +60,13 @@ class _WallpaperCustomizationScreenState extends State<WallpaperCustomizationScr
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           'Wallpaper',
           style: AppTextStyles.h2,
         ),
-        backgroundColor: AppColors.surface,
+        
         elevation: 0,
       ),
       body: _isLoading
@@ -100,7 +100,7 @@ class _WallpaperCustomizationScreenState extends State<WallpaperCustomizationScr
     return Container(
       padding: AppSpacing.cardInsets,
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: AppSpacing.borderRadiusMd,
         border: Border.all(color: AppColors.border),
       ),
@@ -116,7 +116,7 @@ class _WallpaperCustomizationScreenState extends State<WallpaperCustomizationScr
             width: double.infinity,
             height: 200,
             decoration: BoxDecoration(
-              color: AppColors.background,
+              color: Theme.of(context).scaffoldBackgroundColor,
               borderRadius: AppSpacing.borderRadiusSm,
               border: Border.all(color: AppColors.border),
               image: _currentWallpaper != null
@@ -213,7 +213,7 @@ class _WallpaperCustomizationScreenState extends State<WallpaperCustomizationScr
           Container(
             padding: AppSpacing.cardInsets,
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: Theme.of(context).colorScheme.surface,
               borderRadius: AppSpacing.borderRadiusMd,
               border: Border.all(color: AppColors.border),
             ),
@@ -293,7 +293,7 @@ class _WallpaperCustomizationScreenState extends State<WallpaperCustomizationScr
     return Container(
       padding: AppSpacing.cardInsets,
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: AppSpacing.borderRadiusMd,
         border: Border.all(color: AppColors.border),
       ),
@@ -349,7 +349,7 @@ class _WallpaperCustomizationScreenState extends State<WallpaperCustomizationScr
               end: Alignment.bottomCenter,
               colors: [
                 Colors.transparent,
-                Colors.black.withOpacity(0.7),
+                Theme.of(context).colorScheme.scrim.withOpacity(0.7),
               ],
             ),
           ),
@@ -360,7 +360,7 @@ class _WallpaperCustomizationScreenState extends State<WallpaperCustomizationScr
               child: Text(
                 name,
                 style: AppTextStyles.bodyMedium.copyWith(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.onScrim,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -391,7 +391,7 @@ class _WallpaperCustomizationScreenState extends State<WallpaperCustomizationScr
               end: Alignment.bottomCenter,
               colors: [
                 Colors.transparent,
-                Colors.black.withOpacity(0.7),
+                Theme.of(context).colorScheme.scrim.withOpacity(0.7),
               ],
             ),
           ),
@@ -406,7 +406,7 @@ class _WallpaperCustomizationScreenState extends State<WallpaperCustomizationScr
                   Text(
                     pet.name,
                     style: AppTextStyles.bodyMedium.copyWith(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.onScrim,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -414,7 +414,7 @@ class _WallpaperCustomizationScreenState extends State<WallpaperCustomizationScr
                     Text(
                       photo.description!,
                       style: AppTextStyles.bodySmall.copyWith(
-                        color: Colors.white.withOpacity(0.8),
+                        color: Theme.of(context).colorScheme.onScrim.withOpacity(0.8),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

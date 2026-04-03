@@ -68,13 +68,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           'Dashboard',
           style: AppTextStyles.h1,
         ),
-        backgroundColor: AppColors.surface,
         elevation: 0,
         actions: [
           IconButton(
@@ -100,7 +99,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         Container(
           padding: AppSpacing.cardInsets,
           decoration: BoxDecoration(
-            color: AppColors.surface,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: AppSpacing.borderRadiusMd,
             boxShadow: [
               BoxShadow(
@@ -176,7 +175,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         Container(
           padding: AppSpacing.cardInsets,
           decoration: BoxDecoration(
-            color: AppColors.surface,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: AppSpacing.borderRadiusMd,
             border: Border.all(color: AppColors.border),
           ),
@@ -357,7 +356,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: AppSpacing.borderRadiusMd,
         border: Border.all(color: AppColors.border),
       ),

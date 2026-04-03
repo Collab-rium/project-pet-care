@@ -29,7 +29,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -396,7 +396,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           Container(
             padding: AppSpacing.cardInsets,
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: Theme.of(context).colorScheme.surface,
               borderRadius: AppSpacing.borderRadiusMd,
               border: Border.all(color: AppColors.border),
             ),
@@ -490,7 +490,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return Container(
       padding: AppSpacing.cardInsets,
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: AppSpacing.borderRadiusMd,
         border: Border.all(color: AppColors.border),
       ),

@@ -354,11 +354,11 @@ class _PetListScreenState extends State<PetListScreen> {
     return Container(
       width: 56,
       height: 56,
-      color: AppColors.background,
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
       child: Icon(
         _getPetIcon(pet.species),
         size: 28,
-        color: AppColors.textTertiary,
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
       ),
     );
   }

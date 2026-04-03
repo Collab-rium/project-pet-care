@@ -73,13 +73,12 @@ class _PaymentSubscriptionScreenState extends State<PaymentSubscriptionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           'Subscription Plans',
           style: AppTextStyles.h2,
         ),
-        backgroundColor: AppColors.surface,
         elevation: 0,
       ),
       body: ListView(
@@ -132,7 +131,7 @@ class _PaymentSubscriptionScreenState extends State<PaymentSubscriptionScreen> {
           Container(
             padding: AppSpacing.cardInsets,
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: Theme.of(context).colorScheme.surface,
               borderRadius: AppSpacing.borderRadiusMd,
               border: Border.all(color: AppColors.border),
             ),
@@ -142,7 +141,7 @@ class _PaymentSubscriptionScreenState extends State<PaymentSubscriptionScreen> {
                 Text(
                   'Monthly',
                   style: AppTextStyles.bodyMedium.copyWith(
-                    color: !_isYearly ? AppColors.primary : AppColors.textSecondary,
+                    color: !_isYearly ? AppColors.primary : Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
                 AppSpacing.hSpaceMd,
@@ -158,7 +157,7 @@ class _PaymentSubscriptionScreenState extends State<PaymentSubscriptionScreen> {
                     Text(
                       'Yearly',
                       style: AppTextStyles.bodyMedium.copyWith(
-                        color: _isYearly ? AppColors.primary : AppColors.textSecondary,
+                        color: _isYearly ? AppColors.primary : Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                     if (_isYearly)
@@ -191,7 +190,7 @@ class _PaymentSubscriptionScreenState extends State<PaymentSubscriptionScreen> {
           Container(
             padding: AppSpacing.cardInsets,
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: Theme.of(context).colorScheme.surface,
               borderRadius: AppSpacing.borderRadiusMd,
               border: Border.all(color: AppColors.border),
             ),
@@ -243,7 +242,7 @@ class _PaymentSubscriptionScreenState extends State<PaymentSubscriptionScreen> {
     return Container(
       margin: EdgeInsets.only(bottom: AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: AppSpacing.borderRadiusMd,
         border: Border.all(
           color: plan.isPopular
@@ -275,7 +274,7 @@ class _PaymentSubscriptionScreenState extends State<PaymentSubscriptionScreen> {
                 child: Text(
                   'Popular',
                   style: AppTextStyles.bodySmall.copyWith(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.onPrimary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -403,7 +402,7 @@ class _PaymentSubscriptionScreenState extends State<PaymentSubscriptionScreen> {
     return Container(
       padding: AppSpacing.cardInsets,
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: AppSpacing.borderRadiusMd,
         border: Border.all(color: AppColors.border),
       ),

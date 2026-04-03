@@ -30,13 +30,12 @@ class _AccountScreenState extends State<AccountScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           'Account',
           style: AppTextStyles.h2,
         ),
-        backgroundColor: AppColors.surface,
         elevation: 0,
       ),
       body: ListView(
@@ -63,7 +62,7 @@ class _AccountScreenState extends State<AccountScreen> {
     return Container(
       padding: AppSpacing.cardInsets,
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: AppSpacing.borderRadiusMd,
         boxShadow: [
           BoxShadow(
@@ -85,7 +84,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   height: 100,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.background,
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     border: Border.all(
                       color: AppColors.border,
                       width: 2,
@@ -115,7 +114,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       color: Theme.of(context).colorScheme.primary,
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: AppColors.surface,
+                        color: Theme.of(context).colorScheme.surface,
                         width: 2,
                       ),
                     ),
@@ -143,7 +142,7 @@ class _AccountScreenState extends State<AccountScreen> {
           Text(
             'Local User Account',
             style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
 
@@ -161,11 +160,11 @@ class _AccountScreenState extends State<AccountScreen> {
 
   Widget _buildAvatarPlaceholder() {
     return Container(
-      color: AppColors.background,
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
       child: Icon(
         Icons.person,
         size: 48,
-        color: AppColors.textTertiary,
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
       ),
     );
   }
@@ -291,7 +290,7 @@ class _AccountScreenState extends State<AccountScreen> {
     return Container(
       margin: EdgeInsets.only(bottom: AppSpacing.sm),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: AppSpacing.borderRadiusMd,
         border: Border.all(color: AppColors.border),
       ),

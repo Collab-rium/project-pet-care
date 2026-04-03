@@ -45,7 +45,7 @@ class AppDropdown<T> extends StatelessWidget {
         ],
         Container(
           decoration: BoxDecoration(
-            color: enabled ? AppColors.surface : AppColors.surfaceVariant,
+            color: enabled ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.surfaceContainerHighest,
             border: Border.all(
               color: hasError ? AppColors.error : AppColors.border,
               width: hasError ? 1.5 : 1,
@@ -61,7 +61,7 @@ class AppDropdown<T> extends StatelessWidget {
                     ? Text(
                         hint!,
                         style: AppTextStyles.bodyLarge.copyWith(
-                          color: AppColors.textTertiary,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       )
                     : null,
@@ -74,12 +74,12 @@ class AppDropdown<T> extends StatelessWidget {
                 isExpanded: true,
                 icon: Icon(
                   Icons.arrow_drop_down,
-                  color: AppColors.textSecondary,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
                 style: AppTextStyles.bodyLarge.copyWith(
-                  color: enabled ? AppColors.textPrimary : AppColors.textTertiary,
+                  color: enabled ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
-                dropdownColor: AppColors.surface,
+                dropdownColor: Theme.of(context).colorScheme.surface,
                 borderRadius: AppSpacing.borderRadiusMd,
               ),
             ),

@@ -88,13 +88,13 @@ class _ReminderFormScreenState extends State<ReminderFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           widget.reminder == null ? 'Add Reminder' : 'Edit Reminder',
           style: AppTextStyles.h2,
         ),
-        backgroundColor: AppColors.surface,
+        
         elevation: 0,
         actions: [
           if (widget.reminder != null)
@@ -254,7 +254,7 @@ class _ReminderFormScreenState extends State<ReminderFormScreen> {
             Container(
               padding: AppSpacing.cardInsets,
               decoration: BoxDecoration(
-                color: AppColors.surface,
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: AppSpacing.borderRadiusMd,
                 border: Border.all(color: AppColors.border),
               ),

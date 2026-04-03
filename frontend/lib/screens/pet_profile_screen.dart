@@ -227,7 +227,7 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
               height: 120,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.surface,
+                color: Theme.of(context).colorScheme.surface,
                 border: Border.all(
                   color: AppColors.border,
                   width: 2,
@@ -278,7 +278,7 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
     return Container(
       width: 120,
       height: 120,
-      color: AppColors.background,
+      color: Theme.of(context).scaffoldBackgroundColor,
       child: Icon(
         Icons.pets,
         size: 48,
@@ -290,13 +290,13 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           widget.pet != null ? 'Edit Pet' : 'Add Pet',
           style: AppTextStyles.h2,
         ),
-        backgroundColor: AppColors.surface,
+        
         elevation: 0,
         actions: [
           if (widget.pet != null)

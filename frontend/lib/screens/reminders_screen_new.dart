@@ -107,13 +107,13 @@ class _RemindersScreenState extends State<RemindersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           'Reminders',
           style: AppTextStyles.h2,
         ),
-        backgroundColor: AppColors.surface,
+        
         elevation: 0,
         actions: [
           IconButton(
@@ -128,7 +128,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
         children: [
           // Filter tabs
           Container(
-            color: AppColors.surface,
+            color: Theme.of(context).colorScheme.surface,
             padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -168,7 +168,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
             _currentFilter = value;
           });
         },
-        backgroundColor: AppColors.surface,
+        
         selectedColor: AppColors.primary.withOpacity(0.1),
         labelStyle: AppTextStyles.bodySmall.copyWith(
           color: isSelected ? AppColors.primary : AppColors.textSecondary,
@@ -254,7 +254,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
       ),
     );
 
-    Color cardColor = AppColors.surface;
+    Color cardColor = Theme.of(context).colorScheme.surface;
     Color accentColor = AppColors.primary;
     
     if (reminder.isCompleted) {

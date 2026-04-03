@@ -44,13 +44,13 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           'Backup & Restore',
           style: AppTextStyles.h2,
         ),
-        backgroundColor: AppColors.surface,
+        
         elevation: 0,
         bottom: TabBar(
           controller: _tabController,
@@ -159,7 +159,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen>
         Container(
           padding: AppSpacing.cardInsets,
           decoration: BoxDecoration(
-            color: AppColors.surface,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: AppSpacing.borderRadiusMd,
             border: Border.all(color: AppColors.border),
           ),
@@ -243,7 +243,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen>
         Container(
           padding: AppSpacing.cardInsets,
           decoration: BoxDecoration(
-            color: AppColors.surface,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: AppSpacing.borderRadiusMd,
             border: Border.all(color: AppColors.border),
           ),
@@ -323,7 +323,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen>
           Container(
             padding: AppSpacing.cardInsets,
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: Theme.of(context).colorScheme.surface,
               borderRadius: AppSpacing.borderRadiusMd,
               border: Border.all(color: AppColors.border),
             ),
@@ -373,7 +373,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen>
         Container(
           padding: AppSpacing.cardInsets,
           decoration: BoxDecoration(
-            color: AppColors.surface,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: AppSpacing.borderRadiusMd,
             border: Border.all(color: AppColors.border),
           ),
@@ -428,7 +428,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen>
     return Container(
       padding: AppSpacing.cardInsets,
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: AppSpacing.borderRadiusMd,
         border: Border.all(color: AppColors.border),
       ),

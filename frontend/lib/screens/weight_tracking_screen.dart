@@ -129,13 +129,13 @@ class _WeightTrackingScreenState extends State<WeightTrackingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           '${widget.pet.name} Weight',
           style: AppTextStyles.h2,
         ),
-        backgroundColor: AppColors.surface,
+        
         elevation: 0,
       ),
       body: _isLoading 
@@ -144,7 +144,7 @@ class _WeightTrackingScreenState extends State<WeightTrackingScreen> {
               children: [
                 // Add weight form
                 Container(
-                  color: AppColors.surface,
+                  color: Theme.of(context).colorScheme.surface,
                   padding: AppSpacing.pageInsets,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -241,7 +241,7 @@ class _WeightTrackingScreenState extends State<WeightTrackingScreen> {
         Container(
           padding: AppSpacing.cardInsets,
           decoration: BoxDecoration(
-            color: AppColors.surface,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: AppSpacing.borderRadiusMd,
             boxShadow: [
               BoxShadow(
@@ -392,7 +392,7 @@ class _WeightTrackingScreenState extends State<WeightTrackingScreen> {
                   radius: 4,
                   color: AppColors.primary,
                   strokeWidth: 2,
-                  strokeColor: AppColors.surface,
+                  strokeColor: Theme.of(context).colorScheme.surface,
                 );
               },
             ),
@@ -411,7 +411,7 @@ class _WeightTrackingScreenState extends State<WeightTrackingScreen> {
       margin: EdgeInsets.only(bottom: AppSpacing.sm),
       padding: AppSpacing.cardInsets,
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: AppSpacing.borderRadiusSm,
         border: Border.all(color: AppColors.border),
       ),

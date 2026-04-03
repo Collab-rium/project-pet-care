@@ -163,13 +163,13 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           widget.expense != null ? 'Edit Expense' : 'Add Expense',
           style: AppTextStyles.h2,
         ),
-        backgroundColor: AppColors.surface,
+        
         elevation: 0,
       ),
       body: LoadingOverlay(
@@ -184,7 +184,7 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
               Container(
                 padding: AppSpacing.cardInsets,
                 decoration: BoxDecoration(
-                  color: AppColors.surface,
+                  color: Theme.of(context).colorScheme.surface,
                   borderRadius: AppSpacing.borderRadiusMd,
                   border: Border.all(color: AppColors.border),
                 ),
@@ -349,7 +349,7 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
           vertical: AppSpacing.sm,
         ),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: Theme.of(context).colorScheme.surface,
           border: Border.all(color: AppColors.border),
           borderRadius: AppSpacing.borderRadiusSm,
         ),

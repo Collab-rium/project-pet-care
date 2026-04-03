@@ -35,13 +35,13 @@ class _NotificationSettingsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           'Notification Settings',
           style: AppTextStyles.h2,
         ),
-        backgroundColor: AppColors.surface,
+        
         elevation: 0,
         actions: [
           TextButton(
@@ -173,7 +173,7 @@ class _NotificationSettingsScreenState
               Container(
                 padding: AppSpacing.cardInsets,
                 decoration: BoxDecoration(
-                  color: AppColors.surface,
+                  color: Theme.of(context).colorScheme.surface,
                   borderRadius: AppSpacing.borderRadiusMd,
                   border: Border.all(color: AppColors.border),
                 ),
@@ -263,7 +263,7 @@ class _NotificationSettingsScreenState
       margin: EdgeInsets.only(bottom: AppSpacing.sm),
       padding: AppSpacing.cardInsets,
       decoration: BoxDecoration(
-        color: enabled ? AppColors.surface : AppColors.surface.withOpacity(0.5),
+        color: enabled ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.surface.withOpacity(0.5),
         borderRadius: AppSpacing.borderRadiusMd,
         border: Border.all(color: AppColors.border),
       ),
@@ -313,7 +313,7 @@ class _NotificationSettingsScreenState
       margin: EdgeInsets.only(bottom: AppSpacing.sm),
       padding: AppSpacing.cardInsets,
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: AppSpacing.borderRadiusMd,
         border: Border.all(color: AppColors.border),
       ),

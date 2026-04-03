@@ -27,7 +27,7 @@ class AppCard extends StatelessWidget {
     final card = Container(
       padding: padding ?? AppSpacing.cardInsets,
       decoration: BoxDecoration(
-        color: backgroundColor ?? AppColors.surface,
+        color: backgroundColor ?? Theme.of(context).colorScheme.surface,
         borderRadius: borderRadius ?? AppSpacing.borderRadiusMd,
         boxShadow: showShadow
             ? [

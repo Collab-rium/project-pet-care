@@ -103,7 +103,7 @@ class AppAvatar extends StatelessWidget {
         color: backgroundColor ?? AppColors.primaryLight,
         border: showBorder
             ? Border.all(
-                color: AppColors.surface,
+                color: Theme.of(context).colorScheme.surface,
                 width: 3,
               )
             : null,

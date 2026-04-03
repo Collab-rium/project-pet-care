@@ -186,13 +186,12 @@ class _BudgetScreenState extends State<BudgetScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           'Budget Management',
           style: AppTextStyles.h2,
         ),
-        backgroundColor: AppColors.surface,
         elevation: 0,
         actions: [
           IconButton(
@@ -241,7 +240,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
       children: [
         // Pet selector
         Container(
-          color: AppColors.surface,
+          color: Theme.of(context).colorScheme.surface,
           padding: AppSpacing.pageInsets,
           child: Row(
             children: [
@@ -306,7 +305,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
       return Container(
         padding: AppSpacing.cardInsets,
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: AppSpacing.borderRadiusMd,
           border: Border.all(color: AppColors.border),
         ),
@@ -360,7 +359,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
         borderRadius: AppSpacing.borderRadiusMd,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
             blurRadius: 8,
             offset: Offset(0, 4),
           ),
@@ -541,7 +540,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
       return Container(
         padding: AppSpacing.cardInsets,
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: AppSpacing.borderRadiusMd,
           border: Border.all(color: AppColors.border),
         ),
@@ -579,7 +578,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
     return Container(
       padding: AppSpacing.cardInsets,
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: AppSpacing.borderRadiusMd,
         boxShadow: [
           BoxShadow(
@@ -670,7 +669,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
       return Container(
         padding: AppSpacing.cardInsets,
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: AppSpacing.borderRadiusMd,
           border: Border.all(color: AppColors.border),
         ),
@@ -701,7 +700,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
     return Container(
       padding: AppSpacing.cardInsets,
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: AppSpacing.borderRadiusMd,
         boxShadow: [
           BoxShadow(
@@ -751,7 +750,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
       return Container(
         padding: AppSpacing.cardInsets,
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: AppSpacing.borderRadiusMd,
           border: Border.all(color: AppColors.border),
         ),
@@ -779,7 +778,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
     return Container(
       padding: AppSpacing.cardInsets,
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: AppSpacing.borderRadiusMd,
         boxShadow: [
           BoxShadow(

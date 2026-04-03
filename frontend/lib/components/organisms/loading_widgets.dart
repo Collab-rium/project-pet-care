@@ -101,7 +101,7 @@ class PetListLoadingSkeleton extends StatelessWidget {
           margin: EdgeInsets.only(bottom: AppSpacing.md),
           padding: AppSpacing.cardInsets,
           decoration: BoxDecoration(
-            color: AppColors.surface,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: AppSpacing.borderRadiusMd,
           ),
           child: Row(
@@ -197,7 +197,7 @@ class DashboardLoadingSkeleton extends StatelessWidget {
                 padding: AppSpacing.cardInsets,
                 margin: EdgeInsets.only(right: AppSpacing.sm),
                 decoration: BoxDecoration(
-                  color: AppColors.surface,
+                  color: Theme.of(context).colorScheme.surface,
                   borderRadius: AppSpacing.borderRadiusMd,
                 ),
                 child: Column(
@@ -215,7 +215,7 @@ class DashboardLoadingSkeleton extends StatelessWidget {
                 padding: AppSpacing.cardInsets,
                 margin: EdgeInsets.symmetric(horizontal: AppSpacing.sm),
                 decoration: BoxDecoration(
-                  color: AppColors.surface,
+                  color: Theme.of(context).colorScheme.surface,
                   borderRadius: AppSpacing.borderRadiusMd,
                 ),
                 child: Column(
@@ -233,7 +233,7 @@ class DashboardLoadingSkeleton extends StatelessWidget {
                 padding: AppSpacing.cardInsets,
                 margin: EdgeInsets.only(left: AppSpacing.sm),
                 decoration: BoxDecoration(
-                  color: AppColors.surface,
+                  color: Theme.of(context).colorScheme.surface,
                   borderRadius: AppSpacing.borderRadiusMd,
                 ),
                 child: Column(
@@ -276,12 +276,12 @@ class LoadingOverlay extends StatelessWidget {
         child,
         if (isLoading)
           Container(
-            color: AppColors.background.withOpacity(0.8),
+            color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.8),
             child: Center(
               child: Container(
                 padding: EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
-                  color: AppColors.surface,
+                  color: Theme.of(context).colorScheme.surface,
                   borderRadius: AppSpacing.borderRadiusLg,
                   boxShadow: [
                     BoxShadow(
