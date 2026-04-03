@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/spacing.dart';
 import '../../core/constants/text_styles.dart';
+import '../../core/theme/color_tokens_extension.dart';
 
 /// Reusable input field component
 /// Supports text, number, email, password, multiline
@@ -238,6 +239,7 @@ class _AppInputState extends State<AppInput> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -361,6 +363,7 @@ class _PasswordInputState extends State<_PasswordInput> {
 
   @override
   Widget build(BuildContext context) {
+    
     return AppInput(
       label: widget.label,
       hint: widget.hint,

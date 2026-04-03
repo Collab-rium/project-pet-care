@@ -5,6 +5,7 @@ import '../atoms/app_badge.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/spacing.dart';
 import '../../core/constants/text_styles.dart';
+import '../../core/theme/color_tokens_extension.dart';
 
 /// Pet profile card for displaying pet information
 class PetProfileCard extends StatelessWidget {
@@ -27,6 +28,7 @@ class PetProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return AppCard(
       onTap: onTap,
       child: Row(
@@ -88,6 +90,7 @@ class AppBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Container(
       height: AppSpacing.bottomNavHeight,
       decoration: BoxDecoration(
@@ -156,6 +159,7 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return AppBar(
       title: Text(
         title,
@@ -204,6 +208,7 @@ class AppBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
@@ -295,6 +300,7 @@ class AppModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: AppSpacing.borderRadiusLg,

@@ -257,6 +257,7 @@ class _PhotoGalleryScreenState extends State<PhotoGalleryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
@@ -440,7 +441,7 @@ class _PhotoGalleryScreenState extends State<PhotoGalleryScreen> {
                   child: Text(
                     photo.caption!,
                     style: AppTextStyles.bodySmall.copyWith(
-                      color: Theme.of(context).colorScheme.onScrim,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -629,12 +630,13 @@ class PhotoViewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.scrim,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: IconThemeData(color: Theme.of(context).colorScheme.onScrim),
+        iconTheme: IconThemeData(color: Theme.of(context).colorScheme.onSurface),
       ),
       body: Center(
         child: InteractiveViewer(
@@ -661,7 +663,7 @@ class PhotoViewScreen extends StatelessWidget {
               child: Text(
                 photo.caption!,
                 style: AppTextStyles.bodyMedium.copyWith(
-                  color: Theme.of(context).colorScheme.onScrim,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
                 textAlign: TextAlign.center,
               ),

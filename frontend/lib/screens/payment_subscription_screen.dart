@@ -72,6 +72,7 @@ class _PaymentSubscriptionScreenState extends State<PaymentSubscriptionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(

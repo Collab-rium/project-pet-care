@@ -29,6 +29,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
@@ -587,6 +588,7 @@ class AccountFloatingButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Positioned(
       bottom: AppSpacing.lg,
       right: AppSpacing.lg,

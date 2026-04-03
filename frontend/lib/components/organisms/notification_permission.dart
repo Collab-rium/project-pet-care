@@ -5,6 +5,7 @@ import '../../components/molecules/app_card.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/spacing.dart';
 import '../../core/constants/text_styles.dart';
+import '../../core/theme/color_tokens_extension.dart';
 
 /// Notification permission request dialog
 class NotificationPermissionDialog extends StatelessWidget {
@@ -79,6 +80,7 @@ class NotificationPermissionDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: AppSpacing.borderRadiusLg,

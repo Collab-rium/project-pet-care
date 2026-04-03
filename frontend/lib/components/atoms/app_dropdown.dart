@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/spacing.dart';
 import '../../core/constants/text_styles.dart';
+import '../../core/theme/color_tokens_extension.dart';
 
 /// Reusable dropdown component
 class AppDropdown<T> extends StatelessWidget {
@@ -29,6 +30,7 @@ class AppDropdown<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     final hasError = errorText != null;
 
     return Column(

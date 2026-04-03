@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/spacing.dart';
 import '../../core/constants/text_styles.dart';
+import '../../core/theme/color_tokens_extension.dart';
 
 /// Reusable card component
 class AppCard extends StatelessWidget {
@@ -24,6 +25,7 @@ class AppCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     final card = Container(
       padding: padding ?? AppSpacing.cardInsets,
       decoration: BoxDecoration(
@@ -76,6 +78,7 @@ class StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return AppCard(
       onTap: onTap,
       child: Column(

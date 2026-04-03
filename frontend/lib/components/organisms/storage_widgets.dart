@@ -5,6 +5,7 @@ import '../../core/constants/colors.dart';
 import '../../core/constants/spacing.dart';
 import '../../core/constants/text_styles.dart';
 import '../../core/utils/storage_service.dart';
+import '../../core/theme/color_tokens_extension.dart';
 
 /// Widget to display storage warning banner
 class StorageWarningBanner extends StatefulWidget {
@@ -44,6 +45,7 @@ class _StorageWarningBannerState extends State<StorageWarningBanner> {
 
   @override
   Widget build(BuildContext context) {
+    
     if (_loading || _storageInfo == null) {
       return const SizedBox.shrink();
     }
@@ -198,6 +200,7 @@ class _StorageInfoWidgetState extends State<StorageInfoWidget> {
 
   @override
   Widget build(BuildContext context) {
+    
     if (_loading) {
       return const Center(child: CircularProgressIndicator());
     }

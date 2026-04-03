@@ -59,6 +59,7 @@ class _WallpaperCustomizationScreenState extends State<WallpaperCustomizationScr
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
@@ -360,7 +361,7 @@ class _WallpaperCustomizationScreenState extends State<WallpaperCustomizationScr
               child: Text(
                 name,
                 style: AppTextStyles.bodyMedium.copyWith(
-                  color: Theme.of(context).colorScheme.onScrim,
+                  color: Theme.of(context).colorScheme.onSurface,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -406,7 +407,7 @@ class _WallpaperCustomizationScreenState extends State<WallpaperCustomizationScr
                   Text(
                     pet.name,
                     style: AppTextStyles.bodyMedium.copyWith(
-                      color: Theme.of(context).colorScheme.onScrim,
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -414,7 +415,7 @@ class _WallpaperCustomizationScreenState extends State<WallpaperCustomizationScr
                     Text(
                       photo.description!,
                       style: AppTextStyles.bodySmall.copyWith(
-                        color: Theme.of(context).colorScheme.onScrim.withOpacity(0.8),
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

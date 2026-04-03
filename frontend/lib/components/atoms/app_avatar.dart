@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/spacing.dart';
 import '../../core/constants/text_styles.dart';
+import '../../core/theme/color_tokens_extension.dart';
+import '../../core/theme/color_tokens.dart';
 
 /// Avatar component for user/pet profile pictures
 class AppAvatar extends StatelessWidget {
@@ -95,6 +97,7 @@ class AppAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colorTokens;
     Widget avatar = Container(
       width: size,
       height: size,
@@ -118,7 +121,7 @@ class AppAvatar extends StatelessWidget {
             : null,
       ),
       child: ClipOval(
-        child: _buildContent(),
+        child: _buildContent(colors),
       ),
     );
 
@@ -132,7 +135,7 @@ class AppAvatar extends StatelessWidget {
     return avatar;
   }
 
-  Widget _buildContent() {
+  Widget _buildContent(ColorTokens colors) {
     // Try to show image from file path
     if (imagePath != null && imagePath!.isNotEmpty) {
       final file = File(imagePath!);
@@ -140,7 +143,7 @@ class AppAvatar extends StatelessWidget {
         return Image.file(
           file,
           fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => _buildInitials(),
+          errorBuilder: (context, error, stackTrace) => _buildInitials(colors),
         );
       }
     }
@@ -150,19 +153,19 @@ class AppAvatar extends StatelessWidget {
       return Image.network(
         imageUrl!,
         fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) => _buildInitials(),
+        errorBuilder: (context, error, stackTrace) => _buildInitials(colors),
         loadingBuilder: (context, child, loadingProgress) {
           if (loadingProgress == null) return child;
-          return _buildInitials();
+          return _buildInitials(colors);
         },
       );
     }
 
     // Show initials or default icon
-    return _buildInitials();
+    return _buildInitials(colors);
   }
 
-  Widget _buildInitials() {
+  Widget _buildInitials(ColorTokens colors) {
     if (initials != null && initials!.isNotEmpty) {
       return Center(
         child: Text(

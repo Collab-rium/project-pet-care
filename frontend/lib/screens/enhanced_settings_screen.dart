@@ -22,6 +22,7 @@ class _EnhancedSettingsScreenState extends State<EnhancedSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(

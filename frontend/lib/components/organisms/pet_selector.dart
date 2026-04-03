@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../core/constants/colors.dart';
-import '../core/constants/spacing.dart';
-import '../core/constants/text_styles.dart';
-import '../core/models/models.dart';
-import '../core/repositories/repositories.dart';
-import '../core/utils/error_handler.dart';
+import '../../core/constants/colors.dart';
+import '../../core/constants/spacing.dart';
+import '../../core/constants/text_styles.dart';
+import '../../core/models/models.dart';
+import '../../core/repositories/repositories.dart';
+import '../../core/utils/error_handler.dart';
+import '../../core/theme/color_tokens_extension.dart';
+import '../../core/theme/color_tokens.dart';
 
 class PetSelector extends StatefulWidget {
   final Pet? selectedPet;
@@ -52,6 +54,7 @@ class _PetSelectorState extends State<PetSelector> {
 
   @override
   Widget build(BuildContext context) {
+    
     if (_isLoading) {
       return Container(
         height: 48,
@@ -196,6 +199,7 @@ class CurrentPetHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     if (selectedPet == null) return SizedBox.shrink();
 
     return Container(

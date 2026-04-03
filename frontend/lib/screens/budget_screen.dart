@@ -10,6 +10,7 @@ import '../core/constants/text_styles.dart';
 import '../core/models/models.dart';
 import '../core/repositories/repositories.dart';
 import '../core/utils/error_handler.dart';
+import '../core/theme/color_tokens_extension.dart';
 
 class BudgetScreen extends StatefulWidget {
   const BudgetScreen({super.key});
@@ -185,6 +186,9 @@ class _BudgetScreenState extends State<BudgetScreen> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('BudgetScreen: isLoading=$_isLoading, petsCount=${_pets.length}, selectedPet=${_selectedPet?.name}');
+    
+    
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
@@ -209,6 +213,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
   }
 
   Widget _buildEmptyPetsState() {
+    
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -236,6 +241,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
   }
 
   Widget _buildContent() {
+    
     return Column(
       children: [
         // Pet selector
@@ -295,6 +301,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
   }
 
   Widget _buildCurrentBudgetCard() {
+    
     final budget = _currentBudget;
     final now = DateTime.now();
     final currentMonthKey =
@@ -536,6 +543,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
   }
 
   Widget _buildSpendingChart() {
+    
     if (_monthlyExpenses.isEmpty) {
       return Container(
         padding: AppSpacing.cardInsets,
@@ -660,6 +668,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
   }
 
   Widget _buildCategoryBreakdown() {
+    
     final now = DateTime.now();
     final currentMonthKey =
         '${now.month.toString().padLeft(2, '0')}/${now.year}';
@@ -746,6 +755,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
   }
 
   Widget _buildBudgetHistory() {
+    
     if (_budgets.isEmpty) {
       return Container(
         padding: AppSpacing.cardInsets,

@@ -5,6 +5,7 @@ import '../../components/molecules/app_card.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/spacing.dart';
 import '../../core/constants/text_styles.dart';
+import '../../core/theme/color_tokens_extension.dart';
 
 /// Password warning dialog for registration
 class PasswordWarningDialog extends StatefulWidget {
@@ -37,6 +38,7 @@ class _PasswordWarningDialogState extends State<PasswordWarningDialog> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: AppSpacing.borderRadiusLg,
@@ -173,6 +175,7 @@ class PasswordWarningBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return AppCard(
       backgroundColor: AppColors.warningLight.withOpacity(0.1),
       child: Row(

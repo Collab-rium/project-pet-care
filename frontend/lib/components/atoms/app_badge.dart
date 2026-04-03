@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/spacing.dart';
 import '../../core/constants/text_styles.dart';
+import '../../core/theme/color_tokens_extension.dart';
+import '../../core/theme/color_tokens.dart';
 
 /// Badge component for status indicators, counts, etc.
 class AppBadge extends StatelessWidget {
@@ -95,6 +97,7 @@ class AppBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     final padding = _getPadding();
     final textStyle = _getTextStyle();
     final iconSize = _getIconSize();

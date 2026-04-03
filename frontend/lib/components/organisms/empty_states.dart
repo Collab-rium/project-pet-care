@@ -3,6 +3,7 @@ import '../../components/atoms/app_button.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/spacing.dart';
 import '../../core/constants/text_styles.dart';
+import '../../core/theme/color_tokens_extension.dart';
 
 /// Empty state for pet list
 class EmptyPetList extends StatelessWidget {
@@ -12,6 +13,7 @@ class EmptyPetList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Center(
       child: Padding(
         padding: AppSpacing.pageInsets,
@@ -60,6 +62,7 @@ class EmptyRemindersList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Center(
       child: Padding(
         padding: AppSpacing.pageInsets,
@@ -108,6 +111,7 @@ class EmptyExpensesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Center(
       child: Padding(
         padding: AppSpacing.pageInsets,
@@ -156,6 +160,7 @@ class EmptyWeightList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Center(
       child: Padding(
         padding: AppSpacing.pageInsets,
@@ -204,6 +209,7 @@ class EmptyPhotoGallery extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Center(
       child: Padding(
         padding: AppSpacing.pageInsets,
@@ -257,6 +263,7 @@ class EmptySearchResults extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Center(
       child: Padding(
         padding: AppSpacing.pageInsets,
@@ -316,6 +323,7 @@ class EmptyStateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Center(
       child: Padding(
         padding: AppSpacing.pageInsets,

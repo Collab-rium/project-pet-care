@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/spacing.dart';
 import '../../core/constants/text_styles.dart';
+import '../../core/theme/color_tokens_extension.dart';
 
 /// Loading skeleton widgets
 class LoadingSkeleton extends StatefulWidget {
@@ -46,6 +47,7 @@ class _LoadingSkeletonState extends State<LoadingSkeleton>
 
   @override
   Widget build(BuildContext context) {
+    
     return AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {
@@ -93,6 +95,7 @@ class PetListLoadingSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return ListView.builder(
       itemCount: 3,
       padding: AppSpacing.pageInsets,
@@ -147,6 +150,7 @@ class ChartLoadingSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Container(
       padding: AppSpacing.cardInsets,
       child: Column(
@@ -187,6 +191,7 @@ class DashboardLoadingSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Column(
       children: [
         // Stats cards
@@ -271,6 +276,7 @@ class LoadingOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Stack(
       children: [
         child,

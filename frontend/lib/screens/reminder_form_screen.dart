@@ -87,6 +87,7 @@ class _ReminderFormScreenState extends State<ReminderFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(

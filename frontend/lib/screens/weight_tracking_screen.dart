@@ -128,6 +128,7 @@ class _WeightTrackingScreenState extends State<WeightTrackingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(

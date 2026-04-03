@@ -77,6 +77,7 @@ class _RemindersListScreenState extends State<RemindersListScreen> with SingleTi
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(

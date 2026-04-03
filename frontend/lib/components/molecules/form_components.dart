@@ -3,6 +3,7 @@ import '../atoms/app_input.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/spacing.dart';
 import '../../core/constants/text_styles.dart';
+import '../../core/theme/color_tokens_extension.dart';
 
 /// Form field with label, input, and error handling
 class FormField extends StatelessWidget {
@@ -21,6 +22,7 @@ class FormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -72,6 +74,7 @@ class SearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
@@ -130,6 +133,7 @@ class ListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return InkWell(
       onTap: onTap,
       child: Padding(
@@ -196,6 +200,7 @@ class EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Center(
       child: Padding(
         padding: AppSpacing.pageInsets,

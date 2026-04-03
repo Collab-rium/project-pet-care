@@ -220,6 +220,7 @@ class _TasksScreenState extends State<TasksScreen> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
@@ -332,6 +333,7 @@ class _TaskItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     final color = _getStatusColor();
     final isCompleted = task.status == 'completed';
 
@@ -467,6 +469,7 @@ class _AddTaskDialogState extends State<_AddTaskDialog> {
 
   @override
   Widget build(BuildContext context) {
+    
     return AlertDialog(
       title: const Text('Add New Task'),
       content: Form(
@@ -636,6 +639,7 @@ class _EditTaskDialogState extends State<_EditTaskDialog> {
 
   @override
   Widget build(BuildContext context) {
+    
     return AlertDialog(
       title: const Text('Edit Task'),
       content: Form(
