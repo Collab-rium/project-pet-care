@@ -315,8 +315,10 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
                             items: _categories,
                             onChanged: (value) {
                               setState(() {
-                                _selectedCategory = value;
-                                _applyFilters();
+                                if (value != null) {
+                                  _selectedCategory = value;
+                                  _applyFilters();
+                                }
                               });
                             },
                           ),
@@ -340,8 +342,10 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
                             items: _timeRanges,
                             onChanged: (value) {
                               setState(() {
-                                _selectedTimeRange = value;
-                                _applyFilters();
+                                if (value != null) {
+                                  _selectedTimeRange = value;
+                                  _applyFilters();
+                                }
                               });
                             },
                           ),

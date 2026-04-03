@@ -257,7 +257,9 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
                   value: _selectedCategory,
                   items: _expenseCategories,
                   onChanged: (value) {
-                    setState(() => _selectedCategory = value);
+                    if (value != null) {
+                      setState(() => _selectedCategory = value);
+                    }
                   },
                 ),
               ),

@@ -13,6 +13,7 @@ import '../../screens/pet_list_screen.dart';
 import '../../screens/add_pet_screen.dart';
 import '../../screens/budget_screen.dart';
 import '../../screens/add_expense_screen.dart';
+import '../../screens/expense_list_screen.dart';
 
 /// App routes configuration
 class AppRoutes {

@@ -13,6 +13,7 @@ import '../core/utils/error_handler.dart';
 import '../core/theme/color_tokens_extension.dart';
 import '../core/services/logger_service.dart';
 import '../core/services/file_logger_service.dart';
+import 'expense_list_screen.dart';
 
 class BudgetScreen extends StatefulWidget {
   const BudgetScreen({super.key});
@@ -329,6 +330,22 @@ class _BudgetScreenState extends State<BudgetScreen> {
           child: ListView(
             padding: AppSpacing.pageInsets,
             children: [
+              // Add Expense Button
+              if (_selectedPet != null)
+                AppButton.primary(
+                  text: 'View & Add Expenses',
+                  icon: Icons.add,
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ExpenseListScreen(pet: _selectedPet!),
+                      ),
+                    );
+                  },
+                ),
+              
+              if (_selectedPet != null) AppSpacing.vSpaceMd,
+
               // Current budget overview
               _buildCurrentBudgetCard(),
 
